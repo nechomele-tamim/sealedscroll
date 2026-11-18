@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>The Sealed Scroll</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Frank+Ruhl+Libre:wght@500;700&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+/* Layout: a sealed-scroll header with six wax seals, a row of chamber stones, one stone-tablet stage. #control = the class big screen. */
+:root{
+  --bg:#E6E3DB; --panel:#F7F5F0; --panel-2:#EFECE4; --ink:#1C2333; --muted:#596072; --line:#CEC8BA;
+  --lapis:#2B4C8C; --lapis-soft:#DDE5F3; --on-accent:#FFFFFF;
+  --gold:#9C6B10; --gold-soft:#F2E5C6; --flame:#E39A2B;
+  --ok:#2E6A3E; --ok-soft:#DCEBDD; --warn:#9A3A2A; --warn-soft:#F5DFD9;
+  --sea:#C9D6E6; --land:#E2D9C4; --land-2:#D6CBB0; --night:#151B2A; --night-2:#232C40; --stone:#B9AF9A; --stone-2:#9C927C;
+  --s0:#2B4C8C; --s1:#5A6A1F; --s2:#9B2D3A; --s3:#9C6B10;
+  --display:'Marcellus', Georgia, 'Times New Roman', serif;
+  --body:'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --heb:'Frank Ruhl Libre', 'Times New Roman', serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10151E; --panel:#19202E; --panel-2:#212A3B; --ink:#ECE8DF; --muted:#A4AABA; --line:#313B4E;
+  --lapis:#8EAEF0; --lapis-soft:#22304D; --on-accent:#0F131B;
+  --gold:#E3B252; --gold-soft:#3A2F17; --flame:#F2B04A;
+  --ok:#82C894; --ok-soft:#1C3324; --warn:#F09C88; --warn-soft:#3E231E;
+  --sea:#1F3550; --land:#3A3426; --land-2:#4A4230; --night:#0A0E16; --night-2:#1A2233; --stone:#4C4638; --stone-2:#3A3529;
+  --s0:#7B9DE6; --s1:#A9B85A; --s2:#E27583; --s3:#E3B252;
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#10151E; --panel:#19202E; --panel-2:#212A3B; --ink:#ECE8DF; --muted:#A4AABA; --line:#313B4E;
+  --lapis:#8EAEF0; --lapis-soft:#22304D; --on-accent:#0F131B;
+  --gold:#E3B252; --gold-soft:#3A2F17; --flame:#F2B04A;
+  --ok:#82C894; --ok-soft:#1C3324; --warn:#F09C88; --warn-soft:#3E231E;
+  --sea:#1F3550; --land:#3A3426; --land-2:#4A4230; --night:#0A0E16; --night-2:#1A2233; --stone:#4C4638; --stone-2:#3A3529;
+  --s0:#7B9DE6; --s1:#A9B85A; --s2:#E27583; --s3:#E3B252;
+  color-scheme:dark; }
+
+*{box-sizing:border-box}
+html{font-size:18px}
+html.big{font-size:clamp(18px,1.3vw,30px)}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:12px 40px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.wrap.wide{max-width:1400px}
+
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-family:var(--display);font-size:1.5rem;letter-spacing:.04em;margin:0;font-weight:400}
+.brand small{display:block;font-family:var(--body);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.seals{display:flex;gap:6px;align-items:center}
+.wax{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:.85rem;border:2px solid var(--line);color:var(--muted);background:var(--panel)}
+.wax.active{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+.wax.open{background:var(--gold);border-color:var(--gold);color:var(--on-accent)}
+.tools{display:flex;gap:8px}
+.chip-btn{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;font-size:.9rem;cursor:pointer;min-height:44px}
+
+.track{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stone{background:var(--panel-2);border-radius:8px;padding:6px 8px;font-size:.78rem;color:var(--muted);text-align:center;border:1px solid transparent;min-width:0}
+.stone b{display:block;font-family:var(--display);font-size:.95rem;font-weight:400}
+.stone.now{border-color:var(--lapis);color:var(--ink);background:var(--lapis-soft)}
+.stone.done{color:var(--ok)}
+@media (max-width:560px){ .stone span{display:none} }
+
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,4vw,32px);display:flex;flex-direction:column;gap:18px;min-width:0}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4.5vw,2.2rem);line-height:1.15;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:400;font-size:1.3rem;margin:0}
+p{margin:0}
+.lead{font-size:1.08rem;max-width:62ch}
+.muted{color:var(--muted)}
+.driver{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted);flex-wrap:wrap}
+.dot{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none}
+
+.btn{border:none;border-radius:12px;padding:12px 20px;min-height:52px;font-weight:700;cursor:pointer;background:var(--lapis);color:var(--on-accent);font-size:1.02rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.gold{background:var(--gold);color:var(--on-accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* room-action banner: something to do away from the tablet */
+.action{border:2px solid var(--gold);background:var(--gold-soft);border-radius:14px;padding:16px;display:flex;gap:14px;align-items:flex-start}
+.action svg{flex:none;width:46px;height:46px}
+.action h4{margin:0 0 4px;font-family:var(--display);font-weight:400;font-size:1.25rem}
+.action ol,.action ul{margin:6px 0 0;padding-left:1.2em}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card.sealed{background:var(--panel-2);cursor:pointer;align-items:flex-start;text-align:left;min-height:120px;justify-content:center;border-style:dashed}
+.card .for{font-size:.82rem;font-weight:700;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.card h4{font-family:var(--display);font-weight:400;font-size:1.15rem;margin:0}
+.card .yr{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:700}
+.aloud-tag{font-size:.78rem;font-weight:700;color:var(--s2);text-transform:uppercase;letter-spacing:.08em}
+.say-btn{align-self:flex-start;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-size:.85rem;cursor:pointer;min-height:40px}
+.he{direction:rtl;font-family:var(--heb);font-size:1.6rem;line-height:1.9;display:flex;flex-wrap:wrap;gap:4px 8px}
+.he button{font-family:var(--heb);font-size:1.6rem;border:none;background:var(--gold-soft);border-radius:8px;padding:0 8px;cursor:pointer}
+.gloss{font-size:.95rem;color:var(--gold);min-height:1.5em}
+
+.ritual{border-top:1px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.sealrow{display:flex;flex-wrap:wrap;gap:14px}
+.seal{display:flex;flex-direction:column;align-items:center;gap:4px;border:none;background:none;cursor:pointer;min-width:72px}
+.seal i{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--display);font-size:1.5rem;border:3px dashed currentColor}
+.seal.on i{background:currentColor}
+.seal.on i span{color:var(--on-accent)}
+.seal small{font-size:.85rem;color:var(--ink)}
+
+.slots{display:flex;flex-direction:column;gap:8px}
+.slot{display:flex;gap:10px;align-items:center;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;min-height:52px}
+.slot .n{font-family:var(--display);color:var(--gold);width:1.5em;flex:none}
+.tile{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px 14px;cursor:pointer;text-align:left;min-height:48px;font-size:1rem}
+.tile.sel{border:2px solid var(--lapis);background:var(--lapis-soft)}
+.slot .tile{flex:1;background:var(--lapis-soft)}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.feedback{border-radius:10px;padding:12px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-soft);color:var(--ok)}
+.feedback.no{background:var(--warn-soft);color:var(--warn)}
+.feedback.info{background:var(--gold-soft);color:var(--ink);font-weight:400}
+.hintbox{background:var(--panel-2);border-radius:10px;padding:10px 14px;font-size:.98rem}
+
+.lock{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.dial{font-family:var(--display);font-size:2.4rem;letter-spacing:.2em;font-variant-numeric:tabular-nums;border:2px solid var(--gold);border-radius:12px;padding:4px 18px;min-width:5ch;text-align:center;min-height:68px}
+.pad{display:grid;grid-template-columns:repeat(5,56px);gap:8px}
+.pad button{height:56px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);font-size:1.3rem;cursor:pointer}
+.part{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{text-align:left;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--panel-2);cursor:pointer;min-height:52px;font-size:1rem}
+.choice.picked{border:2px solid var(--lapis)}
+
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bin{border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;gap:8px;text-align:left;min-width:0;padding:0}
+.bin svg{width:100%;height:auto;display:block}
+.bin .inbook{display:flex;flex-direction:column;gap:6px;padding:0 4px}
+.bin.armed svg .cover{stroke:var(--lapis);stroke-width:4}
+@media (max-width:520px){ .bins{grid-template-columns:1fr} }
+
+.mapbox{overflow-x:auto}
+.mapbox svg{width:100%;max-width:640px;height:auto;max-height:58vh;display:block}
+.region{fill:var(--land-2);stroke:var(--panel);stroke-width:3;cursor:pointer}
+.region.tagged{fill:var(--gold-soft);stroke:var(--gold)}
+.maptext{fill:var(--ink);font-family:var(--body);font-size:13px;pointer-events:none;font-weight:700}
+.seatext{fill:var(--muted);font-family:var(--body);font-size:13px;font-style:italic;pointer-events:none}
+
+.letters{direction:rtl;display:flex;gap:10px;flex-wrap:wrap}
+.letters span{width:56px;height:64px;border:2px solid var(--gold);border-radius:10px;display:grid;place-items:center;font-family:var(--heb);font-size:2.2rem;color:var(--gold)}
+.letterpad{direction:rtl;display:flex;gap:10px;flex-wrap:wrap}
+.letterpad button{width:64px;height:64px;border-radius:12px;border:1px solid var(--line);background:var(--panel-2);font-family:var(--heb);font-size:2rem;cursor:pointer}
+
+.script{display:flex;flex-direction:column;gap:10px}
+.line{border-left:4px solid var(--line);padding:6px 12px}
+.line.speak{border-color:var(--s2)}
+.line .who{font-weight:700;font-size:.9rem;display:flex;gap:6px;align-items:center}
+.line.stage{font-style:italic;color:var(--muted);border-color:transparent}
+
+.codeword{font-family:var(--display);font-size:clamp(2.2rem,8vw,3.4rem);letter-spacing:.12em;color:var(--gold);border:2px dashed var(--gold);border-radius:14px;padding:6px 20px;align-self:flex-start}
+.flip{border:1px solid var(--line);border-radius:12px;padding:16px;min-height:90px;background:var(--panel-2);cursor:pointer;text-align:left;width:100%}
+.flip b{display:block;margin-bottom:4px}
+
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.role{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field input,.field textarea,.field select{font:inherit;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);min-height:50px;width:100%}
+.names{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+
+.overlay{position:fixed;inset:0;background:rgba(10,14,22,.72);display:grid;place-items:center;z-index:50;
+  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))}
+.sheet{background:var(--panel);color:var(--ink);border-radius:16px;padding:22px;max-width:640px;width:100%;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.freeze h2{font-size:clamp(2rem,7vw,3.2rem);text-align:center}
+.keyrow{display:flex;gap:8px;flex-wrap:wrap}
+.keyrow input{font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);width:9ch}
+.tkey{background:var(--panel-2);border-radius:10px;padding:12px;font-size:.98rem}
+.tkey b{color:var(--gold)}
+.foot{display:flex;justify-content:flex-end}
+.foot button{background:none;border:none;color:var(--muted);font-size:.85rem;cursor:pointer;padding:8px;min-height:44px}
+
+/* ===== scenes (transitions + big-screen animations) ===== */
+.scene{position:fixed;inset:0;z-index:60;background:var(--night);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;cursor:pointer;
+  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))}
+.scene svg{width:min(92vw,720px);height:auto;max-height:68vh}
+.scene .cap{font-family:var(--display);color:#F2E5C6;font-size:clamp(1.4rem,4vw,2.2rem);text-align:center;text-wrap:balance;max-width:28ch}
+.scene .skip{color:#A4AABA;font-size:.85rem}
+.ink-gold{fill:#E3B252}.ink-gold-s{stroke:#E3B252}
+@keyframes leafL{to{transform:perspective(600px) rotateY(-80deg)}}
+@keyframes leafR{to{transform:perspective(600px) rotateY(80deg)}}
+@keyframes rise{to{transform:translateY(-150px)}}
+@keyframes shackle{0%{transform:translateY(0)}50%{transform:translateY(-22px)}100%{transform:translateY(-22px) rotate(-35deg)}}
+@keyframes sun{from{transform:translateY(90px)}to{transform:translateY(0)}}
+@keyframes skyfade{from{opacity:.2}to{opacity:1}}
+@keyframes splitL{to{transform:translateX(-90px) rotate(-8deg)}}
+@keyframes splitR{to{transform:translateX(90px) rotate(8deg)}}
+@keyframes crackL{to{transform:translate(-60px,30px) rotate(-30deg);opacity:0}}
+@keyframes crackR{to{transform:translate(60px,30px) rotate(30deg);opacity:0}}
+@keyframes unroll{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 2px #E3B252)}50%{filter:drop-shadow(0 0 22px #F2B04A)}}
+@keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes flicker{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.15)}}
+@keyframes walk{from{transform:translateX(0)}to{transform:translateX(330px)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes fill{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.a-leafL{transform-box:fill-box;transform-origin:left center;animation:leafL 1.6s .3s ease-in-out forwards}
+.a-leafR{transform-box:fill-box;transform-origin:right center;animation:leafR 1.6s .3s ease-in-out forwards}
+.a-rise{animation:rise 1.8s .3s ease-in-out forwards}
+.a-shackle{transform-box:fill-box;transform-origin:right bottom;animation:shackle 1.6s .3s ease-out forwards}
+.a-sun{animation:sun 2s ease-out forwards}
+.a-sky{animation:skyfade 2s ease-out forwards}
+.a-splitL{transform-box:fill-box;transform-origin:center;animation:splitL 1.6s .4s ease-in-out forwards}
+.a-splitR{transform-box:fill-box;transform-origin:center;animation:splitR 1.6s .4s ease-in-out forwards}
+.a-crackL{transform-box:fill-box;transform-origin:center;animation:crackL 1.4s .5s ease-in forwards}
+.a-crackR{transform-box:fill-box;transform-origin:center;animation:crackR 1.4s .5s ease-in forwards}
+.a-unroll{transform-box:fill-box;transform-origin:center;animation:unroll 1.6s ease-out forwards}
+.a-glow{animation:glow 1.4s ease-in-out infinite}
+.a-pop{transform-box:fill-box;transform-origin:center;opacity:0;animation:pop .6s ease-out forwards}
+.a-flicker{transform-box:fill-box;transform-origin:bottom center;animation:flicker .5s ease-in-out infinite}
+.a-walk{animation:walk 5s linear forwards}
+.a-fade{opacity:0;animation:fadein .8s ease-out forwards}
+.a-fill{transform-box:fill-box;transform-origin:bottom;animation:fill 2s ease-out forwards}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}}
+
+/* ===== Mission Control (big screen) ===== */
+.mc{font-size:1.1rem}
+.mc .btn{font-size:1.1rem;min-height:3rem}
+.mc .lamp svg{width:3rem;height:2.3rem}
+.mc .lamp{font-size:.8rem}
+.mc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.mc-head h1{font-family:var(--display);font-weight:400;font-size:clamp(1.8rem,3vw,2.6rem);margin:0}
+.mc-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){ .mc-grid{grid-template-columns:1fr} }
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.grp{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(5,minmax(0,1fr));gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.grp:last-child{border-bottom:none}
+.grp .gname{font-weight:700;font-size:1.15rem;overflow-wrap:anywhere}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.75rem;color:var(--muted)}
+.lamp svg{width:44px;height:34px}
+.lamp.lit{color:var(--ink)}
+.jar svg{width:100%;max-width:220px;height:auto;display:block;margin:0 auto}
+.bigbtns{display:flex;flex-wrap:wrap;gap:10px}
+.toast{position:fixed;left:50%;top:calc(20px + env(safe-area-inset-top, 0px));transform:translateX(-50%);background:var(--gold);color:var(--on-accent);padding:14px 24px;border-radius:14px;font-weight:700;font-size:1.3rem;z-index:70;animation:pop .5s ease-out forwards;max-width:calc(100vw - 32px)}
+.show{position:fixed;inset:0;z-index:55;background:var(--night);color:#ECE8DF;display:flex;flex-direction:column;
+  padding:max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px))}
+.show .art{flex:1;display:grid;place-items:center;min-height:0}
+.show .art svg{width:min(94vw,1000px);height:auto;max-height:58vh}
+.show .cap{font-family:var(--display);font-size:clamp(1.6rem,3.6vw,3rem);text-align:center;text-wrap:balance;max-width:34ch;margin:0 auto;min-height:3em}
+.show .ctl{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
+.show .btn.ghost{color:#ECE8DF;border-color:#3A4458}
+.show .dots{display:flex;gap:6px}
+.show .dots i{width:10px;height:10px;border-radius:50%;background:#3A4458}
+.show .dots i.on{background:#E3B252}
+.cardwall{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.ccard{background:var(--panel);border:2px solid var(--gold);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ccard h4{margin:0;font-family:var(--display);font-weight:400;font-size:1.4rem}
+.ccard .src{font-size:.85rem;color:var(--muted)}
+.pending{border:1px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+</style>
+
+<div class="wrap" id="app"></div>
+<div id="layer"></div>
+
+<script>
+/* ================= settings ================= */
+const TEACHER_CODE = "5787";
+const KEY = "sealed-scroll-m1-v2";
+const MC_KEY = "sealed-scroll-control-v1";
+const IS_CONTROL = location.hash === "#control";
+
+const ROLES = [
+  ["Scroll Reader","Leads the scene in Chamber 3."],
+  ["Map Keeper","Leads the map in Chamber 4."],
+  ["Timekeeper","Leads the timeline in Chamber 1."],
+  ["Seal Keeper","Leads the lock in Chamber 2."]
+];
+const CHAMBERS = [
+  {n:"The Archive"},{n:"The Ruined Gate"},{n:"The Lock of Seventy"},{n:"The King Who Bowed"},{n:"The Broken Empire"},{n:"The Crown Passes"}
+];
+const DRIVER_ROLE = {1:2, 2:3, 3:0, 4:1};
+const CHECK_CODES = {1:"KORESH", 2:"SHIVIM", 3:"SHIMON", 4:"ANTIOCH", 5:"CHANUKAH"};
+const GATHER_CODES = {1:"ZERUBAVEL", 2:"ALEXANDRIA"};
+const KINGDOMS = ["Bavel","Persia","Alexander of Greece","The Ptolemies of Egypt","The Seleucids of Syria"];
+
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function speak(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(String(t).replace(/[֐-׿]+/g," ")); u.rate=.92; u.lang="en-US"; speechSynthesis.speak(u);}catch(e){} }
+const ICON_WALK = `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="27" cy="8" r="5" fill="var(--gold)"/><path d="M24 16 L18 30 L24 32 L22 46 M24 16 L30 28 L38 30 M24 16 L16 22 L12 30 M18 30 L10 44" stroke="var(--gold)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICON_SPEAK = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10 H40 V32 H22 L12 40 V32 H8 Z" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linejoin="round"/><path d="M16 18 H32 M16 25 H27" stroke="var(--gold)" stroke-width="3.5" stroke-linecap="round"/></svg>`;
+const ICON_SCREEN = `<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="26" rx="3" fill="none" stroke="var(--gold)" stroke-width="4"/><path d="M18 42 H30 M24 34 V42" stroke="var(--gold)" stroke-width="4" stroke-linecap="round"/></svg>`;
+function action(icon, title, body){ return `<div class="action">${icon}<div><h4>${esc(title)}</h4>${body}</div></div>`; }
+
+/* ================= scene art (shared by tablets and big screen) ================= */
+const ART = {
+  door: (cap) => `<svg viewBox="0 0 400 260"><rect x="0" y="0" width="400" height="260" fill="#151B2A"/>
+     <rect x="110" y="40" width="180" height="200" fill="#F2B04A" opacity=".85"/>
+     <rect x="96" y="28" width="208" height="14" fill="#7E7462"/><rect x="96" y="28" width="14" height="212" fill="#7E7462"/><rect x="290" y="28" width="14" height="212" fill="#7E7462"/>
+     <g class="a-rise"><rect x="110" y="42" width="180" height="198" fill="#9C927C"/>${[0,1,2,3].map(r=>`<line x1="110" x2="290" y1="${82+r*40}" y2="${82+r*40}" stroke="#7E7462" stroke-width="3"/>`).join("")}</g>
+     <rect x="0" y="240" width="400" height="20" fill="#232C40"/></svg>`,
+  gate: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
+     <path d="M120 240 V110 A80 80 0 0 1 280 110 V240 Z" fill="#F2B04A" opacity=".9"/>
+     <path d="M90 240 V105 A110 110 0 0 1 310 105 V240 H280 V110 A80 80 0 0 0 120 110 V240 Z" fill="#7E7462"/>
+     <g class="a-leafL"><path d="M120 240 V110 A80 80 0 0 1 200 30 V240 Z" fill="#5C4A2E"/><circle cx="185" cy="150" r="5" fill="#E3B252"/></g>
+     <g class="a-leafR"><path d="M200 240 V30 A80 80 0 0 1 280 110 V240 Z" fill="#5C4A2E"/><circle cx="215" cy="150" r="5" fill="#E3B252"/></g>
+     <rect y="240" width="400" height="20" fill="#232C40"/></svg>`,
+  lock: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
+     <path class="a-shackle" d="M160 120 V80 A40 40 0 0 1 240 80 V120" fill="none" stroke="#B9AF9A" stroke-width="18"/>
+     <rect x="135" y="115" width="130" height="105" rx="14" fill="#E3B252"/>
+     <text x="200" y="185" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="44" fill="#151B2A">70</text></svg>`,
+  dawn: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/><rect class="a-sky" width="400" height="260" fill="#3A3F63"/>
+     <circle class="a-sun" cx="200" cy="190" r="46" fill="#F2B04A"/>
+     <path d="M0 190 Q80 150 160 185 T320 175 T400 185 V260 H0 Z" fill="#232C40"/>
+     <g class="a-walk"><circle cx="40" cy="200" r="5" fill="#F2B04A"/><path d="M40 196 L40 186" stroke="#E3B252" stroke-width="3"/><circle cx="58" cy="203" r="4" fill="#F2B04A"/><circle cx="24" cy="203" r="4" fill="#F2B04A"/></g></svg>`,
+  split: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
+     <g class="a-splitL"><path d="M200 40 A90 90 0 0 0 200 220 Z" fill="#9C927C"/><text x="160" y="135" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="16" font-weight="700" fill="#151B2A">Egypt</text></g>
+     <g class="a-splitR"><path d="M200 40 A90 90 0 0 1 200 220 Z" fill="#B9AF9A"/><text x="240" y="135" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="16" font-weight="700" fill="#151B2A">Syria</text></g>
+     <path d="M200 40 L190 90 L210 130 L192 175 L200 220" stroke="#151B2A" stroke-width="4" fill="none"/></svg>`,
+  seal: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
+     <rect class="a-unroll" x="50" y="95" width="300" height="70" rx="6" fill="#F2E5C6"/>
+     <g class="a-crackL"><path d="M200 70 A60 60 0 0 0 200 190 L188 150 L206 120 Z" fill="#9B2D3A"/></g>
+     <g class="a-crackR"><path d="M200 70 A60 60 0 0 1 200 190 L188 150 L206 120 Z" fill="#B23A48"/></g></svg>`,
+  glow: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
+     <rect x="40" y="105" width="320" height="50" rx="6" fill="#F2E5C6" opacity=".25"/>
+     ${[0,1,2,3,4,5].map(i=>`<circle cx="${75+i*50}" cy="130" r="17" fill="${i===0?"#3A3F63":i===1?"#9B2D3A":"#232C40"}" stroke="#E3B252" stroke-width="2" ${i===1?'class="a-glow"':""}/><text x="${75+i*50}" y="136" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="15" fill="#F2E5C6">${i+1}</text>`).join("")}</svg>`,
+  archive: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     ${[0,1,2].map(r=>`<rect x="40" y="${70+r*110}" width="720" height="10" fill="#232C40"/>`+[...Array(14)].map((_,k)=>`<rect x="${50+k*50}" y="${20+r*110}" width="${18+(k*7)%14}" height="50" fill="#1A2233"/>`).join("")).join("")}
+     <circle cx="400" cy="300" r="120" fill="#F2B04A" opacity=".12" class="a-glow"/>
+     <rect x="385" y="270" width="30" height="45" rx="6" fill="#E3B252"/><path class="a-flicker" d="M400 278 C392 290 396 300 400 304 C404 300 408 290 400 278Z" fill="#FFF3D1"/></svg>`,
+  scroll: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <rect class="a-unroll" x="150" y="170" width="500" height="110" rx="8" fill="#F2E5C6"/>
+     <rect x="128" y="155" width="34" height="140" rx="16" fill="#7E7462"/><rect x="638" y="155" width="34" height="140" rx="16" fill="#7E7462"/>
+     ${[0,1,2,3].map(i=>`<line class="a-fade" style="animation-delay:${1.2+i*.2}s" x1="190" x2="${560-i*40}" y1="${195+i*20}" y2="${195+i*20}" stroke="#9C927C" stroke-width="4"/>`).join("")}</svg>`,
+  seals: (glowFirst) => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <rect x="150" y="170" width="500" height="110" rx="8" fill="#F2E5C6"/>
+     <rect x="128" y="155" width="34" height="140" rx="16" fill="#7E7462"/><rect x="638" y="155" width="34" height="140" rx="16" fill="#7E7462"/>
+     ${[0,1,2,3,4,5].map(i=>`<g class="a-pop" style="animation-delay:${.3+i*.45}s"><circle cx="${215+i*74}" cy="225" r="26" fill="#9B2D3A" stroke="#E3B252" stroke-width="3" ${glowFirst&&i===0?'class="a-glow"':""}/><text x="${215+i*74}" y="234" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="24" fill="#F2E5C6">${i+1}</text></g>`).join("")}</svg>`,
+  question: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <circle cx="400" cy="210" r="90" fill="#9B2D3A" stroke="#E3B252" stroke-width="5" class="a-glow"/>
+     <text x="400" y="240" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="90" fill="#F2E5C6">1</text></svg>`,
+  talk: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <path d="M230 110 H570 V300 H400 L320 370 V300 H230 Z" fill="none" stroke="#E3B252" stroke-width="10" stroke-linejoin="round" class="a-glow"/>
+     <text x="400" y="250" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="120" fill="#F2E5C6">?</text></svg>`,
+  how: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <g class="a-pop" style="animation-delay:.2s"><rect x="110" y="140" width="140" height="190" rx="14" fill="none" stroke="#E3B252" stroke-width="8"/><text x="180" y="380" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="26" fill="#F2E5C6">your tablet</text></g>
+     <g class="a-pop" style="animation-delay:1s"><circle cx="400" cy="170" r="22" fill="#E3B252"/><path d="M400 195 L385 250 L400 255 L392 320 M400 195 L420 240 L445 245 M385 250 L365 315" stroke="#E3B252" stroke-width="10" fill="none" stroke-linecap="round"/><text x="400" y="380" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="26" fill="#F2E5C6">stations in the room</text></g>
+     <g class="a-pop" style="animation-delay:1.8s"><rect x="560" y="150" width="170" height="110" rx="8" fill="none" stroke="#E3B252" stroke-width="8"/><path d="M620 300 H670 M645 260 V300" stroke="#E3B252" stroke-width="8"/><text x="645" y="380" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="26" fill="#F2E5C6">check in here</text></g></svg>`,
+  fire: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <rect x="280" y="190" width="240" height="160" fill="#7E7462"/><rect x="340" y="120" width="120" height="70" fill="#7E7462"/>
+     ${[0,1,2,3,4].map(i=>`<path class="a-flicker" style="animation-delay:${i*.1}s" d="M${300+i*48} 200 C${285+i*48} 150 ${320+i*48} 140 ${305+i*48} 100 C${345+i*48} 140 ${340+i*48} 170 ${320+i*48} 200Z" fill="#F2B04A" opacity=".9"/>`).join("")}
+     <rect y="350" width="800" height="100" fill="#1A2233"/></svg>`,
+  return: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <path d="M0 330 Q400 280 800 320 V450 H0Z" fill="#1A2233"/>
+     <rect x="640" y="210" width="110" height="90" fill="#7E7462"/><text x="695" y="330" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="22" fill="#F2E5C6">Yerushalayim</text>
+     <text x="80" y="290" font-family="Atkinson Hyperlegible, sans-serif" font-size="22" fill="#F2E5C6">Bavel</text>
+     <g class="a-walk" style="animation-duration:6s">${[0,1,2,3,4,5].map(i=>`<circle cx="${110+i*26}" cy="${305-(i%2)*6}" r="9" fill="#E3B252"/>`).join("")}</g></svg>`,
+  seventy: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     <text x="180" y="230" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="64" fill="#B9AF9A">3338</text>
+     <text x="620" y="230" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="64" fill="#E3B252" class="a-fade" style="animation-delay:1.4s">3408</text>
+     <path d="M290 210 H510" stroke="#E3B252" stroke-width="6" class="a-fade" style="animation-delay:.6s"/><path d="M495 195 L515 210 L495 225" stroke="#E3B252" stroke-width="6" fill="none" class="a-fade" style="animation-delay:.6s"/>
+     <text x="400" y="320" text-anchor="middle" font-family="Frank Ruhl Libre, serif" font-size="70" fill="#F2E5C6" class="a-fade" style="animation-delay:2s">שִׁבְעִים</text></svg>`,
+  crowns: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     ${["Bavel","Persia","Alexander","Ptolemies","Seleucids"].map((k,i)=>`<g class="a-pop" style="animation-delay:${.3+i*.5}s"><path d="M${70+i*140} 250 L${78+i*140} 180 L${108+i*140} 212 L${130+i*140} 165 L${152+i*140} 212 L${182+i*140} 180 L${190+i*140} 250 Z" fill="#E3B252"/><text x="${130+i*140}" y="290" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="22" fill="#F2E5C6">${k}</text></g>`).join("")}</svg>`
+};
+function bigArt(name, arg){ const a = ART[name]; return a ? a(arg) : ""; }
+
+/* Short transition scene on a tablet. Plays, then calls cb. Tap to skip. */
+function playScene(name, caption, cb){
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const el = document.createElement("div");
+  el.className = "scene"; el.setAttribute("role","dialog"); el.setAttribute("aria-label", caption);
+  el.innerHTML = `${ART[name]()}<p class="cap">${esc(caption)}</p><p class="skip">Tap to continue</p>`;
+  document.body.appendChild(el);
+  let done = false;
+  const finish = () => { if(done) return; done = true; el.remove(); cb && cb(); };
+  el.addEventListener("click", finish);
+  setTimeout(finish, reduce ? 900 : 2600);
+}
+
+/* ================= map (tablet + printable reference) ================= */
+function mapSVG(opts){
+  const pl = (opts && opts.place) || {}, tagged = Object.values(pl), interactive = opts && opts.interactive;
+  const reg = (id, d) => `<path class="region ${tagged.includes(id)?"tagged":""}" d="${d}" ${interactive?`data-act="region" data-r="${id}"`:""}><title>${id}</title></path>`;
+  return `<svg viewBox="0 0 600 380" role="img" aria-label="Map of the lands around Eretz Yisrael">
+     <rect width="600" height="380" fill="var(--land)"/>
+     <path d="M0,108 L240,104 L258,165 L264,250 L238,284 L0,284 Z" fill="var(--sea)"/>
+     <text class="seatext" x="110" y="196" text-anchor="middle">The Great Sea</text>
+     <text class="seatext" x="110" y="214" text-anchor="middle">(Mediterranean)</text>
+     ${reg("greece","M14,14 L172,14 L182,92 L60,98 L14,82 Z")}
+     ${reg("syria","M196,30 L420,30 L428,158 L312,162 L262,168 L252,104 L236,52 Z")}
+     ${reg("israel","M262,170 L312,164 L318,254 L292,298 L262,290 L268,236 Z")}
+     ${reg("egypt","M30,290 L236,290 L256,300 L270,368 L30,368 Z")}
+     ${reg("persia","M430,30 L586,30 L586,368 L334,368 L322,256 L314,164 L430,160 Z")}
+     <text class="maptext" x="96" y="56" text-anchor="middle">Greece &amp; Macedonia</text>
+     <text class="maptext" x="330" y="100" text-anchor="middle">Syria</text>
+     <text class="maptext" x="290" y="224" text-anchor="middle">Eretz</text>
+     <text class="maptext" x="290" y="240" text-anchor="middle">Yisrael</text>
+     <text class="maptext" x="150" y="334" text-anchor="middle">Egypt</text>
+     <text class="maptext" x="470" y="210" text-anchor="middle">Bavel &amp; Persia</text>
+     <text class="seatext" x="590" y="374" text-anchor="end" font-size="11">Simplified map, not to scale</text></svg>`;
+}
+const bookSVG = (title, sub) => `<svg viewBox="0 0 300 190" aria-hidden="true">
+   <path class="cover" d="M150 30 C110 10 50 12 14 24 V176 C50 164 110 162 150 182 C190 162 250 164 286 176 V24 C250 12 190 10 150 30 Z" fill="var(--gold-soft)" stroke="var(--gold)" stroke-width="3"/>
+   <path d="M150 30 V182" stroke="var(--gold)" stroke-width="3"/>
+   <path d="M34 50 C70 40 110 42 134 52 M34 70 C70 60 110 62 134 72 M166 52 C190 42 230 40 266 50 M166 72 C190 62 230 60 266 70" stroke="var(--line)" stroke-width="3" fill="none"/>
+   <rect x="45" y="92" width="210" height="64" rx="8" fill="var(--panel)" stroke="var(--gold)" stroke-width="2"/>
+   <text x="150" y="121" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="22" fill="var(--ink)">${title}</text>
+   <text x="150" y="145" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="14" fill="var(--muted)">${sub}</text></svg>`;
+
+/* ================= content ================= */
+const STEPS = [
+ {id:"setup", ch:0, kind:"setup"},
+ {id:"intro", ch:0, kind:"intro",
+  key:"Before groups start, play the intro on the big screen (#control).", teaches:"Frames the unit; roles; how check-ins work."},
+
+ /* ---------- Chamber 1 ---------- */
+ {id:"c1-ev", ch:1, kind:"evidence", enter:["door","Chamber 1: The Ruined Gate"], eyebrow:"Chamber 1 · The Ruined Gate",
+  title:"A broken gate, and six sealed notes",
+  lead:"Before the Greeks ever came, something happened to the Beis Hamikdash. Each note is addressed to one of you. Open your own note, read it to yourself, and then tell the group what it says in your own words.",
+  cards:[
+   {t:"A House for Hashem", b:"Shlomo HaMelech built the first Beis Hamikdash in Yerushalayim. It stood for 410 years."},
+   {t:"The Fire", y:"3338", tts:true, b:"In the year 3338, Nevuchadnetzar, king of Bavel (Babylonia), destroyed the first Beis Hamikdash. Most of the Jews were taken away to Bavel. This is called Galus Bavel, the Babylonian exile."},
+   {t:"A New Empire", b:"The kingdom of Persia conquered Bavel. Koresh (Cyrus), king of Persia, let the Jews go home and rebuild. 42,360 Jews went up to Yerushalayim with Zerubavel. They started by rebuilding the Mizbeach."},
+   {t:"Work Stops", b:"Enemies of the Jews in Eretz Yisrael, the Kutim, complained to the next Persian king: Achashverosh, the king of the Purim story. He stopped the building."},
+   {t:"Building Again", y:"3412", b:"After the Purim story, Achashverosh died. His son Daryavesh (Darius), the son of Esther HaMalkah, let the Jews build again. The Second Beis Hamikdash was finished in 3412."},
+   {t:"Something Is Missing", aloud:true, b:"The Second Beis Hamikdash was holy, but some things were missing, like the Aron. Over its eastern gate was a picture of Shushan, the Persian capital, to remind the Jews that Persia ruled them."}
+  ],
+  key:"No answer. Every card opened; listen for each child explaining their own card.",
+  teaches:"First Beis Hamikdash, Galus Bavel, Persian return, the Purim pause, the Second Beis Hamikdash."},
+ {id:"c1-human", ch:1, kind:"room", eyebrow:"Chamber 1 · The Ruined Gate", title:"The Human Timeline",
+  body:()=>action(ICON_WALK,"Get up and become the timeline",`<ol>
+     <li>Take your group's envelope of five Timeline Cards from the teacher's table.</li>
+     <li>Hand them out. Everyone holds at least one card. ${N()<5?"Some of you will hold two.":""}</li>
+     <li>Stand in a line in the order the events happened. The oldest event goes at the left end.</li>
+     <li>Check each other: does everyone agree with the line?</li></ol>
+     <p style="margin-top:8px">When your line is ready, come back and tap the cards on the tablet in the same order.</p>`),
+  cta:"Our line is ready", key:"Physical: group stands in order. Needs printed Timeline Cards (one envelope per group).", teaches:"Movement version of the sequencing task."},
+ {id:"c1-order", ch:1, kind:"order", out:["gate","The gate swings open"], eyebrow:"Chamber 1 · The Ruined Gate",
+  title:"Lock in your timeline",
+  lead:"Tap the events in the same order as your line. Tap a placed event to take it back.",
+  items:[
+   ["D","Achashverosh stops the building"],
+   ["A","Shlomo HaMelech builds the first Beis Hamikdash"],
+   ["E","The Second Beis Hamikdash is finished"],
+   ["B","Bavel destroys the Beis Hamikdash; Galus Bavel begins"],
+   ["C","Koresh of Persia lets the Jews return"]],
+  answer:["A","B","C","D","E"],
+  hints:["Start with the oldest event. Which note has no king of Bavel or Persia in it yet?","The Purim king, Achashverosh, comes after Koresh and before the building is finished."],
+  win:"The gate swings open. Who ruled the Yidden when the Second Beis Hamikdash was built? The kings of Persia.",
+  satchel:["Crown: Bavel destroyed the first Beis Hamikdash (3338)","Crown: Persia let the Jews return; the Second Beis Hamikdash was finished in 3412"],
+  key:"Shlomo builds → Bavel destroys → Koresh lets them return → Achashverosh stops building → Second Beis Hamikdash finished.",
+  teaches:"Sequence from the first Beis Hamikdash to the second, with Persia ruling at the time of building."},
+ {id:"c1-say", ch:1, kind:"say", prompt:"Explain to your group: why were the Jews in Bavel, and which king let them come home?",
+  key:"Bavel destroyed the Beis Hamikdash and exiled them; Koresh of Persia let them return.", teaches:"Oral check."},
+ {id:"c1-check", ch:1, kind:"checkin", key:"Runner checks in at Mission Control with KORESH.", teaches:"Movement + class tracking."},
+
+ /* ---------- Chamber 2 ---------- */
+ {id:"c2-ev", ch:2, kind:"evidence", enter:["door","Chamber 2: The Lock of Seventy"], eyebrow:"Chamber 2 · The Lock of Seventy",
+  title:"The Wall of Yirmiyahu",
+  pre:()=>action(ICON_WALK,"Walk to the Wall of Yirmiyahu",`<p>Somewhere in the room is a poster called <b>The Wall of Yirmiyahu</b>. Go there together. Yirmiyahu HaNavi wrote these words while the Jews were going into exile. Each of you finds one Hebrew word on the poster you can read, and shows the group what it means.</p>`),
+  lead:"The same words are on your tablet. Tap any word to see what it means.",
+  cards:[
+   {t:"Yirmiyahu's promise", src:"Yirmiyahu 29:10",
+    he:[["כִּי","because"],["לְפִי","when"],["מְלֹאת","are completed"],["לְבָבֶל","for Bavel"],["שִׁבְעִים","seventy"],["שָׁנָה","years"],["אֶפְקֹד","I will remember"],["אֶתְכֶם","you"],["...","(words left out)"],["לְהָשִׁיב","to bring back"],["אֶתְכֶם","you"],["אֶל","to"],["הַמָּקוֹם","the place"],["הַזֶּה","this"]],
+    tts:true, b:"In English: When seventy years are completed for Bavel, I will remember you … and bring you back to this place."},
+   {t:"The year of the fire", y:"3338", b:"The first Beis Hamikdash was destroyed in the year 3338. That is when Galus Bavel began."}
+  ],
+  key:"No answer: both cards opened; the group visited the poster.", teaches:"Reading the pasuk of the 70-year promise in the original."},
+ {id:"c2-lock", ch:2, kind:"lock2", out:["lock","The Lock of Seventy opens"], eyebrow:"Chamber 2 · The Lock of Seventy",
+  title:"Two dials on the lock",
+  parts:[
+   {q:"Dial 1. How many years did Hashem promise, through Yirmiyahu, that Galus Bavel would last?", a:"70", len:2,
+    hints:["Look at the Wall of Yirmiyahu for the number word.","שִׁבְעִים means seventy."],
+    wrong:"That is not the number in the pasuk. Find the word that means a number."},
+   {q:"Dial 2. Galus Bavel began in 3338. If the promise came true exactly, in what year could the Jews start building the Beis Hamikdash again?", a:"3408", len:4,
+    hints:["Start at the year of the fire and add the number of years in the promise.","3338 + 70 = ?"],
+    wrong:"Not that year. Add the years of the promise to 3338.", special:{"3412":"3412 is the year the building was finished. The question asks when building could start again."}}
+  ],
+  win:"3338 + 70 = 3408. And that is exactly what happened: in 3408, King Daryavesh let the Jews start building again. Hashem's promise through Yirmiyahu came true to the year.",
+  satchel:["Seventy years: Galus Bavel began 3338; building began again 3408, as Yirmiyahu promised"],
+  key:"Dial 1: 70. Dial 2: 3408.", teaches:"The 70-year promise and its exact fulfillment."},
+ {id:"c2-say", ch:2, kind:"say", prompt:"Explain to your group: what did Yirmiyahu promise, and how do the years show that the promise came true?",
+  key:"70 years of exile; 3338 + 70 = 3408, the year building began again.", teaches:"Oral check."},
+ {id:"c2-check", ch:2, kind:"checkin", key:"Runner checks in with SHIVIM.", teaches:"Movement + class tracking."},
+ {id:"g1", ch:2, kind:"gather", n:1,
+  flash:[["What does שִׁבְעִים mean?","Seventy."],["Who let the Jews go home from Bavel?","Koresh, king of Persia."],["What was missing in the Second Beis Hamikdash?","The Aron, among other things."]],
+  key:"Continue code on the big screen during Gathering 1: ZERUBAVEL.", teaches:"Whole-class meeting point."},
+
+ /* ---------- Chamber 3 ---------- */
+ {id:"c3-ev", ch:3, kind:"evidence", enter:["door","Chamber 3: The King Who Bowed"], eyebrow:"Chamber 3 · The King Who Bowed",
+  title:"A Greek king marches on Yerushalayim",
+  lead:"For many years the Second Beis Hamikdash stood under Persian rule. Then a young king from the west changed the whole world.",
+  cards:[
+   {t:"A Conqueror Arrives", y:"3448", b:"Alexander of Macedonia, a Greek king, conquered the whole Persian empire. Persian rule over Eretz Yisrael was over."},
+   {t:"A Lie", aloud:true, b:"The Kutim told Alexander that the Jews were rebels. They asked him to destroy the Beis Hamikdash. Alexander marched toward Yerushalayim."}
+  ],
+  key:"No answer: both scenes opened.", teaches:"Persian rule ends with Alexander (3448)."},
+ {id:"c3-act", ch:3, kind:"act", enter:["dawn","Dawn at Antipatris"], eyebrow:"Chamber 3 · The King Who Bowed",
+  title:"Act it out: dawn at Antipatris",
+  key:"Physical: short act-out. Needs the paper torch and the two role signs.", teaches:"Gemara Yoma 69a: the night walk, the bow, Alexander's vision."},
+ {id:"c3-choice", ch:3, kind:"choice", eyebrow:"Chamber 3 · The King Who Bowed",
+  title:"You are Shimon HaTzaddik",
+  lead:"Another account says Alexander toured the Beis Hamikdash. He offered gold to put up a statue of himself there, so he would be remembered forever. Talk it over: what should Shimon HaTzaddik answer?",
+  options:[
+   ["a","Yes. Alexander saved the Beis Hamikdash, so we owe him this.", false, "A statue (a carved image) may not be made, and certainly not in the Beis Hamikdash. Try again."],
+   ["b","No, and send him away quickly so he can't ask again.", false, "Shimon HaTzaddik was thankful to Alexander, and an angry answer could put the Jews in danger. Is there a way to honor him without breaking the Torah?"],
+   ["c","Give the gold to the poor, and name the baby boys born this year Alexander to honor him.", true, "That is what Shimon HaTzaddik suggested. It keeps the Torah and shows real thanks. That's why Alexander became a Jewish name."]],
+  hints:["Look for an answer that keeps the Torah and also shows thanks.","Two answers break something: one breaks a mitzvah, one is ungrateful."],
+  key:"C: give the gold to the poor and name baby boys Alexander.", teaches:"Gratitude without compromising halacha."},
+ {id:"c3-sort", ch:3, kind:"sort", eyebrow:"Chamber 3 · Source Detective",
+  title:"Which book tells which part?",
+  lead:"Historians always ask: where does this detail come from? Read the archive note, then tap a detail and tap the book it belongs in.",
+  note:{to:1, t:"Archive note", b:"The Gemara (Yoma 69a) tells about the Kutim's lie, the night walk with torches, and Alexander bowing to Shimon HaTzaddik. The Gemara's account stops there. The tour of the Beis Hamikdash, the statue and the name Alexander come from a later history book called Sefer Yosippon."},
+  bins:[["G","Gemara","Yoma 69a"],["Y","Sefer Yosippon","a later history book"]],
+  items:[["k","The Kutim tell Alexander the Jews are rebels","G"],["w","Shimon HaTzaddik walks all night with torches","G"],["v","Alexander bows and tells about the face he sees in battle","G"],["s","Alexander asks for a statue in the Beis Hamikdash","Y"],["n","Baby boys are named Alexander","Y"]],
+  hints:["Only one person in your group has the archive note. Ask them to read it again, slowly.","Everything up to and including the bowing is in the Gemara."],
+  win:"Sources sorted. Now you know which parts come from the Gemara and which from a later book.",
+  satchel:["Crown: Alexander of Greece ended Persian rule (3448)","Source: Alexander bowing is in the Gemara, Yoma 69a; the name Alexander comes from Sefer Yosippon"],
+  key:"Gemara: Kutim, night walk, bowing. Yosippon: statue, name Alexander.", teaches:"A Torah source vs. a later historical work."},
+ {id:"c3-say", ch:3, kind:"say", prompt:"Explain to your group: why did Alexander bow, and why does it matter which book a detail comes from?",
+  key:"He saw Shimon HaTzaddik's face leading him in battle. The source tells us how old and how reliable a detail is.", teaches:"Oral check."},
+ {id:"c3-check", ch:3, kind:"checkin", key:"Runner checks in with SHIMON.", teaches:"Movement + class tracking."},
+
+ /* ---------- Chamber 4 ---------- */
+ {id:"c4-ev", ch:4, kind:"evidence", enter:["split","Chamber 4: The Broken Empire"], eyebrow:"Chamber 4 · The Broken Empire",
+  title:"One empire breaks apart",
+  lead:"Alexander's empire did not last. Open your notes and remember the details: you will need them for the map.",
+  cards:[
+   {t:"The Empire Splits", b:"After Alexander died, his empire was divided among his generals. Two of their kingdoms matter for our story."},
+   {t:"The Kingdom in the South", tts:true, b:"One general, Talmai (Ptolemy), ruled Egypt. His family of kings are called the Ptolemies. Their capital was Alexandria, on the coast of Egypt."},
+   {t:"The Kingdom in the North", b:"Another general, Seleucus, ruled Syria and the lands east of it, as far as Persia. His family of kings are called the Seleucids, or Syrian-Greeks. Their capital was Antioch, in Syria."}
+  ],
+  key:"No answer: all three cards opened.", teaches:"Ptolemies in Egypt, Seleucids in Syria."},
+ {id:"c4-map", ch:4, kind:"map", eyebrow:"Chamber 4 · The Broken Empire",
+  title:"Pin the kingdoms on the map",
+  lead:"Tap a label, then tap the land it belongs on.",
+  labels:[["P","Kingdom of the Ptolemies","egypt"],["S","Kingdom of the Seleucids","syria"],["L","The land caught between them","israel"]],
+  hints:["Egypt is in the south-west corner of the map. Syria is north of Eretz Yisrael.","The land between Egypt and Syria is the narrow strip along the sea."],
+  win:"Look at the map: Eretz Yisrael sits right between the two kingdoms. Any army going from Egypt to Syria had to pass through it.",
+  key:"Ptolemies → Egypt. Seleucids → Syria. Land between → Eretz Yisrael.", teaches:"Eretz Yisrael as the land between rival kingdoms."},
+ {id:"c4-ev2", ch:4, kind:"evidence", eyebrow:"Chamber 4 · The Broken Empire",
+  title:"Who ruled first?",
+  lead:"Three more notes tell what happened to Eretz Yisrael between the two kingdoms.",
+  cards:[
+   {t:"The King's Library", b:"Talmai II (Ptolemy II), king of Egypt, loved books. He brought 72 sages to Alexandria, put each one in a separate room, and told each to translate the Torah into Greek. With help from Hashem, every one of them made exactly the same careful changes.", src:"Gemara, Megillah 9a"},
+   {t:"A Hard Day", aloud:true, b:"Our Sages said the day the Torah was put into Greek was as hard for the Jews as the day the Golden Calf was made. A translation cannot hold everything the Torah means, and others could misunderstand it.", src:"Maseches Sofrim 1:7"},
+   {t:"The Crown Changes Hands", y:"3562", b:"For 114 years, the Ptolemies of Egypt ruled Eretz Yisrael. Then Antiochus III, a Seleucid king, went to war against the Ptolemies and won. In 3562, Eretz Yisrael passed to the Seleucids."}
+  ],
+  key:"No answer: all three cards opened.", teaches:"Ptolemaic rule, the Greek translation, the Seleucid takeover in 3562."},
+ {id:"c4-choice", ch:4, kind:"choice", eyebrow:"Chamber 4 · The Broken Empire",
+  title:"Solve the mystery of the two kingdoms",
+  lead:"Which kingdom ruled Eretz Yisrael first after Alexander, and how did the other one take over?",
+  options:[
+   ["a","The Seleucids ruled first. Then the Ptolemies took over.", false, "Check the note called The Crown Changes Hands. Who ruled for 114 years?"],
+   ["b","The Ptolemies of Egypt ruled first. Then Antiochus III of the Seleucids won it in 3562.", true, "Right. First Egypt, then Syria. By the time of the Chanukah story, the Seleucids of Syria were in charge."],
+   ["c","Persia kept ruling until the Chanukah story.", false, "Persian rule ended when Alexander conquered the Persian empire in 3448. Check your Satchel."]],
+  hints:["The answer is in the note called The Crown Changes Hands.","Look for the number 114 and the name Antiochus III."],
+  satchel:["Crown: the Ptolemies of Egypt ruled for 114 years","Crown: the Seleucids of Syria took Eretz Yisrael in 3562 (Antiochus III)"],
+  key:"B: Ptolemies first; Antiochus III (Seleucid) took it in 3562.", teaches:"How Eretz Yisrael came under Seleucid rule."},
+ {id:"c4-say", ch:4, kind:"say", withMap:true, prompt:"Walk to the big map on the wall together. Point to Egypt, Syria and Eretz Yisrael, and explain to your group why both kingdoms wanted Eretz Yisrael.",
+  key:"It lies between Egypt and Syria, on the road between them.", teaches:"Oral check at the wall map."},
+ {id:"c4-check", ch:4, kind:"checkin", key:"Runner checks in with ANTIOCH.", teaches:"Movement + class tracking."},
+ {id:"g2", ch:4, kind:"gather", n:2,
+  flash:[["Who were the Ptolemies?","The Greek kings of Egypt, capital Alexandria."],["Who were the Seleucids?","The Greek kings of Syria, capital Antioch."],["Who won Eretz Yisrael in 3562?","Antiochus III, a Seleucid king."]],
+  key:"Continue code on the big screen during Gathering 2: ALEXANDRIA.", teaches:"Whole-class meeting point."},
+
+ /* ---------- Chamber 5 ---------- */
+ {id:"c5-hunt", ch:5, kind:"hunt", enter:["door","Chamber 5: The Crown Passes"], out:["seal","The first seal breaks open"], eyebrow:"Chamber 5 · The Crown Passes",
+  title:"The crown hunt",
+  order:["BAV","PER","ALX","PTO","SEL"],
+  crowns:{BAV:["Bavel","ח"],PER:["Persia","נ"],ALX:["Alexander","ו"],PTO:["The Ptolemies","כ"],SEL:["The Seleucids","ה"],ROM:["Rome","ש"]},
+  hints:["Open your Satchel. The crowns are listed there in the order you found them.","Bavel, then Persia, then a Greek king, then the two kingdoms: the one that ruled first, then the one that took over."],
+  key:"Bavel ח → Persia נ → Alexander ו → Ptolemies כ → Seleucids ה = חנוכה. Rome (ש) is a decoy.", teaches:"The full sequence of rulers, the lesson's main goal."},
+ {id:"c5-storm", ch:5, kind:"evidence", eyebrow:"Seal 1 is open",
+  title:"Inside the first seal: before the storm",
+  lead:"The first part of the scroll is open. It shows Jewish life under the early Seleucid kings. Read your notes, and look for one thing that is about to change.",
+  cards:[
+   {t:"A Righteous Kohen Gadol", b:"The Kohen Gadol was a righteous man named Chonyo (Yochanan). The avodah in the Beis Hamikdash went on as always."},
+   {t:"A Dangerous Attraction", b:"Some Jews loved Greek ways: Greek names, Greek sports and Greek ideas. They were called mityavnim, Hellenists. Many other Jews held on to the Torah."},
+   {t:"A Treasury in Danger", src:"Sefer Chashmonaim II (2 Maccabees), chapter 3", b:"Hellenists told King Seleucus IV that the Beis Hamikdash treasury held great wealth. He sent his officer, Heliodorus, to take it. A frightening horse and rider appeared and struck Heliodorus to the ground, and he left the treasury alone."},
+   {t:"A Clue for Next Time", aloud:true, b:"Bavel, Persia, Alexander and the Ptolemies all ruled Eretz Yisrael, and the Jews did not rebel. Something would have to be very different to make them fight."}
+  ],
+  key:"No answer: all cards opened.", teaches:"Sets up Mission 2: Hellenism and why rule alone did not cause rebellion."},
+ {id:"cliff", ch:5, kind:"cliff", enter:["glow","The second seal begins to glow"], key:"Read the cliffhanger together.", teaches:"Bridge to Mission 2: Antiochus IV."},
+ {id:"exit", ch:5, kind:"exit",
+  qs:[
+   {q:"Who ruled the Yidden when the Second Beis Hamikdash was built?", o:["Bavel","Persia","The Seleucids"], a:1},
+   {q:"Why did Alexander bow to Shimon HaTzaddik?", o:["He was afraid of the Jewish army","He had seen Shimon HaTzaddik's face leading him to victory","Shimon HaTzaddik paid him in gold"], a:1},
+   {q:"How did Eretz Yisrael come under Seleucid rule?", o:["Alexander gave it to them","Antiochus III won it from the Ptolemies","The Jews invited them"], a:1}],
+  key:"Persia; the vision of Shimon HaTzaddik's face; Antiochus III won it from the Ptolemies.", teaches:"Quick individual check, one question per named child."},
+ {id:"end", ch:5, kind:"end", key:"Whole group goes to Mission Control: check in with CHANUKAH and type the Crown Card.", teaches:"Student-created addition to the class wall."}
+];
+
+/* ================= group state ================= */
+function fresh(){return {team:"", names:[], step:0, opened:{}, satchel:[], p:{}, seals:{}, exitAns:{}, done:{}};}
+function load(k){try{const s=JSON.parse(localStorage.getItem(k)); if(s) return s;}catch(e){} return null;}
+function store(k,v){try{localStorage.setItem(k, JSON.stringify(v));}catch(e){}}
+let S = (()=>{const s=load(KEY); return s && Array.isArray(s.names) ? s : fresh();})();
+let frozen = false;
+const save = () => store(KEY, S);
+const N = () => Math.max(1, S.names.length);
+const ix = i => ((i % N()) + N()) % N();
+const nm = i => S.names[ix(i)] || "Investigator";
+const col = i => `var(--s${ix(i)})`;
+const tag = i => `<span class="dot" style="background:${col(i)}"></span>${esc(nm(i))}`;
+const step = () => STEPS[S.step];
+function driverIndex(ch){ return DRIVER_ROLE[ch]!==undefined ? DRIVER_ROLE[ch] % N() : ch % N(); }
+function rolesFor(i){ return ROLES.filter((r,ri)=> ri % N() === i); }
+
+/* ================= group chrome ================= */
+function groupShell(){
+  $("#app").className = "wrap";
+  $("#app").innerHTML = `
+  <header class="top">
+    <h1 class="brand"><small>Chanukah: Unlock the Story</small>The Sealed Scroll</h1>
+    <div class="seals" id="seals" aria-label="Six seals"></div>
+    <div class="tools"><button class="chip-btn" data-act="satchel" id="satchelBtn">Satchel</button></div>
+  </header>
+  <nav class="track" id="track" aria-label="Chambers"></nav>
+  <main class="stage" id="stage" aria-live="polite"></main>
+  <div class="foot"><button data-act="teacher">Teacher</button></div>`;
+}
+function drawChrome(){
+  const st = step();
+  $("#seals").innerHTML = [1,2,3,4,5,6].map(i=>{
+    const open = i===1 && S.done.seal1, active = (i===1 && !open) || (i===2 && S.done.seal1);
+    return `<span class="wax ${open?"open":""} ${active?"active":""}" title="Seal ${i}">${i}</span>`;}).join("");
+  $("#track").innerHTML = CHAMBERS.slice(1).map((c,i)=>{const ch=i+1, cls = st.ch>ch?"done":st.ch===ch?"now":""; return `<div class="stone ${cls}"><b>${ch}</b><span>${c.n}</span></div>`;}).join("");
+  $("#satchelBtn").textContent = `Satchel (${S.satchel.length})`;
+  $("#satchelBtn").hidden = S.step===0;
+}
+
+/* ================= shared widgets ================= */
+function driverLine(ch){
+  if(ch<1 || ch===5) return "";
+  return `<p class="driver">At the screen: ${tag(driverIndex(ch))} · everyone else guides</p>`;
+}
+function hintBlock(hs){
+  const n = S.p.hint||0; hs = hs||[];
+  if(!hs.length) return "";
+  let h = hs.slice(0,n).map((t,i)=>`<div class="hintbox"><b>Hint ${i+1}.</b> ${esc(t)}</div>`).join("");
+  if(n < hs.length) h += `<div><button class="btn ghost" data-act="hint">${n? "Another hint":"Need a hint?"}</button></div>`;
+  return h;
+}
+function ritual(label){
+  const all = S.names.every((_,i)=>S.seals[i]);
+  return `<div class="ritual">
+    <p><b>Seal your answer.</b> Each investigator taps their own seal only if they agree. If someone disagrees, talk it out first.</p>
+    <div class="sealrow">${S.names.map((n,i)=>`<button class="seal ${S.seals[i]?"on":""}" style="color:${col(i)}" data-act="seal" data-i="${i}" aria-pressed="${!!S.seals[i]}"><i><span>${esc(n.charAt(0).toUpperCase())}</span></i><small>${esc(n)}</small></button>`).join("")}</div>
+    <div><button class="btn" data-act="check" ${all?"":"disabled"}>${label||"Check"}</button></div></div>`;
+}
+const winBlock = text => `<div class="feedback ok">${esc(text)}</div><div><button class="btn gold" data-act="next">Continue</button></div>`;
+function cardHTML(c, owner, key){
+  if(!S.opened[key]) return `<button class="card sealed" data-act="open" data-k="${key}"><span class="for">For ${tag(owner)}</span><span class="muted">Sealed note. ${esc(nm(owner))}, tap to open it.</span></button>`;
+  let he = "";
+  if(c.he) he = `<div class="he" lang="he">${c.he.map((w,j)=>`<button data-act="gloss" data-k="${key}" data-j="${j}">${w[0]}</button>`).join("")}</div><div class="gloss" id="gl-${key}">${S.p["g"+key]? esc(S.p["g"+key]) : "Tap a word."}</div>`;
+  return `<article class="card"><span class="for">For ${tag(owner)}</span>${c.aloud?`<span class="aloud-tag">${esc(nm(owner))}: read this one aloud to your group</span>`:""}<h4>${esc(c.t)} ${c.y?`<span class="yr">${c.y}</span>`:""}</h4>${he}<p>${esc(c.b)}</p>${c.src?`<p class="muted" style="font-size:.85rem">Source: ${esc(c.src)}</p>`:""}${c.tts?`<button class="say-btn" data-act="speak" data-text="${esc(c.t+". "+c.b)}">Listen</button>`:""}</article>`;
+}
+const head = st => `<p class="eyebrow">${esc(st.eyebrow)}</p><h2>${esc(st.title)}</h2>${driverLine(st.ch)}`;
+
+/* ================= renderers ================= */
+const R = {};
+R.setup = () => `
+  <p class="eyebrow">Mission 1 · Before the Chanukah Story</p>
+  <h2>Who is on this investigation?</h2>
+  <p class="lead">Give your group a name, then type the first name of each investigator at this device. You need 2, 3 or 4.</p>
+  <div class="field"><label for="team">Group name</label><input id="team" maxlength="24" value="${esc(S.team)}" placeholder="for example: The Modi'in Group"></div>
+  <div class="names">${[0,1,2,3].map(i=>`<div class="field"><label for="nm${i}"><span class="dot" style="background:var(--s${i})"></span> Investigator ${i+1}${i>1?" (optional)":""}</label><input id="nm${i}" maxlength="16" value="${esc(S.names[i]||"")}" autocomplete="off"></div>`).join("")}</div>
+  <p class="feedback no" id="setupErr" hidden>Enter a group name and at least two investigators.</p>
+  <div><button class="btn" data-act="start">Begin the mission</button></div>`;
+
+R.intro = () => `
+  <p class="eyebrow">The Archive</p>
+  <h2>${esc(S.team)}, look at the big screen</h2>
+  <p class="lead">Your teacher will play the opening of the mission on the big screen. Then come back here and meet your roles.</p>
+  <div class="feedback info"><b>Seal 1 asks:</b> Who was ruling the Yidden when the Chanukah story began, and how did they come under that rule?</div>
+  <h3>Your roles</h3>
+  <div class="roles">${S.names.map((n,i)=>`<div class="role"><b>${tag(i)}</b>${rolesFor(i).map(r=>`<span><b>${r[0]}.</b> <span class="muted">${r[1]}</span></span>`).join("")}</div>`).join("")}</div>
+  <h3>How this works</h3>
+  <ul style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px">
+    <li>Every clue is addressed to one of you. Open your own clue, read it, then tell the group what it says.</li>
+    <li>Some missions send you around the room. Walk, don't run.</li>
+    <li>Before any lock opens, every investigator taps their own seal to say "I agree."</li>
+    <li>After each chamber, a runner checks in at Mission Control on the big screen.</li>
+    <li>Hints are free. There is no clock and no score.</li>
+  </ul>
+  <div><button class="btn gold" data-act="next">Enter Chamber 1</button></div>`;
+
+R.evidence = st => {
+  const keys = st.cards.map((c,i)=>st.id+"-"+i);
+  const allOpen = keys.every(k=>S.opened[k]);
+  return `${head(st)}${st.pre?st.pre():""}<p class="lead">${esc(st.lead)}</p>
+    <div class="cards">${st.cards.map((c,i)=>cardHTML(c, i+S.step, keys[i])).join("")}</div>
+    ${allOpen? `<div><button class="btn gold" data-act="next">${st.id==="c5-storm"?"Read the last line of the seal":"Every note is open. Continue"}</button></div>` : `<p class="muted">Open every note to continue (${keys.filter(k=>S.opened[k]).length} of ${keys.length}).</p>`}`;
+};
+
+R.room = st => `${head(st)}${st.body()}<div><button class="btn gold" data-act="next">${esc(st.cta)}</button></div>`;
+
+R.order = st => {
+  const seq = S.p.seq || [], pool = st.items.filter(it=>!seq.includes(it[0]));
+  const label = id => st.items.find(it=>it[0]===id)[1];
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="slots">${st.items.map((_,i)=>`<div class="slot"><span class="n">${i+1}</span>${seq[i]?`<button class="tile" data-act="unplace" data-id="${seq[i]}" ${S.p.solved?"disabled":""}>${esc(label(seq[i]))}</button>`:`<span class="muted">empty</span>`}</div>`).join("")}</div>
+   ${pool.length? `<div class="pool">${pool.map(it=>`<button class="tile" data-act="place" data-id="${it[0]}">${esc(it[1])}</button>`).join("")}</div>`:""}
+   ${S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   ${S.p.solved? winBlock(st.win) : hintBlock(st.hints) + (seq.length===st.items.length? ritual("Check the timeline") : "")}`;
+};
+
+R.lock2 = st => {
+  const pi = S.p.part||0;
+  const pad = () => `<div class="pad">${["1","2","3","4","5","6","7","8","9","0"].map(d=>`<button data-act="digit" data-d="${d}">${d}</button>`).join("")}</div><div class="row"><button class="btn ghost" data-act="digit" data-d="clear">Clear</button></div>`;
+  let h = `${head(st)}`;
+  if(pi>0) h += `<div class="feedback ok">Dial 1 clicks into place: ${esc(st.parts[0].a)} years.</div>`;
+  if(S.p.solved) return h + winBlock(st.win);
+  const part = st.parts[pi], v = S.p.val||"";
+  h += `<p class="part">Dial ${pi+1} of 2</p><p class="lead">${esc(part.q.replace(/^Dial \d\. /,""))}</p>
+    <div class="lock"><div class="dial" aria-label="Lock number">${esc(v)||"&nbsp;"}</div>${pad()}</div>
+    ${S.p.fb?`<div class="feedback no">${esc(S.p.fb)}</div>`:""}${hintBlock(part.hints)}${v.length===part.len? ritual("Turn the dial"):""}`;
+  return h;
+};
+
+R.choice = st => {
+  const pk = S.p.pick, opt = pk? st.options.find(o=>o[0]===pk) : null;
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="choices">${st.options.map(o=>`<button class="choice ${pk===o[0]?"picked":""}" data-act="pick" data-id="${o[0]}" ${S.p.solved?"disabled":""}>${esc(o[1])}</button>`).join("")}</div>
+   ${S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   ${S.p.solved? winBlock(opt[3]) : hintBlock(st.hints) + (pk? ritual("Lock in this answer"):"")}`;
+};
+
+R.sort = st => {
+  const pl = S.p.place||{}, sel = S.p.sel, noteKey = st.id+"-note";
+  const unplaced = st.items.filter(it=>!pl[it[0]]);
+  const binH = b => `<button class="bin ${sel?"armed":""}" data-act="bin" data-b="${b[0]}" aria-label="Put it in ${esc(b[1])}">${bookSVG(b[1], b[2])}<span class="inbook">${st.items.filter(it=>pl[it[0]]===b[0]).map(it=>`<span class="tile" style="cursor:default">${esc(it[1])}</span>`).join("")}</span></button>`;
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="cards">${cardHTML(st.note, st.note.to, noteKey)}</div>
+   ${S.opened[noteKey]? `
+   ${unplaced.length? `<div class="pool">${unplaced.map(it=>`<button class="tile ${sel===it[0]?"sel":""}" data-act="sel" data-id="${it[0]}">${esc(it[1])}</button>`).join("")}</div>`:""}
+   ${sel?`<p class="muted">Now tap a book.</p>`:""}
+   <div class="bins">${st.bins.map(binH).join("")}</div>
+   ${Object.keys(pl).length && !S.p.solved? `<div><button class="btn ghost" data-act="resetsort">Start the sort again</button></div>`:""}
+   ${S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   ${S.p.solved? winBlock(st.win) : hintBlock(st.hints) + (!unplaced.length? ritual("Check the sources"):"")}` : `<p class="muted">The archive note must be opened first.</p>`}`;
+};
+
+R.map = st => {
+  const pl = S.p.place||{}, sel = S.p.sel;
+  const where = {greece:"Greece & Macedonia", egypt:"Egypt", israel:"Eretz Yisrael", syria:"Syria", persia:"Bavel & Persia"};
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="pool">${st.labels.map(l=>`<button class="tile ${sel===l[0]?"sel":""}" data-act="sel" data-id="${l[0]}" ${S.p.solved?"disabled":""}>${esc(l[1])}${pl[l[0]]?` <b>→ ${where[pl[l[0]]]}</b>`:""}</button>`).join("")}</div>
+   <div class="mapbox">${mapSVG({place:pl, interactive:true})}</div>
+   ${Object.keys(pl).length && !S.p.solved? `<div><button class="btn ghost" data-act="resetmap">Clear the map</button></div>`:""}
+   ${S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   ${S.p.solved? winBlock(st.win) : hintBlock(st.hints) + (Object.keys(pl).length===st.labels.length? ritual("Check the map"):"")}`;
+};
+
+R.act = st => {
+  const shimon = 0, alex = 1 % N(), narr = N()>2 ? 2 : 0, extra = N()>3 ? 3 : null;
+  return `${head(st)}
+   ${action(ICON_WALK,"Act it out in the room",`<p>Take the paper torch and the two role signs from the teacher's table. Find a clear space. Read your own lines yourself, out loud.</p>`)}
+   <div class="roles">
+     <div class="role"><b>${tag(shimon)}</b><span>Shimon HaTzaddik, the Kohen Gadol (holds the torch)</span></div>
+     <div class="role"><b>${tag(alex)}</b><span>Alexander, king of Macedonia</span></div>
+     <div class="role"><b>${tag(narr)}</b><span>Narrator${narr===shimon?" (also Shimon)":""}</span></div>
+     ${extra!==null?`<div class="role"><b>${tag(extra)}</b><span>Alexander's soldier</span></div>`:""}
+   </div>
+   <div class="script">
+     <div class="line speak"><span class="who">${tag(narr)} · Narrator</span>The Kutim told Alexander that the Jews were rebels. Shimon HaTzaddik put on the bigdei kehunah and walked all night to meet him, with leaders carrying torches.</div>
+     <div class="line stage">${esc(nm(shimon))} walks slowly across the room holding the torch. ${esc(nm(alex))} waits on the other side.</div>
+     ${extra!==null?`<div class="line speak"><span class="who">${tag(extra)} · Soldier</span>Who are these people coming toward us?</div>`:""}
+     <div class="line speak"><span class="who">${tag(narr)} · Narrator</span>At dawn, Alexander saw Shimon HaTzaddik. He got down from his chariot and bowed.</div>
+     <div class="line stage">${esc(nm(alex))} bows.</div>
+     ${extra!==null?`<div class="line speak"><span class="who">${tag(extra)} · Soldier</span>A great king like you bows to this Jew?</div>`:""}
+     <div class="line speak"><span class="who">${tag(alex)} · Alexander</span>Before my battles, I see the face of this man leading me to victory.</div>
+     <div class="line speak"><span class="who">${tag(narr)} · Narrator</span>The Jews told Alexander the truth about the Kutim, and he did not harm the Beis Hamikdash.</div>
+   </div>
+   <p class="muted" style="font-size:.9rem">Source: Gemara, Yoma 69a</p>
+   <div><button class="btn gold" data-act="next">We acted it out</button></div>`;
+};
+
+R.say = st => {
+  const who = (driverIndex(st.ch)+1) % N();
+  return `<p class="eyebrow">${esc(CHAMBERS[st.ch].n)} · Say it</p><h2>${esc(nm(who))}, you're the explainer</h2>
+   ${st.withMap? action(ICON_WALK,"Go to the wall map",`<p>${esc(st.prompt)}</p>`) + `<p class="muted">Here is the same map, in case the wall is busy:</p><div class="mapbox">${mapSVG({})}</div>` : `<p class="lead">${esc(st.prompt)}</p>`}
+   <p class="muted">Use your own words. Everyone else listens and helps if something is missing. When the whole group agrees the explanation is right, continue.</p>
+   <div><button class="btn gold" data-act="next">We agree</button></div>`;
+};
+
+R.checkin = st => {
+  const runner = (st.ch + 1) % N();
+  return `<p class="eyebrow">${esc(CHAMBERS[st.ch].n)} · Check in</p><h2>${esc(nm(runner))}, you're the runner</h2>
+   ${action(ICON_SCREEN,"Walk to Mission Control",`<ol><li>Walk (don't run) to the big screen.</li><li>Tap <b>${esc(S.team)}</b>. (First time? Tap "New group" and type your group name.)</li><li>Type this code word and tap Check in.</li><li>Come back to your group.</li></ol>`)}
+   <div class="codeword">${CHECK_CODES[st.ch]}</div>
+   <div><button class="btn gold" data-act="next">${esc(nm(runner))} is back</button></div>`;
+};
+
+R.gather = st => {
+  const flips = S.p.flip||{};
+  return `<p class="eyebrow">Gathering point ${st.n}</p><h2>Wait for the class meeting</h2>
+   ${action(ICON_SCREEN,"Meet at the big screen",`<p>When your teacher calls everyone, the whole class meets at Mission Control. The teacher will show a code word there. Type it here to open the next chamber.</p>`)}
+   <div class="field"><label for="gcode">Code word from the big screen</label><input id="gcode" autocomplete="off" autocapitalize="characters"></div>
+   ${S.p.fb?`<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   <div><button class="btn" data-act="gcheck">Open the next chamber</button></div>
+   <h3>While you wait: quiz each other</h3>
+   <p class="muted">Take turns. One person asks, another answers, then tap the card to check.</p>
+   <div class="cards">${st.flash.map((f,i)=>`<button class="flip" data-act="flip" data-i="${i}"><b>${esc(f[0])}</b>${flips[i]?esc(f[1]):`<span class="muted">Tap to see the answer</span>`}</button>`).join("")}</div>`;
+};
+
+R.hunt = st => {
+  const got = S.p.got||0, done = got===st.order.length;
+  const who = got % N();
+  const prev = got? st.crowns[st.order[got-1]][0] : null;
+  const letters = st.order.map(k=>st.crowns[k][1]);
+  const pad = ["ש","ה","כ","נ","ו","ח"];
+  let h = `${head(st)}<p class="lead">Five crowns are hidden around the room, plus one that doesn't belong. Take turns: each of you brings back one crown's letter, in the order these powers ruled the Yidden.</p>
+   <div class="letters" lang="he" aria-label="Letters found">${letters.map((l,i)=>`<span>${i<got?l:""}</span>`).join("")}</div>`;
+  if(!done){
+    h += action(ICON_WALK,`Crown ${got+1} of 5: ${nm(who)}'s turn`,`<p>${prev? `The last crown was <b>${esc(prev)}</b>. Which power ruled the Yidden right after it?` : "Which power ruled the Yidden first, when the first Beis Hamikdash was destroyed?"} Decide together. Then ${esc(nm(who))} finds that crown in the room, lifts the flap, and comes back with its letter.</p>`)
+      + `<p><b>${esc(nm(who))}, tap the letter you found:</b></p><div class="letterpad" lang="he">${pad.map(l=>`<button data-act="letter" data-l="${l}">${l}</button>`).join("")}</div>`
+      + (S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:"") + hintBlock(st.hints);
+  } else if(!S.p.solved){
+    h += `<div class="feedback info">The letters are complete. Before the seal opens, everyone must agree on the whole order: Bavel, Persia, Alexander, the Ptolemies, the Seleucids.</div>` + ritual("Break the first seal");
+  } else {
+    h += `<div class="feedback ok">The letters spell חנוכה. The first seal is ready to break.</div><div><button class="btn gold" data-act="next">Break the first seal</button></div>`;
+  }
+  return h;
+};
+
+R.cliff = () => `
+  <p class="eyebrow">The last line of Seal 1</p>
+  <h2>A new king takes the throne</h2>
+  <p class="lead">In the year 3586, a new Seleucid king takes the throne in Antioch: Antiochus IV. He calls himself Epiphanes, which means "G-d revealed." He sees spreading Greek culture and religion through his whole empire as his life's mission.</p>
+  <p class="lead">The Hellenists in Yerushalayim are delighted. The second seal begins to glow.</p>
+  <div class="feedback info"><b>Seal 2 asks:</b> What changed in Jewish life, and why did it lead to rebellion?</div>
+  <div><button class="btn gold" data-act="next">One last check before we close the scroll</button></div>`;
+
+R.exit = st => {
+  const i = S.p.qi||0;
+  if(i >= st.qs.length){
+    return `<p class="eyebrow">Check for understanding</p><h2>What each investigator answered</h2>
+     <div class="choices">${st.qs.map((q,j)=>{const a=S.exitAns[j], ok=a===q.a; return `<div class="card"><span class="for">${tag(j)}</span><p><b>${esc(q.q)}</b></p><p>Answered: ${esc(q.o[a])}</p>${ok?`<p style="color:var(--ok)">That matches the scroll.</p>`:`<p style="color:var(--warn)">The scroll says: ${esc(q.o[q.a])}. Talk it over together.</p>`}</div>`;}).join("")}</div>
+     <div><button class="btn gold" data-act="next">Close the scroll for today</button></div>`;
+  }
+  const q = st.qs[i];
+  return `<p class="eyebrow">Check for understanding · ${i+1} of ${st.qs.length}</p><h2>${esc(nm(i))}, this one is for you</h2>
+   <p class="muted">Answer on your own. The others wait and do not help on this one.</p>
+   <p class="lead"><b>${esc(q.q)}</b></p>
+   <div class="choices">${q.o.map((o,j)=>`<button class="choice" data-act="exitpick" data-j="${j}">${esc(o)}</button>`).join("")}</div>`;
+};
+
+R.end = () => `
+  <p class="eyebrow">Mission 1 complete</p>
+  <h2>Seal 1 is open</h2>
+  <p class="lead">${esc(S.team)} found the first part of the story. The Yidden came under Seleucid rule through a chain of kingdoms: Bavel, Persia, Alexander, the Ptolemies and the Seleucids.</p>
+  ${action(ICON_SCREEN,"Last walk: all of you to Mission Control",`<ol><li>Check in with the code word below.</li><li>Tap <b>Write our Crown Card</b> and type it together: one kingdom, how it took control, one fact, and where the fact comes from (look in your Satchel).</li><li>Your teacher checks the card, and then it appears on the class wall.</li></ol>`)}
+  <div class="codeword">${CHECK_CODES[5]}</div>
+  <div class="feedback info"><b>Next time:</b> Seal 2, The Greeks and the Decrees.</div>`;
+
+/* ================= group engine ================= */
+let revealTarget = null;
+function render(){
+  if(IS_CONTROL) return renderControl();
+  if(S.step>=STEPS.length) S.step = STEPS.length-1;
+  const st = step();
+  const hadRitual = !!document.querySelector(".ritual"), hadWin = !!document.querySelector(".feedback.ok");
+  $("#stage").innerHTML = R[st.kind](st);
+  drawChrome(); save();
+  let t = null;
+  if(revealTarget){ t = document.querySelector(revealTarget); revealTarget = null; }
+  else if(!hadRitual && document.querySelector(".ritual")) t = document.querySelector(".ritual");
+  else if(!hadWin && document.querySelector(".feedback.ok")) t = document.querySelector(".feedback.ok");
+  else if(document.querySelector(".feedback.no")) t = document.querySelector(".feedback.no");
+  if(t){ try{ t.scrollIntoView({block:"nearest"}); }catch(e){} }
+}
+function advance(){
+  if(S.step < STEPS.length-1) S.step++;
+  S.p = {}; S.seals = {};
+  render();
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+function next(){
+  const st = step();
+  if(st.satchel) st.satchel.forEach(x=>{ if(!S.satchel.includes(x)) S.satchel.push(x); });
+  if(st.id==="c5-hunt") S.done.seal1 = true;
+  const nx = STEPS[S.step+1];
+  const sc = st.out || (nx && nx.enter);
+  if(sc) playScene(sc[0], sc[1], advance); else advance();
+}
+function check(){
+  const st = step(); S.seals = {};
+  if(st.kind==="order"){
+    const right = S.p.seq.filter((id,i)=>id===st.answer[i]).length;
+    if(right===st.answer.length){ S.p.solved=true; S.p.fb=null; }
+    else S.p.fb = `${right} of ${st.answer.length} events are in the right place. Talk about which ones might be out of order, then try again.`;
+  }
+  if(st.kind==="lock2"){
+    const pi = S.p.part||0, part = st.parts[pi];
+    if(S.p.val===part.a){ S.p.fb=null; S.p.val=""; S.p.hint=0; if(pi+1<st.parts.length) S.p.part=pi+1; else S.p.solved=true; }
+    else { S.p.fb = (part.special && part.special[S.p.val]) || part.wrong; S.p.val=""; }
+  }
+  if(st.kind==="choice"){
+    const o = st.options.find(x=>x[0]===S.p.pick);
+    if(o[2]){ S.p.solved=true; S.p.fb=null; } else { S.p.fb=o[3]; S.p.pick=null; }
+  }
+  if(st.kind==="sort"){
+    const right = st.items.filter(it=>S.p.place[it[0]]===it[2]).length;
+    if(right===st.items.length){ S.p.solved=true; S.p.fb=null; }
+    else S.p.fb = `${right} of ${st.items.length} details are in the right book. Read the archive note again and fix the others.`;
+  }
+  if(st.kind==="map"){
+    const right = st.labels.filter(l=>S.p.place[l[0]]===l[2]).length;
+    if(right===st.labels.length){ S.p.solved=true; S.p.fb=null; }
+    else S.p.fb = `${right} of ${st.labels.length} labels are in the right place. Check the notes about the two kingdoms.`;
+  }
+  if(st.kind==="hunt") S.p.solved = true;
+  render();
+}
+function forceSolve(){
+  const st = step();
+  if(["order","lock2","choice","sort","map","hunt"].includes(st.kind) && !S.p.solved){
+    if(st.kind==="order") S.p.seq=st.answer.slice();
+    if(st.kind==="lock2") S.p.part=st.parts.length-1;
+    if(st.kind==="choice") S.p.pick=st.options.find(o=>o[2])[0];
+    if(st.kind==="sort"){ S.opened[st.id+"-note"]=true; S.p.place=Object.fromEntries(st.items.map(it=>[it[0],it[2]])); }
+    if(st.kind==="map") S.p.place=Object.fromEntries(st.labels.map(l=>[l[0],l[2]]));
+    if(st.kind==="hunt") S.p.got=st.order.length;
+    S.p.solved=true; S.p.fb=null; render();
+  } else if(st.kind==="evidence"){ st.cards.forEach((c,i)=>S.opened[st.id+"-"+i]=true); render(); }
+  else next();
+}
+
+/* ================= Mission Control (big screen) ================= */
+function mcFresh(){ return {groups:[], oil:0, cards:[], bonusDone:0, log:[]}; }
+let M = (()=>{const m=load(MC_KEY); return m && Array.isArray(m.groups) ? m : mcFresh();})();
+const mcSave = () => store(MC_KEY, M);
+let teacherUntil = 0, mcSel = null, mcView = "board";
+const isTeacher = () => Date.now() < teacherUntil;
+const CODE_TO_CH = {KORESH:1, SHIVIM:2, SHIVEEM:2, SEVENTY:2, SHIMON:3, ANTIOCH:4, CHANUKAH:5, HANUKKAH:5, CHANUKA:5};
+const jarCap = () => Math.max(12, M.groups.length*5 + 6);
+
+const BONUSES = [
+ {t:"Lightning line-up", b:"Every group stands up in a line, in the order of the kingdoms you have found so far. Sit down when your line is right."},
+ {t:"The hidden flask", b:"A small paper oil flask is hidden somewhere in the room. Look without leaving your seat. When you spot it, put a finger on your nose. When the whole class has spotted it, the jar gets its oil."},
+ {t:"Echo the navi", b:"The whole class says together the Hebrew word for seventy: שִׁבְעִים. Then say what it was the promise of."},
+ {t:"Freeze and point", b:"Everyone freeze! Now point toward Bavel on the wall map. Then point to Yerushalayim."},
+ {t:"A silent walk", b:"Shimon HaTzaddik walked all night. Each group walks one slow, silent lap of the room and sits back down."},
+ {t:"Two-second answer", b:"One person from each group says one thing that was missing in the Second Beis Hamikdash."},
+ {t:"Say the crowns", b:"Each group whispers together the crowns it knows so far, in order."},
+ {t:"Thank-you round", b:"Alexander became a Jewish name as a way of saying thank you. Each group thanks someone in another group for something they did today."}
+];
+
+const SHOWS = {
+  intro:[
+    {art:"archive", cap:"Somewhere in an old archive, a scroll has waited a very long time."},
+    {art:"scroll", cap:"It holds the whole story of Chanukah."},
+    {art:"seals", cap:"But it is closed with six seals."},
+    {art:"question", cap:"Each seal opens only when you can answer one big question. Seal 1: Who was ruling the Yidden when the Chanukah story began, and how did they come under that rule?"},
+    {art:"how", cap:"Your tablet guides your group. Some clues send you around the room. When you finish a chamber, a runner checks in here."},
+    {art:"seals", glow:true, cap:"Work together. Everyone seals every answer. Open Chamber 1."}
+  ],
+  g1:[
+    {art:"fire", cap:"Gathering 1. In 3338, Bavel destroyed the first Beis Hamikdash, and the Jews went into Galus Bavel."},
+    {art:"return", cap:"Persia conquered Bavel. Koresh let the Jews go home and rebuild."},
+    {art:"seventy", cap:"Yirmiyahu promised seventy years. Building began again in 3408: 3338 + 70."},
+    {art:"talk", cap:"Talk it over: why do you think the Navi gave an exact number of years, and why does it matter that it came true exactly?"},
+    {art:"scroll", code:1, cap:"Back to your groups. Type this code to open Chamber 3:"}
+  ],
+  g2:[
+    {art:"crowns", cap:"Gathering 2. Bavel, Persia, Alexander... and then?"},
+    {art:"split", cap:"Alexander's empire split. The Ptolemies ruled Egypt. The Seleucids ruled Syria."},
+    {art:"talk", cap:"Talk it over: Bavel, Persia, Alexander and the Ptolemies all ruled the Jews, and the Jews did not rebel. What would make them fight?"},
+    {art:"scroll", code:2, cap:"Back to your groups. Type this code to open Chamber 5:"}
+  ]
+};
+
+function renderControl(){
+  $("#app").className = "wrap wide mc";
+  const g = M.groups, pct = Math.min(1, M.oil / jarCap());
+  const lampSVG = lit => `<svg viewBox="0 0 44 34" aria-hidden="true"><path d="M4 24 C8 30 32 30 40 22 L30 20 C26 16 12 16 8 20 Z" fill="${lit?"var(--gold)":"var(--panel-2)"}" stroke="var(--gold)" stroke-width="2"/>${lit?`<path class="a-flicker" d="M38 18 C35 12 38 8 39 4 C42 9 43 13 40 18 Z" fill="var(--flame)"/>`:""}</svg>`;
+  const pending = M.cards.filter(c=>c.status==="pending"), approved = M.cards.filter(c=>c.status==="approved");
+  $("#app").innerHTML = `
+   <header class="mc-head"><h1>Mission Control</h1><p class="muted">The Sealed Scroll · Mission 1</p>
+     <div class="row">${isTeacher()?`<span class="feedback info" style="padding:6px 12px">Teacher mode on</span><button class="btn ghost" data-act="mc-lock">Lock</button>`:`<button class="btn ghost" data-act="mc-teacher">Teacher</button>`}</div></header>
+   ${isTeacher()? `<div class="panel"><div class="bigbtns">
+      <button class="btn gold" data-act="mc-video">Play the intro video</button>
+      <button class="btn" data-act="mc-show" data-s="intro">Intro slides</button>
+      <button class="btn" data-act="mc-show" data-s="g1">Gathering 1</button>
+      <button class="btn" data-act="mc-show" data-s="g2">Gathering 2</button>
+      <button class="btn" data-act="mc-bonus">Bonus flask</button>
+      <button class="btn ghost" data-act="mc-view" data-v="${mcView==="wall"?"board":"wall"}">${mcView==="wall"?"Back to the board":"Show the Crown Card wall"}</button>
+      <button class="btn ghost" data-act="mc-reset-ask">Clear for a new class</button></div>
+      <p class="feedback no" id="mcResetConfirm" hidden>This clears every group, the oil jar and all Crown Cards on this computer. <button class="btn" data-act="mc-reset">Yes, clear it</button></p>
+      ${pending.length? `<h3>Crown Cards to check (${pending.length})</h3>${pending.map(c=>{const i=M.cards.indexOf(c); return `<div class="pending"><b>${esc(c.group)}</b>
+        <div class="field"><label for="ck${i}">Kingdom</label><input id="ck${i}" value="${esc(c.kingdom)}"></div>
+        <div class="field"><label for="ch${i}">How it took control</label><input id="ch${i}" value="${esc(c.how)}"></div>
+        <div class="field"><label for="cf${i}">Fact</label><input id="cf${i}" value="${esc(c.fact)}"></div>
+        <div class="field"><label for="cs${i}">Source</label><input id="cs${i}" value="${esc(c.src)}"></div>
+        <div class="row"><button class="btn gold" data-act="mc-approve" data-i="${i}">Approve and show</button><button class="btn ghost" data-act="mc-return" data-i="${i}">Send back to the group</button></div></div>`;}).join("")}`:""}
+     </div>`:""}
+   ${mcView==="wall" ? `<div class="panel"><h2>The Scroll of Light: Crown Cards</h2>${approved.length?`<div class="cardwall">${KINGDOMS.flatMap(k=>approved.filter(c=>c.kingdom===k)).concat(approved.filter(c=>!KINGDOMS.includes(c.kingdom))).map(c=>`<div class="ccard"><span class="eyebrow">${esc(c.group)}</span><h4>${esc(c.kingdom)}</h4><p><b>How it took control:</b> ${esc(c.how)}</p><p>${esc(c.fact)}</p><p class="src">Source: ${esc(c.src)}</p></div>`).join("")}</div>`:`<p class="muted">No cards yet. Groups type their Crown Card here at the end of the mission, and each one appears after the teacher checks it.</p>`}</div>` : `
+   <div class="mc-grid">
+     <div class="panel">
+       <h2>Where each group is holding</h2>
+       ${g.length? g.map((gr,gi)=>`<div class="grp"><span class="gname">${esc(gr.name)}</span>${[1,2,3,4,5].map(ch=>`<span class="lamp ${gr.done.includes(ch)?"lit":""}">${lampSVG(gr.done.includes(ch))}${ch}</span>`).join("")}</div>`).join("") : `<p class="muted">No groups yet. Each group appears here the first time its runner checks in.</p>`}
+       <h3>Runners: check in here</h3>
+       <div class="bigbtns">${g.map((gr,gi)=>`<button class="btn ${mcSel===gi?"":"ghost"}" data-act="mc-sel" data-i="${gi}">${esc(gr.name)}</button>`).join("")}<button class="btn ${mcSel==="new"?"":"ghost"}" data-act="mc-sel" data-i="new">New group</button></div>
+       ${mcSel==="new"?`<div class="field"><label for="mcNew">Your group name</label><input id="mcNew" maxlength="24" autocomplete="off"></div>`:""}
+       ${mcSel!==null?`<div class="field"><label for="mcCode">Code word</label><input id="mcCode" autocomplete="off" autocapitalize="characters"></div><div class="row"><button class="btn gold" data-act="mc-checkin">Check in</button>${mcSel!=="new"?`<button class="btn ghost" data-act="mc-cardform">Write our Crown Card</button>`:""}</div>`:`<p class="muted">Tap your group's name first.</p>`}
+       <p id="mcErr" class="feedback no" hidden></p>
+       <div id="mcForm"></div>
+     </div>
+     <div class="panel jar">
+       <h2>The class oil jar</h2>
+       <p class="muted">Every check-in and every bonus adds oil. The whole class fills it together.</p>
+       <svg viewBox="0 0 200 260" role="img" aria-label="Oil jar ${Math.round(pct*100)} percent full">
+         <defs><clipPath id="jarclip"><path d="M70 30 H130 V60 C170 80 175 120 170 170 C165 220 140 245 100 245 C60 245 35 220 30 170 C25 120 30 80 70 60 Z"/></clipPath></defs>
+         <g clip-path="url(#jarclip)"><rect x="0" y="0" width="200" height="260" fill="var(--panel-2)"/><rect x="0" y="${245 - 215*pct}" width="200" height="${215*pct+20}" fill="var(--gold)"/></g>
+         <path d="M70 30 H130 V60 C170 80 175 120 170 170 C165 220 140 245 100 245 C60 245 35 220 30 170 C25 120 30 80 70 60 Z" fill="none" stroke="var(--ink)" stroke-width="4"/>
+         <rect x="62" y="18" width="76" height="14" rx="4" fill="var(--stone-2)"/>
+       </svg>
+       <p style="text-align:center;font-weight:700">${M.oil} of ${jarCap()} drops${pct>=1?" · The jar is full! The whole class did it.":""}</p>
+     </div>
+   </div>`}`;
+}
+
+function playShow(name){
+  const slides = SHOWS[name]; let i = 0, timer = null;
+  const el = document.createElement("div"); el.className = "show"; el.setAttribute("role","dialog");
+  document.body.appendChild(el);
+  const draw = () => {
+    const s = slides[i];
+    el.innerHTML = `<div class="art">${bigArt(s.art, s.glow)}</div>
+      <p class="cap">${esc(s.cap)}${s.code?`<br><span style="color:#E3B252;letter-spacing:.12em;font-size:1.3em">${GATHER_CODES[s.code]}</span>`:""}</p>
+      <div class="ctl"><button class="btn ghost" data-sh="back" ${i===0?"disabled":""}>Back</button>
+        <div class="dots">${slides.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>
+        ${i<slides.length-1?`<button class="btn gold" data-sh="next">Next</button>`:`<button class="btn gold" data-sh="close">Done</button>`}</div>`;
+    clearTimeout(timer);
+    if(name==="intro" && i<slides.length-1) timer = setTimeout(()=>{ i++; draw(); }, 9000);
+  };
+  el.addEventListener("click", e=>{
+    const b = e.target.closest("[data-sh]"); if(!b) return;
+    if(b.dataset.sh==="next"){ i=Math.min(i+1,slides.length-1); draw(); }
+    if(b.dataset.sh==="back"){ i=Math.max(i-1,0); draw(); }
+    if(b.dataset.sh==="close"){ clearTimeout(timer); el.remove(); }
+  });
+  draw();
+}
+/* The exported intro video: put it next to the game as intro.mp4 (on GitHub, in the same folder as index.html). */
+const INTRO_VIDEO_FILE = "intro.mp4";
+const INTRO_VIDEO_PAGE = "https://claude.ai/artifact/FxWBneK76PkunZSzsxh6Wf";
+function playVideo(){
+  const el = document.createElement("div"); el.className = "show"; el.setAttribute("role","dialog"); el.setAttribute("aria-label","Intro video");
+  el.innerHTML = `<div class="art"><video id="introVid" src="${INTRO_VIDEO_FILE}" controls autoplay playsinline style="width:min(94vw,1500px);max-height:80vh;background:#000;border-radius:10px"></video>
+      <div id="vidMissing" hidden><div style="max-width:46ch;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center">
+        <p style="font-size:1.3rem">The intro video file isn't here yet.</p>
+        <p class="muted" style="color:#A4AABA">Export the video as an MP4 from its page, name it <b>intro.mp4</b>, and upload it to GitHub in the same place as index.html. Until then, you can open the video's own page.</p>
+        <a class="btn gold" href="${INTRO_VIDEO_PAGE}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Open the video page</a></div></div></div>
+    <div class="ctl"><span></span><button class="btn ghost" data-v="fs">Full screen</button><button class="btn gold" data-v="close">Close</button></div>`;
+  document.body.appendChild(el);
+  const v = el.querySelector("#introVid");
+  v.addEventListener("error", ()=>{ v.hidden = true; el.querySelector("#vidMissing").hidden = false; el.querySelector('[data-v="fs"]').hidden = true; });
+  el.addEventListener("click", e=>{
+    const b = e.target.closest("[data-v]"); if(!b) return;
+    if(b.dataset.v==="close"){ try{ v.pause(); }catch(err){} el.remove(); }
+    if(b.dataset.v==="fs"){ try{ (v.requestFullscreen ? v.requestFullscreen() : Promise.reject()).catch(()=>{}); }catch(err){} }
+  });
+}
+function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(), 3200); }
+function mcErr(t){ const e=$("#mcErr"); if(e){ e.textContent=t; e.hidden=!t; } }
+function mcCheckin(){
+  const code = ($("#mcCode").value||"").trim().toUpperCase().replace(/[^A-Z]/g,"");
+  const ch = CODE_TO_CH[code];
+  if(!ch){ mcErr("That code word doesn't match any chamber. Check the spelling on your tablet."); return; }
+  let gi = mcSel;
+  if(mcSel==="new"){
+    const name = ($("#mcNew").value||"").trim();
+    if(!name){ mcErr("Type your group name first."); return; }
+    gi = M.groups.findIndex(g=>g.name.toLowerCase()===name.toLowerCase());
+    if(gi<0){ M.groups.push({name, done:[]}); gi = M.groups.length-1; }
+  }
+  const gr = M.groups[gi];
+  if(gr.done.includes(ch)){ mcErr(`${gr.name} already checked in for Chamber ${ch}.`); return; }
+  gr.done.push(ch); M.oil += 1; mcSel = null; mcSave(); renderControl();
+  toast(`${gr.name} opened Chamber ${ch}: ${CHAMBERS[ch].n}. A drop of oil for the class jar!`);
+}
+function mcCardForm(){
+  const gr = M.groups[mcSel];
+  $("#mcForm").innerHTML = `<div class="pending"><h3>Crown Card for ${esc(gr.name)}</h3>
+    <div class="field"><label for="fk">Kingdom (your teacher tells you which)</label><select id="fk">${KINGDOMS.map(k=>`<option>${esc(k)}</option>`).join("")}</select></div>
+    <div class="field"><label for="fh">How it took control</label><input id="fh" maxlength="140"></div>
+    <div class="field"><label for="ff">One fact you learned about it</label><input id="ff" maxlength="160"></div>
+    <div class="field"><label for="fs">Where the fact comes from (look in your Satchel)</label><input id="fs" maxlength="80"></div>
+    <div class="row"><button class="btn gold" data-act="mc-cardsend">Send to the teacher</button></div></div>`;
+}
+
+/* ================= events ================= */
+document.addEventListener("click", e=>{
+  const el = e.target.closest("[data-act]"); if(!el) return;
+  if(frozen && !el.closest(".overlay")) return;
+  const a = el.dataset.act;
+  if(a.startsWith("mc-")) return mcClick(a, el);
+  const st = step();
+  switch(a){
+    case "start": {
+      const names = [0,1,2,3].map(i=>$("#nm"+i).value.trim()).filter(Boolean), team = $("#team").value.trim();
+      if(names.length<2 || !team){ $("#setupErr").hidden=false; return; }
+      S.names = names; S.team = team; next(); break; }
+    case "next": next(); break;
+    case "open": S.opened[el.dataset.k]=true; render(); break;
+    case "speak": speak(el.dataset.text); break;
+    case "gloss": {
+      const card = el.dataset.k, j=+el.dataset.j;
+      const stp = STEPS.find(s=>card.startsWith(s.id+"-")), c = stp.cards[+card.split("-").pop()];
+      S.p["g"+card] = `${c.he[j][0]} = ${c.he[j][1]}`;
+      const g = document.getElementById("gl-"+card); if(g) g.textContent = S.p["g"+card];
+      break; }
+    case "hint": S.p.hint=(S.p.hint||0)+1; render(); break;
+    case "seal": { const i=+el.dataset.i; S.seals[i]=!S.seals[i]; revealTarget='[data-act="check"]'; render(); break; }
+    case "check": check(); break;
+    case "place": S.p.seq=(S.p.seq||[]).concat(el.dataset.id); S.seals={}; S.p.fb=null; render(); break;
+    case "unplace": S.p.seq=S.p.seq.filter(x=>x!==el.dataset.id); S.seals={}; S.p.fb=null; render(); break;
+    case "digit": {
+      const d=el.dataset.d, len = st.parts[S.p.part||0].len; S.p.fb=null; S.seals={};
+      if(d==="clear") S.p.val=""; else if((S.p.val||"").length<len) S.p.val=(S.p.val||"")+d;
+      render(); break; }
+    case "pick": S.p.pick=el.dataset.id; S.p.fb=null; S.seals={}; render(); break;
+    case "sel": S.p.sel = S.p.sel===el.dataset.id? null : el.dataset.id; render(); break;
+    case "bin": if(!S.p.sel) return; S.p.place=Object.assign({},S.p.place,{[S.p.sel]:el.dataset.b}); S.p.sel=null; S.p.fb=null; S.seals={}; render(); break;
+    case "resetsort": case "resetmap": S.p.place={}; S.p.sel=null; S.p.fb=null; S.seals={}; render(); break;
+    case "region": {
+      if(!S.p.sel || S.p.solved) return;
+      const pl = Object.assign({}, S.p.place);
+      Object.keys(pl).forEach(k=>{ if(pl[k]===el.dataset.r) delete pl[k]; });
+      pl[S.p.sel]=el.dataset.r; S.p.place=pl; S.p.sel=null; S.p.fb=null; S.seals={}; render(); break; }
+    case "letter": {
+      const got=S.p.got||0, want=st.order[got], l=el.dataset.l;
+      if(st.crowns[want][1]===l){ S.p.got=got+1; S.p.fb=null; S.p.hint=0; }
+      else {
+        const k = Object.keys(st.crowns).find(x=>st.crowns[x][1]===l);
+        S.p.fb = k==="ROM" ? "That's the crown of Rome. Rome ruled Eretz Yisrael much later, long after the Chanukah story. Try again."
+          : `That letter is on the crown of ${st.crowns[k][0]}. ${got? `Who ruled right after ${st.crowns[st.order[got-1]][0]}?` : "Which power ruled first?"} Talk it over and try another crown.`;
+      }
+      render(); break; }
+    case "flip": S.p.flip=Object.assign({},S.p.flip,{[el.dataset.i]:!(S.p.flip||{})[el.dataset.i]}); render(); break;
+    case "gcheck": {
+      const v = ($("#gcode").value||"").trim().toUpperCase().replace(/[^A-Z]/g,"");
+      if(v===GATHER_CODES[st.n]) next(); else { S.p.fb="That's not the code. Wait for your teacher to show it on the big screen."; render(); }
+      break; }
+    case "exitpick": { const i=S.p.qi||0; S.exitAns[i]=+el.dataset.j; S.p.qi=i+1; render(); break; }
+    case "satchel": openSatchel(); break;
+    case "teacher": openGate("panel"); break;
+    case "close": closeLayer(); break;
+    case "gate": tryGate(el.dataset.then); break;
+    case "freeze": freeze(); break;
+    case "skip": closeLayer(); forceSolve(); break;
+    case "goto": { const ch=+el.dataset.ch; const idx=STEPS.findIndex(s=>s.ch===ch && s.kind!=="setup"); if(idx>0){ S.step=idx; S.p={}; S.seals={}; } closeLayer(); render(); break; }
+    case "reset-ask": $("#resetConfirm").hidden=false; break;
+    case "reset": try{localStorage.removeItem(KEY);}catch(err){} S=fresh(); closeLayer(); groupShell(); render(); break;
+  }
+});
+function mcClick(a, el){
+  switch(a){
+    case "mc-sel": mcSel = el.dataset.i==="new" ? "new" : +el.dataset.i; renderControl(); setTimeout(()=>{ const f=$("#mcNew")||$("#mcCode"); if(f) f.focus(); },20); break;
+    case "mc-checkin": mcCheckin(); break;
+    case "mc-cardform": mcCardForm(); break;
+    case "mc-cardsend": {
+      const c = {group:M.groups[mcSel].name, kingdom:$("#fk").value, how:$("#fh").value.trim(), fact:$("#ff").value.trim(), src:$("#fs").value.trim(), status:"pending"};
+      if(!c.how || !c.fact || !c.src){ mcErr("Fill in all three lines before sending."); return; }
+      M.cards.push(c); mcSel=null; mcSave(); renderControl(); toast(`${c.group}'s Crown Card went to the teacher to check.`); break; }
+    case "mc-teacher": openGate("mc"); break;
+    case "mc-lock": teacherUntil = 0; renderControl(); break;
+    case "mc-show": playShow(el.dataset.s); break;
+    case "mc-video": playVideo(); break;
+    case "mc-view": mcView = el.dataset.v; renderControl(); break;
+    case "mc-bonus": openBonus(); break;
+    case "mc-bonusdone": M.oil += 2; M.bonusDone++; mcSave(); closeLayer(); renderControl(); toast("Bonus complete: two drops of oil for the class jar!"); break;
+    case "mc-bonusother": openBonus(); break;
+    case "mc-approve": { const i=+el.dataset.i, c=M.cards[i];
+      c.kingdom=$("#ck"+i).value; c.how=$("#ch"+i).value; c.fact=$("#cf"+i).value; c.src=$("#cs"+i).value; c.status="approved";
+      mcSave(); renderControl(); toast(`${c.group}'s Crown Card is on the wall.`); break; }
+    case "mc-return": { const i=+el.dataset.i; M.cards.splice(i,1); mcSave(); renderControl(); break; }
+    case "mc-reset-ask": $("#mcResetConfirm").hidden=false; break;
+    case "mc-reset": M = mcFresh(); mcSave(); mcSel=null; mcView="board"; renderControl(); break;
+  }
+}
+function openBonus(){
+  const b = BONUSES[Math.floor(Math.random()*BONUSES.length)];
+  $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Bonus flask" style="max-width:820px">
+    <p class="eyebrow">Bonus flask</p><h2 style="font-size:clamp(2rem,4vw,3rem)">${esc(b.t)}</h2><p class="lead" style="font-size:1.5rem">${esc(b.b)}</p>
+    <div class="row"><button class="btn gold" data-act="mc-bonusdone">The class did it: add oil</button><button class="btn ghost" data-act="mc-bonusother">Draw another</button><button class="btn ghost" data-act="close">Close</button></div></div></div>`;
+}
+
+/* ================= overlays ================= */
+function closeLayer(){ $("#layer").innerHTML=""; frozen=false; }
+function openSatchel(){
+  $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Satchel">
+    <h3>Evidence Satchel</h3>
+    ${S.satchel.length? `<ul style="margin:0;padding-left:1.2em">${S.satchel.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul>` : `<p class="muted">Nothing collected yet. Evidence goes here as you solve each chamber.</p>`}
+    <div><button class="btn" data-act="close">Close</button></div></div></div>`;
+}
+function openGate(then){
+  $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Teacher code">
+    <h3>Teacher only</h3><p class="muted">Enter the teacher code.</p>
+    <div class="keyrow"><input id="tcode" type="password" inputmode="numeric" autocomplete="off" aria-label="Teacher code"><button class="btn" data-act="gate" data-then="${then}">Open</button><button class="btn ghost" data-act="close">Cancel</button></div>
+    <p class="feedback no" id="tErr" hidden>That code is not right.</p></div></div>`;
+  setTimeout(()=>{ const i=$("#tcode"); if(i) i.focus(); },30);
+}
+function tryGate(then){
+  if($("#tcode").value.trim()!==TEACHER_CODE){ $("#tErr").hidden=false; return; }
+  if(then==="unfreeze"){ closeLayer(); return; }
+  if(then==="mc"){ teacherUntil = Date.now() + 15*60*1000; closeLayer(); renderControl(); return; }
+  openPanel();
+}
+function openPanel(){
+  const st = step();
+  $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Teacher panel">
+    <h3>Teacher panel</h3>
+    <p class="muted">Group: ${esc(S.team||"(no name)")} · ${S.names.map(esc).join(", ")||"not started"} · Chamber ${st.ch}: ${esc(CHAMBERS[st.ch].n)} · Step ${S.step+1} of ${STEPS.length}</p>
+    <div class="tkey"><b>Answer.</b> ${esc(st.key||"No answer on this screen.")}<br><b>What it teaches.</b> ${esc(st.teaches||"")}</div>
+    <div class="row"><button class="btn gold" data-act="freeze">Freeze this screen for discussion</button><button class="btn" data-act="skip">Solve or skip this step</button></div>
+    <div><p style="margin-bottom:6px"><b>Jump to a chamber</b></p><div class="row">${[1,2,3,4,5].map(c=>`<button class="btn ghost" data-act="goto" data-ch="${c}">${c}. ${CHAMBERS[c].n}</button>`).join("")}</div></div>
+    <div class="row"><button class="btn ghost" data-act="reset-ask">Reset this device</button><button class="btn ghost" data-act="close">Close</button></div>
+    <div id="resetConfirm" class="feedback no" hidden>This erases this group's progress on this device. <button class="btn" data-act="reset" style="margin-left:8px">Yes, reset</button></div>
+  </div></div>`;
+}
+function freeze(){
+  frozen = true;
+  $("#layer").innerHTML = `<div class="overlay"><div class="sheet freeze" role="dialog" aria-label="Paused"><h2>Eyes on your teacher</h2><p class="lead" style="text-align:center">The scroll is paused for a class discussion.</p>
+   <div class="keyrow" style="justify-content:center"><input id="tcode" type="password" inputmode="numeric" autocomplete="off" aria-label="Teacher code to resume"><button class="btn" data-act="gate" data-then="unfreeze">Resume</button></div>
+   <p class="feedback no" id="tErr" hidden>That code is not right.</p></div></div>`;
+}
+document.addEventListener("keydown", e=>{
+  if(e.key!=="Enter") return;
+  if(e.target.id==="tcode"){ const b=document.querySelector('[data-act="gate"]'); if(b) b.click(); }
+  if(e.target.id==="mcCode"||e.target.id==="mcNew"){ const b=document.querySelector('[data-act="mc-checkin"]'); if(b) b.click(); }
+  if(e.target.id==="gcode"){ const b=document.querySelector('[data-act="gcheck"]'); if(b) b.click(); }
+});
+window.addEventListener("hashchange", ()=>location.reload());
+
+if(IS_CONTROL){ document.documentElement.classList.add("big"); renderControl(); } else { groupShell(); render(); }
+</script>
+
+</body></html>
