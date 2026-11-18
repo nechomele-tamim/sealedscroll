@@ -133,6 +133,11 @@ p{margin:0}
 .bin svg{width:100%;height:auto;display:block}
 .bin .inbook{display:flex;flex-direction:column;gap:6px;padding:0 4px}
 .bin.armed svg .cover{stroke:var(--lapis);stroke-width:4}
+.bins.plain{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.pbin{border:2px dashed var(--line);border-radius:12px;padding:12px;min-height:130px;display:flex;flex-direction:column;gap:8px;cursor:pointer;background:transparent;text-align:left;min-width:0}
+.pbin h4{margin:0;font-family:var(--display);font-weight:400;font-size:1.2rem}
+.pbin small{color:var(--muted);font-size:.85rem;margin-top:-6px}
+.pbin.armed{border-color:var(--lapis);background:var(--lapis-soft)}
 @media (max-width:520px){ .bins{grid-template-columns:1fr} }
 
 .mapbox{overflow-x:auto}
@@ -227,7 +232,7 @@ p{margin:0}
 .mc-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:900px){ .mc-grid{grid-template-columns:1fr} }
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.grp{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(5,minmax(0,1fr));gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.grp{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(var(--lamps,5),minmax(0,1fr));gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .grp:last-child{border-bottom:none}
 .grp .gname{font-weight:700;font-size:1.15rem;overflow-wrap:anywhere}
 .lamp{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.75rem;color:var(--muted)}
@@ -259,7 +264,8 @@ p{margin:0}
 <script>
 /* ================= settings ================= */
 const TEACHER_CODE = "5787";
-const KEY = "sealed-scroll-m1-v2";
+const KEY_BASE = "sealed-scroll-m1-v2";
+const PICK_KEY = "sealed-scroll-mission";
 const MC_KEY = "sealed-scroll-control-v1";
 const IS_CONTROL = location.hash === "#control";
 
@@ -269,12 +275,13 @@ const ROLES = [
   ["Timekeeper","Leads the timeline in Chamber 1."],
   ["Seal Keeper","Leads the lock in Chamber 2."]
 ];
-const CHAMBERS = [
+const CHAMBERS_M1 = [
   {n:"The Archive"},{n:"The Ruined Gate"},{n:"The Lock of Seventy"},{n:"The King Who Bowed"},{n:"The Broken Empire"},{n:"The Crown Passes"}
 ];
-const DRIVER_ROLE = {1:2, 2:3, 3:0, 4:1};
-const CHECK_CODES = {1:"KORESH", 2:"SHIVIM", 3:"SHIMON", 4:"ANTIOCH", 5:"CHANUKAH"};
-const GATHER_CODES = {1:"ZERUBAVEL", 2:"ALEXANDRIA"};
+const DRIVER_ROLE_M1 = {1:2, 2:3, 3:0, 4:1};
+const CHECK_CODES_M1 = {1:"KORESH", 2:"SHIVIM", 3:"SHIMON", 4:"ANTIOCH", 5:"CHANUKAH"};
+const GATHER_CODES_M1 = {1:"ZERUBAVEL", 2:"ALEXANDRIA"};
+let CHAMBERS, DRIVER_ROLE, CHECK_CODES, GATHER_CODES, STEPS, MIS, MN = 1;
 const KINGDOMS = ["Bavel","Persia","Alexander of Greece","The Ptolemies of Egypt","The Seleucids of Syria"];
 
 /* ================= helpers ================= */
@@ -315,9 +322,9 @@ const ART = {
      <rect class="a-unroll" x="50" y="95" width="300" height="70" rx="6" fill="#F2E5C6"/>
      <g class="a-crackL"><path d="M200 70 A60 60 0 0 0 200 190 L188 150 L206 120 Z" fill="#9B2D3A"/></g>
      <g class="a-crackR"><path d="M200 70 A60 60 0 0 1 200 190 L188 150 L206 120 Z" fill="#B23A48"/></g></svg>`,
-  glow: () => `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
+  glow: (k) => { k = k || 1; return `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#151B2A"/>
      <rect x="40" y="105" width="320" height="50" rx="6" fill="#F2E5C6" opacity=".25"/>
-     ${[0,1,2,3,4,5].map(i=>`<circle cx="${75+i*50}" cy="130" r="17" fill="${i===0?"#3A3F63":i===1?"#9B2D3A":"#232C40"}" stroke="#E3B252" stroke-width="2" ${i===1?'class="a-glow"':""}/><text x="${75+i*50}" y="136" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="15" fill="#F2E5C6">${i+1}</text>`).join("")}</svg>`,
+     ${[0,1,2,3,4,5].map(i=>`<circle cx="${75+i*50}" cy="130" r="17" fill="${i<k?"#3A3F63":i===k?"#9B2D3A":"#232C40"}" stroke="#E3B252" stroke-width="2" ${i===k?'class="a-glow"':""}/><text x="${75+i*50}" y="136" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="15" fill="#F2E5C6">${i+1}</text>`).join("")}</svg>`; },
   archive: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
      ${[0,1,2].map(r=>`<rect x="40" y="${70+r*110}" width="720" height="10" fill="#232C40"/>`+[...Array(14)].map((_,k)=>`<rect x="${50+k*50}" y="${20+r*110}" width="${18+(k*7)%14}" height="50" fill="#1A2233"/>`).join("")).join("")}
      <circle cx="400" cy="300" r="120" fill="#F2B04A" opacity=".12" class="a-glow"/>
@@ -326,13 +333,13 @@ const ART = {
      <rect class="a-unroll" x="150" y="170" width="500" height="110" rx="8" fill="#F2E5C6"/>
      <rect x="128" y="155" width="34" height="140" rx="16" fill="#7E7462"/><rect x="638" y="155" width="34" height="140" rx="16" fill="#7E7462"/>
      ${[0,1,2,3].map(i=>`<line class="a-fade" style="animation-delay:${1.2+i*.2}s" x1="190" x2="${560-i*40}" y1="${195+i*20}" y2="${195+i*20}" stroke="#9C927C" stroke-width="4"/>`).join("")}</svg>`,
-  seals: (glowFirst) => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+  seals: (glowFirst, open) => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
      <rect x="150" y="170" width="500" height="110" rx="8" fill="#F2E5C6"/>
      <rect x="128" y="155" width="34" height="140" rx="16" fill="#7E7462"/><rect x="638" y="155" width="34" height="140" rx="16" fill="#7E7462"/>
-     ${[0,1,2,3,4,5].map(i=>`<g class="a-pop" style="animation-delay:${.3+i*.45}s"><circle cx="${215+i*74}" cy="225" r="26" fill="#9B2D3A" stroke="#E3B252" stroke-width="3" ${glowFirst&&i===0?'class="a-glow"':""}/><text x="${215+i*74}" y="234" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="24" fill="#F2E5C6">${i+1}</text></g>`).join("")}</svg>`,
-  question: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
+     ${[0,1,2,3,4,5].map(i=>`<g class="a-pop" style="animation-delay:${.3+i*.45}s"><circle cx="${215+i*74}" cy="225" r="26" fill="${i<(open||0)?"#3A3F63":"#9B2D3A"}" stroke="#E3B252" stroke-width="3" ${glowFirst&&i===(open||0)?'class="a-glow"':""}/><text x="${215+i*74}" y="234" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="24" fill="#F2E5C6">${i+1}</text></g>`).join("")}</svg>`,
+  question: (n) => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
      <circle cx="400" cy="210" r="90" fill="#9B2D3A" stroke="#E3B252" stroke-width="5" class="a-glow"/>
-     <text x="400" y="240" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="90" fill="#F2E5C6">1</text></svg>`,
+     <text x="400" y="240" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="90" fill="#F2E5C6">${n||1}</text></svg>`,
   talk: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
      <path d="M230 110 H570 V300 H400 L320 370 V300 H230 Z" fill="none" stroke="#E3B252" stroke-width="10" stroke-linejoin="round" class="a-glow"/>
      <text x="400" y="250" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="120" fill="#F2E5C6">?</text></svg>`,
@@ -357,14 +364,14 @@ const ART = {
   crowns: () => `<svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0A0E16"/>
      ${["Bavel","Persia","Alexander","Ptolemies","Seleucids"].map((k,i)=>`<g class="a-pop" style="animation-delay:${.3+i*.5}s"><path d="M${70+i*140} 250 L${78+i*140} 180 L${108+i*140} 212 L${130+i*140} 165 L${152+i*140} 212 L${182+i*140} 180 L${190+i*140} 250 Z" fill="#E3B252"/><text x="${130+i*140}" y="290" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="22" fill="#F2E5C6">${k}</text></g>`).join("")}</svg>`
 };
-function bigArt(name, arg){ const a = ART[name]; return a ? a(arg) : ""; }
+function bigArt(name, arg, arg2){ const a = ART[name]; return a ? a(arg, arg2) : ""; }
 
 /* Short transition scene on a tablet. Plays, then calls cb. Tap to skip. */
-function playScene(name, caption, cb){
+function playScene(name, caption, cb, arg){
   const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const el = document.createElement("div");
   el.className = "scene"; el.setAttribute("role","dialog"); el.setAttribute("aria-label", caption);
-  el.innerHTML = `${ART[name]()}<p class="cap">${esc(caption)}</p><p class="skip">Tap to continue</p>`;
+  el.innerHTML = `${ART[name](arg)}<p class="cap">${esc(caption)}</p><p class="skip">Tap to continue</p>`;
   document.body.appendChild(el);
   let done = false;
   const finish = () => { if(done) return; done = true; el.remove(); cb && cb(); };
@@ -403,7 +410,7 @@ const bookSVG = (title, sub) => `<svg viewBox="0 0 300 190" aria-hidden="true">
    <text x="150" y="145" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="14" fill="var(--muted)">${sub}</text></svg>`;
 
 /* ================= content ================= */
-const STEPS = [
+const STEPS_M1 = [
  {id:"setup", ch:0, kind:"setup"},
  {id:"intro", ch:0, kind:"intro",
   key:"Before groups start, play the intro on the big screen (#control).", teaches:"Frames the unit; roles; how check-ins work."},
@@ -506,7 +513,7 @@ const STEPS = [
   title:"Which book tells which part?",
   lead:"Historians always ask: where does this detail come from? Read the archive note, then tap a detail and tap the book it belongs in.",
   note:{to:1, t:"Archive note", b:"The Gemara (Yoma 69a) tells about the Kutim's lie, the night walk with torches, and Alexander bowing to Shimon HaTzaddik. The Gemara's account stops there. The tour of the Beis Hamikdash, the statue and the name Alexander come from a later history book called Sefer Yosippon."},
-  bins:[["G","Gemara","Yoma 69a"],["Y","Sefer Yosippon","a later history book"]],
+  books:true, bins:[["G","Gemara","Yoma 69a"],["Y","Sefer Yosippon","a later history book"]],
   items:[["k","The Kutim tell Alexander the Jews are rebels","G"],["w","Shimon HaTzaddik walks all night with torches","G"],["v","Alexander bows and tells about the face he sees in battle","G"],["s","Alexander asks for a statue in the Beis Hamikdash","Y"],["n","Baby boys are named Alexander","Y"]],
   hints:["Only one person in your group has the archive note. Ask them to read it again, slowly.","Everything up to and including the bowing is in the Gemara."],
   win:"Sources sorted. Now you know which parts come from the Gemara and which from a later book.",
@@ -586,13 +593,155 @@ const STEPS = [
  {id:"end", ch:5, kind:"end", key:"Whole group goes to Mission Control: check in with CHANUKAH and type the Crown Card.", teaches:"Student-created addition to the class wall."}
 ];
 
+
+/* ================= Mission 2: The Greeks and the Decrees ================= */
+const CHAMBERS_M2 = [{n:"The Archive"},{n:"The Gymnasium"},{n:"The Decree Wall"},{n:"Three Kinds of Pressure"},{n:"Those Who Would Not Bow"}];
+const POSTERS_M2 = ["Shabbos","Bris Milah","Rosh Chodesh","The Torah","The Beis Hamikdash and Kashrus"];
+const STEPS_M2 = [
+ {id:"setup", ch:0, kind:"setup"},
+ {id:"intro", ch:0, kind:"intro", key:"Play Mission 2's intro slides on Mission Control first.", teaches:"Recap of Seal 1; Seal 2's question; roles."},
+
+ /* ---------- Chamber 1: The Gymnasium ---------- */
+ {id:"m2-c1-ev", ch:1, kind:"evidence", enter:["door","Chamber 1: The Gymnasium"], eyebrow:"Chamber 1 · The Gymnasium",
+  title:"A new kind of life in Yerushalayim",
+  lead:"Antiochus IV now ruled Eretz Yisrael, and Greek ways were everywhere. Open your own note, read it yourself, and tell your group what it says.",
+  cards:[
+   {t:"A Dazzling World", tts:true, b:"The Greeks built beautiful cities, theaters and stadiums. They were famous for mathematics, science and philosophy, and for their sports contests. King Antiochus IV wanted his whole empire to live the Greek way."},
+   {t:"Greek Names, Greek Ways", aloud:true, b:"Some Jews began to use Greek names, dress like Greeks and follow Greek ideas instead of the Torah. They were called mityavnim, Hellenists. Many other Jews held on to the Torah."},
+   {t:"A Bought Office", b:"The Kohen Gadol was a righteous man named Chonyo. His brother Yehoshua, who liked the Greek name Jason, paid King Antiochus IV a huge bribe. The king made Jason Kohen Gadol in Chonyo's place."},
+   {t:"A Gymnasium Near Har HaBayis", b:"Jason built a gymnasium, a Greek sports hall, close to Har HaBayis. Many Kohanim and young Jews went to the games, which included offerings to Greek gods."},
+   {t:"Outbid", b:"Then Menelaus, who may not even have been a Kohen, paid the king even more money and took the job of Kohen Gadol away from Jason."}
+  ],
+  key:"No answer: every note opened.", teaches:"Hellenism's attraction; the mityavnim; Jason, the gymnasium, Menelaus (Chabad.org, The Events Before and After the Chanukah Miracle)."},
+ {id:"m2-c1-who", ch:1, kind:"sort", eyebrow:"Chamber 1 · The Gymnasium",
+  title:"Who's who in Yerushalayim?",
+  lead:"Tap a description, then tap the person it describes. Some people get more than one.",
+  bins:[["CH","Chonyo","the Kohen Gadol"],["JA","Jason","Yehoshua"],["ME","Menelaus",""],["AN","Antiochus IV","the king"]],
+  items:[["a","The righteous Kohen Gadol who was pushed out","CH"],["b","Liked his Greek name better than his Hebrew one","JA"],["c","Built a gymnasium near Har HaBayis","JA"],["d","Paid even more, and may not even have been a Kohen","ME"],["e","Sold the office of Kohen Gadol to the highest bidder","AN"],["f","Wanted his whole empire to live the Greek way","AN"]],
+  hints:["Each note names one person. Ask the owner of each note to read it again.","Jason gets two descriptions, and so does the king."],
+  win:"Sorted. The holiest job in the Beis Hamikdash had become something you could buy.",
+  satchel:["Jason (Yehoshua) bought the office of Kohen Gadol and built a gymnasium near Har HaBayis"],
+  key:"Chonyo: a. Jason: b, c. Menelaus: d. Antiochus IV: e, f.", teaches:"Who the main figures were."},
+ {id:"m2-c1-say", ch:1, kind:"say", prompt:"Explain to your group: why were some Jews drawn to Greek ways, and what did Jason do with the job of Kohen Gadol?",
+  key:"Greek culture was impressive and popular; Jason bought the office and built a gymnasium.", teaches:"Oral check."},
+ {id:"m2-c1-check", ch:1, kind:"checkin", key:"Runner checks in with CHONYO.", teaches:"Movement + class tracking."},
+
+ /* ---------- Chamber 2: The Decree Wall ---------- */
+ {id:"m2-c2-walk", ch:2, kind:"room", enter:["door","Chamber 2: The Decree Wall"], eyebrow:"Chamber 2 · The Decree Wall", title:"Read the Decree Wall",
+  body:()=>{
+    const rows = POSTERS_M2.map((p,i)=>`<li><b>Poster ${i+1}: ${esc(p)}</b> · ${tag(i)}</li>`).join("");
+    return action(ICON_WALK,"Each of you walks to your own posters",`<p>King Antiochus sent out decrees: orders that every town had to obey. Five posters around the room show what they said. Go to your own posters, read them yourself, then come back and tell your group what they say.</p><ul style="list-style:none;padding:0;margin-top:8px;display:flex;flex-direction:column;gap:4px">${rows}</ul>`);
+  },
+  cta:"We read every poster", key:"Physical: five Decree Wall posters around the room.", teaches:"The decrees and how they changed daily Jewish life."},
+ {id:"m2-c2-sort", ch:2, kind:"sort", eyebrow:"Chamber 2 · The Decree Wall",
+  title:"What did the decrees forbid?",
+  lead:"Talk it over with what you read on the posters. Tap each item, then tap where it belongs.",
+  bins:[["W","On the Decree Wall","forbidden by the decrees"],["N","Not on the Wall",""]],
+  items:[["s","Keeping Shabbos","W"],["m","Giving a baby a bris milah","W"],["r","Declaring Rosh Chodesh","W"],["t","Owning and learning a Sefer Torah","W"],["k","Eating only kosher food","W"],["c","Lighting Chanukah candles","N"],["l","Eating latkes","N"]],
+  hints:["Only one person read each poster. Ask each of them what their poster said.","Two of these didn't exist yet. Think: when did Chanukah begin?"],
+  win:"Right. And Chanukah candles and latkes weren't forbidden, because Chanukah didn't exist yet. It began because of what happened next.",
+  satchel:["The decrees forbade Shabbos, bris milah, Rosh Chodesh, the Torah, and kosher food; idols were put in the Beis Hamikdash"],
+  key:"On the Wall: Shabbos, bris milah, Rosh Chodesh, Sefer Torah, kosher food. Not on the Wall: Chanukah candles, latkes.", teaches:"The mitzvos the decrees targeted (Megillas Antiochus; Chabad.org)."},
+ {id:"m2-c2-choice", ch:2, kind:"choice", eyebrow:"Chamber 2 · The Decree Wall",
+  title:"The puzzle of Rosh Chodesh",
+  lead:"The poster about Rosh Chodesh gives a clue. Why would banning Rosh Chodesh hurt every Yom Tov of the year?",
+  options:[
+   ["a","Because Rosh Chodesh is the most important Yom Tov of the year.", false, "Rosh Chodesh is special, but not the most important. Read the Rosh Chodesh poster again: what depends on it?"],
+   ["b","Because without the new month being declared, no one would know on which day Pesach, Shavuos or Sukkos falls.", true, "Exactly. The Sanhedrin's announcement of the new month set the date of every Yom Tov. No Rosh Chodesh means no Jewish calendar."],
+   ["c","Because the Greeks didn't like the moon.", false, "That's not what the poster says. Think about what the Jewish calendar needs."]],
+  hints:["Ask the person who read the Rosh Chodesh poster.","Every Yom Tov falls on a certain day of a certain month."],
+  key:"B: without Rosh Chodesh, no one would know when the Yomim Tovim fall.", teaches:"Why the Rosh Chodesh decree struck at all of Jewish time."},
+ {id:"m2-c2-say", ch:2, kind:"say", prompt:"Explain to your group: how would one week of Jewish life change under these decrees?",
+  key:"No Shabbos, no Torah learning, no bris, no calendar, forced to eat non-kosher.", teaches:"Oral check."},
+ {id:"m2-c2-check", ch:2, kind:"checkin", key:"Runner checks in with SHABBOS.", teaches:"Movement + class tracking."},
+
+ /* ---------- Chamber 3: Three Kinds of Pressure ---------- */
+ {id:"m2-c3-sort", ch:3, kind:"sort", enter:["door","Chamber 3: Three Kinds of Pressure"], eyebrow:"Chamber 3 · Three Kinds of Pressure",
+  title:"Which kind of pressure is it?",
+  lead:"Historians sort what happened into three kinds of pressure. Read the archive note, then sort each event. Tap an event, then tap its kind.",
+  note:{to:2, t:"Archive note: three kinds of pressure", b:"Political rule: a foreign king is in charge, collects taxes and appoints officials. Cultural influence: new ideas, names, fashions and games that pull people toward a different way of life. Religious persecution: people are forced to stop keeping mitzvos, or to serve idols."},
+  bins:[["P","Political rule",""],["C","Cultural influence",""],["R","Religious persecution",""]],
+  items:[["p1","A foreign king collects heavy taxes","P"],["p2","The king appoints officials to run the land","P"],["c1","A gymnasium is built near Har HaBayis","C"],["c2","Jews start using Greek names","C"],["c3","Greek games and fashions become popular","C"],["r1","Keeping Shabbos is forbidden","R"],["r2","Sifrei Torah are taken away and burned","R"],["r3","Idols are set up in the Beis Hamikdash","R"]],
+  hints:["Ask: is this about who is in charge, about what people like, or about forcing people to stop serving Hashem?","The gymnasium tempted people, but nobody was forced to go. That makes it influence, not persecution."],
+  win:"Sorted. The Jews had lived under foreign kings for hundreds of years. Greek influence pulled some Jews away. But persecution was something new.",
+  key:"Political: taxes, officials. Cultural: gymnasium, Greek names, games and fashions. Religious persecution: Shabbos forbidden, Sifrei Torah burned, idols in the Beis Hamikdash.", teaches:"The difference between rule, influence and persecution."},
+ {id:"m2-c3-choice", ch:3, kind:"choice", eyebrow:"Chamber 3 · Three Kinds of Pressure",
+  title:"What finally made them fight?",
+  lead:"In Mission 1 you found a clue: Bavel, Persia, Alexander and the Ptolemies all ruled the Jews, and the Jews did not rebel. Which kind of pressure finally made them fight?",
+  options:[
+   ["a","Political rule: foreign kings and their taxes.", false, "The Jews had lived under foreign kings for hundreds of years without rebelling. Look at your Satchel from Mission 1."],
+   ["b","Cultural influence: the gymnasium and Greek ways.", false, "Greek influence split the Jews and was dangerous, but anyone could still choose to keep the Torah. Something else changed."],
+   ["c","Religious persecution: being forbidden to keep the Torah.", true, "Yes. When keeping the Torah itself was forbidden, the Jews were ready to stand up, even against a mighty king."]],
+  hints:["Think about the clue from the end of Mission 1.","What was different about Antiochus IV compared to the kings before him?"],
+  satchel:["The Jews fought when keeping the Torah itself was forbidden, not because of foreign rule"],
+  key:"C: religious persecution.", teaches:"Answers Seal 2: why the situation led to rebellion."},
+ {id:"m2-c3-say", ch:3, kind:"say", prompt:"Explain to your group: what is the difference between a king who rules you and a king who forbids the Torah?",
+  key:"Foreign rule they accepted; being forced to abandon the Torah they would not accept.", teaches:"Oral check."},
+ {id:"m2-c3-check", ch:3, kind:"checkin", key:"Runner checks in with MIKDASH.", teaches:"Movement + class tracking."},
+
+ /* ---------- Chamber 4: Those Who Would Not Bow ---------- */
+ {id:"m2-c4-ev", ch:4, kind:"evidence", enter:["door","Chamber 4: Those Who Would Not Bow"], eyebrow:"Chamber 4 · Those Who Would Not Bow",
+  title:"What the Greeks wanted most",
+  lead:"Open your notes. Each one shows how far the decrees went, and how the Jews answered.",
+  cards:[
+   {t:"Written on a Horn", src:"Bereishis Rabbah 2:4", b:"The Greeks demanded that Jews write on the horn of an ox: \"We have no share in the G-d of Israel.\""},
+   {t:"The Beis Hamikdash Defiled", y:"25 Kislev", b:"Antiochus turned the Beis Hamikdash into a place for idols. On the 25th of Kislev, pigs were offered on the Mizbeach to Greek gods. Remember that date."},
+   {t:"Many Stayed Loyal", aloud:true, b:"Even with all the danger, many Jews kept the mitzvos in secret. Some gave up their lives rather than leave the Torah."},
+   {t:"Chana and Her Seven Sons", src:"Gemara, Gittin 57b", b:"A mother, Chana, and her seven sons would not bow to an idol, even when it cost them their lives."}
+  ],
+  key:"No answer. Teacher's choice: the Chana card can be skipped for younger or sensitive students (Teacher → Solve or skip after the others are open).", teaches:"How far the persecution went; loyalty under pressure."},
+ {id:"m2-c4-choice", ch:4, kind:"choice", eyebrow:"Chamber 4 · Those Who Would Not Bow",
+  title:"Elazar's choice",
+  lead:"Elazar was a Torah scholar, 90 years old. The king's officers ordered him to eat pork in front of everyone. His friends among the officers whispered: \"Bring your own kosher meat. Just pretend it's pork, and you'll live.\" Talk it over: what did Elazar answer?",
+  options:[
+   ["a","Yes. Since the meat is really kosher, pretending isn't a sin.", false, "Think about who was watching. What would the young people think if they saw Elazar \"eat pork\"?"],
+   ["b","No. If I pretend, the young people will think Elazar left the Torah, and I won't be the reason they leave it.", true, "That is what Elazar answered. He refused even to pretend, so that no one would learn from him to give up the Torah."],
+   ["c","Let me wait until the soldiers leave, and then decide.", false, "Elazar didn't look for a way to delay. He gave a clear answer right away."]],
+  hints:["Elazar was an old, respected teacher. Who looks up to a teacher like that?","He cared about what others would learn from what he did."],
+  key:"B: he refused even to pretend, because of what others would learn.", teaches:"Elazar (Gemara Gittin 57b; the \"pretend\" detail is in Sefer Chashmonaim II, chapter 6)."},
+ {id:"m2-c4-read", ch:4, kind:"script", eyebrow:"Chamber 4 · Those Who Would Not Bow", title:"Read Elazar's answer aloud",
+  roles:[["Narrator",0],["Officer",1],["Elazar",2]],
+  lines:[[0,"Elazar was 90 years old. The officers ordered him to eat pork in front of the crowd."],[1,"Just bring your own meat and pretend. No one will know, and you will live."],[2,"No. At my age, I will not pretend. If I do, the young people will say that Elazar left the Torah, and they will learn from me to leave it too."],[0,"Elazar refused, and he was put to death. People remembered his courage for generations."]],
+  src:"Gemara, Gittin 57b; Sefer Chashmonaim II, chapter 6", cta:"We read it",
+  key:"Group reads the scene aloud.", teaches:"Elazar's words, read by the children themselves."},
+ {id:"m2-c4-say", ch:4, kind:"say", prompt:"Explain to your group: why did Elazar refuse even to pretend? Why do you think so many Jews were ready to risk everything?",
+  key:"Others would learn from him; the Torah mattered more than their lives.", teaches:"Oral check."},
+ {id:"m2-seal", ch:4, kind:"sealq", out:["seal","The second seal breaks open"], eyebrow:"Seal 2",
+  question:"What changed in Jewish life, and why did it lead to rebellion?",
+  answer:"Greek ways pulled some Jews away, and the holy office of Kohen Gadol was bought and sold. Then Antiochus IV forbade Shabbos, Rosh Chodesh, bris milah and the Torah, and put idols in the Beis Hamikdash. The Jews had accepted foreign kings before, but they would not give up the Torah.",
+  key:"Everyone seals to open Seal 2.", teaches:"Summary of the mission."},
+ {id:"m2-cliff", ch:4, kind:"cliff2", enter:["glow","The third seal begins to glow",2], key:"Read the cliffhanger together.", teaches:"Bridge to Mission 3: Modi'in."},
+ {id:"m2-exit", ch:4, kind:"exit",
+  qs:[
+   {q:"Which of these did the decrees forbid?", o:["Lighting Chanukah candles","Keeping Shabbos","Going to the market"], a:1},
+   {q:"What did Jason do?", o:["He led the Maccabees into battle","He bought the office of Kohen Gadol and built a gymnasium","He translated the Torah into Greek"], a:1},
+   {q:"What finally made the Jews ready to fight?", o:["Foreign kings collecting taxes","Being forbidden to keep the Torah","Greek sports and fashions"], a:1}],
+  key:"Keeping Shabbos; bought the office and built a gymnasium; being forbidden to keep the Torah.", teaches:"Quick individual check."},
+ {id:"m2-end", ch:4, kind:"end2", key:"Runner checks in with MODIIN; then the worksheet.", teaches:"Close of Mission 2."}
+];
+
+const MISSIONS = {
+  1: {title:"Before the Chanukah Story", question:"Who was ruling the Yidden when the Chanukah story began, and how did they come under that rule?",
+      chambers:CHAMBERS_M1, driver:DRIVER_ROLE_M1, codes:CHECK_CODES_M1, gather:GATHER_CODES_M1, steps:STEPS_M1, sealStep:"c5-hunt", lamps:5,
+      checkin:{KORESH:1, SHIVIM:2, SHIVEEM:2, SEVENTY:2, SHIMON:3, ANTIOCH:4, CHANUKAH:5, HANUKKAH:5, CHANUKA:5}, shows:["intro","g1","g2"], cards:true},
+  2: {title:"The Greeks and the Decrees", question:"What changed in Jewish life, and why did it lead to rebellion?",
+      chambers:CHAMBERS_M2, driver:{1:0, 2:2, 3:3, 4:1}, codes:{1:"CHONYO", 2:"SHABBOS", 3:"MIKDASH", 4:"MODIIN"}, gather:{}, steps:STEPS_M2, sealStep:"m2-seal", lamps:4,
+      checkin:{CHONYO:1, SHABBOS:2, SHABBAT:2, MIKDASH:3, MODIIN:4, MODIN:4}, shows:["intro2"], cards:false}
+};
+
 /* ================= group state ================= */
 function fresh(){return {team:"", names:[], step:0, opened:{}, satchel:[], p:{}, seals:{}, exitAns:{}, done:{}};}
 function load(k){try{const s=JSON.parse(localStorage.getItem(k)); if(s) return s;}catch(e){} return null;}
 function store(k,v){try{localStorage.setItem(k, JSON.stringify(v));}catch(e){}}
-let S = (()=>{const s=load(KEY); return s && Array.isArray(s.names) ? s : fresh();})();
+const missionKey = n => n===1 ? KEY_BASE : KEY_BASE + "-m" + n;
+function useMission(n){
+  MN = MISSIONS[n] ? n : 1; MIS = MISSIONS[MN];
+  CHAMBERS = MIS.chambers; DRIVER_ROLE = MIS.driver; CHECK_CODES = MIS.codes; GATHER_CODES = MIS.gather || {}; STEPS = MIS.steps;
+}
+function loadGroup(n){ useMission(n); const s=load(missionKey(MN)); const g = s && Array.isArray(s.names) ? s : fresh(); if(g.done && g.done.seal1) g.done.seal = true; return g; }
+let S = loadGroup(+(load(PICK_KEY)||1));
 let frozen = false;
-const save = () => store(KEY, S);
+const save = () => { store(missionKey(MN), S); store(PICK_KEY, MN); };
 const N = () => Math.max(1, S.names.length);
 const ix = i => ((i % N()) + N()) % N();
 const nm = i => S.names[ix(i)] || "Investigator";
@@ -618,8 +767,9 @@ function groupShell(){
 function drawChrome(){
   const st = step();
   $("#seals").innerHTML = [1,2,3,4,5,6].map(i=>{
-    const open = i===1 && S.done.seal1, active = (i===1 && !open) || (i===2 && S.done.seal1);
+    const open = i < MN || (i===MN && S.done.seal), active = (i===MN && !open) || (i===MN+1 && S.done.seal);
     return `<span class="wax ${open?"open":""} ${active?"active":""}" title="Seal ${i}">${i}</span>`;}).join("");
+  $("#track").style.gridTemplateColumns = `repeat(${CHAMBERS.length-1},1fr)`;
   $("#track").innerHTML = CHAMBERS.slice(1).map((c,i)=>{const ch=i+1, cls = st.ch>ch?"done":st.ch===ch?"now":""; return `<div class="stone ${cls}"><b>${ch}</b><span>${c.n}</span></div>`;}).join("");
   $("#satchelBtn").textContent = `Satchel (${S.satchel.length})`;
   $("#satchelBtn").hidden = S.step===0;
@@ -656,7 +806,9 @@ const head = st => `<p class="eyebrow">${esc(st.eyebrow)}</p><h2>${esc(st.title)
 /* ================= renderers ================= */
 const R = {};
 R.setup = () => `
-  <p class="eyebrow">Mission 1 · Before the Chanukah Story</p>
+  <div class="field"><span style="font-weight:700">Which mission? <span class="muted" style="font-weight:400">Your teacher will tell you.</span></span>
+    <div class="row">${Object.keys(MISSIONS).map(k=>`<button class="btn ${+k===MN?"":"ghost"}" data-act="pickm" data-m="${k}" aria-pressed="${+k===MN}">Mission ${k}: ${esc(MISSIONS[k].title)}</button>`).join("")}</div></div>
+  <p class="eyebrow">Mission ${MN} · ${esc(MIS.title)}</p>
   <h2>Who is on this investigation?</h2>
   <p class="lead">Give your group a name, then type the first name of each investigator at this device. You need 2, 3 or 4.</p>
   <div class="field"><label for="team">Group name</label><input id="team" maxlength="24" value="${esc(S.team)}" placeholder="for example: The Modi'in Group"></div>
@@ -668,7 +820,7 @@ R.intro = () => `
   <p class="eyebrow">The Archive</p>
   <h2>${esc(S.team)}, look at the big screen</h2>
   <p class="lead">Your teacher will play the opening of the mission on the big screen. Then come back here and meet your roles.</p>
-  <div class="feedback info"><b>Seal 1 asks:</b> Who was ruling the Yidden when the Chanukah story began, and how did they come under that rule?</div>
+  <div class="feedback info"><b>Seal ${MN} asks:</b> ${esc(MIS.question)}</div>
   <h3>Your roles</h3>
   <div class="roles">${S.names.map((n,i)=>`<div class="role"><b>${tag(i)}</b>${rolesFor(i).map(r=>`<span><b>${r[0]}.</b> <span class="muted">${r[1]}</span></span>`).join("")}</div>`).join("")}</div>
   <h3>How this works</h3>
@@ -725,16 +877,19 @@ R.choice = st => {
 R.sort = st => {
   const pl = S.p.place||{}, sel = S.p.sel, noteKey = st.id+"-note";
   const unplaced = st.items.filter(it=>!pl[it[0]]);
-  const binH = b => `<button class="bin ${sel?"armed":""}" data-act="bin" data-b="${b[0]}" aria-label="Put it in ${esc(b[1])}">${bookSVG(b[1], b[2])}<span class="inbook">${st.items.filter(it=>pl[it[0]]===b[0]).map(it=>`<span class="tile" style="cursor:default">${esc(it[1])}</span>`).join("")}</span></button>`;
+  const placedIn = b => st.items.filter(it=>pl[it[0]]===b[0]).map(it=>`<span class="tile" style="cursor:default">${esc(it[1])}</span>`).join("");
+  const binH = b => st.books
+    ? `<button class="bin ${sel?"armed":""}" data-act="bin" data-b="${b[0]}" aria-label="Put it in ${esc(b[1])}">${bookSVG(b[1], b[2])}<span class="inbook">${placedIn(b)}</span></button>`
+    : `<button class="pbin ${sel?"armed":""}" data-act="bin" data-b="${b[0]}" aria-label="Put it in ${esc(b[1])}"><h4>${esc(b[1])}</h4>${b[2]?`<small>${esc(b[2])}</small>`:""}${placedIn(b)}</button>`;
   return `${head(st)}<p class="lead">${esc(st.lead)}</p>
-   <div class="cards">${cardHTML(st.note, st.note.to, noteKey)}</div>
-   ${S.opened[noteKey]? `
+   ${st.note?`<div class="cards">${cardHTML(st.note, st.note.to, noteKey)}</div>`:""}
+   ${(!st.note || S.opened[noteKey])? `
    ${unplaced.length? `<div class="pool">${unplaced.map(it=>`<button class="tile ${sel===it[0]?"sel":""}" data-act="sel" data-id="${it[0]}">${esc(it[1])}</button>`).join("")}</div>`:""}
-   ${sel?`<p class="muted">Now tap a book.</p>`:""}
-   <div class="bins">${st.bins.map(binH).join("")}</div>
+   ${sel?`<p class="muted">Now tap where it belongs.</p>`:""}
+   <div class="bins ${st.books?"":"plain"}">${st.bins.map(binH).join("")}</div>
    ${Object.keys(pl).length && !S.p.solved? `<div><button class="btn ghost" data-act="resetsort">Start the sort again</button></div>`:""}
    ${S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:""}
-   ${S.p.solved? winBlock(st.win) : hintBlock(st.hints) + (!unplaced.length? ritual("Check the sources"):"")}` : `<p class="muted">The archive note must be opened first.</p>`}`;
+   ${S.p.solved? winBlock(st.win) : hintBlock(st.hints) + (!unplaced.length? ritual(st.books?"Check the sources":"Check"):"")}` : `<p class="muted">The archive note must be opened first.</p>`}`;
 };
 
 R.map = st => {
@@ -820,6 +975,38 @@ R.hunt = st => {
   return h;
 };
 
+R.script = st => {
+  const who = r => r[1] % N();
+  return `${head(st)}
+   ${action(ICON_SPEAK,"Read it aloud together",`<p>Each of you reads your own lines out loud, in your own voice.</p>`)}
+   <div class="roles">${st.roles.map(r=>`<div class="role"><b>${tag(who(r))}</b><span>${esc(r[0])}</span></div>`).join("")}</div>
+   <div class="script">${st.lines.map(l=>{ const r = st.roles[l[0]]; return `<div class="line speak"><span class="who">${tag(who(r))} · ${esc(r[0])}</span>${esc(l[1])}</div>`; }).join("")}</div>
+   ${st.src?`<p class="muted" style="font-size:.9rem">Source: ${esc(st.src)}</p>`:""}
+   <div><button class="btn gold" data-act="next">${esc(st.cta||"Continue")}</button></div>`;
+};
+
+R.sealq = st => `<p class="eyebrow">${esc(st.eyebrow)}</p><h2>Open the second seal</h2>
+   <div class="feedback info"><b>Seal ${MN} asked:</b> ${esc(st.question)}</div>
+   <p class="lead"><b>Your answer, from everything you found:</b> ${esc(st.answer)}</p>
+   ${S.p.solved? `<div class="feedback ok">The seal is ready to break.</div><div><button class="btn gold" data-act="next">Break the seal</button></div>` : ritual("Break the seal")}`;
+
+R.cliff2 = () => `
+  <p class="eyebrow">The last line of Seal 2</p>
+  <h2>Soldiers come to Modi'in</h2>
+  <p class="lead">In the small town of Modi'in lived an old Kohen, Matisyahu son of Yochanan, with his five sons. One day the king's soldiers marched into the town square. They built an altar and called all the Jews to come and bow to an idol.</p>
+  <p class="lead">Everyone waits to see what Matisyahu will do. The third seal begins to glow.</p>
+  <div class="feedback info"><b>Seal 3 asks:</b> How did a small group of Jews stand up to a powerful kingdom, and what actually happened?</div>
+  <div><button class="btn gold" data-act="next">One last check before we close the scroll</button></div>`;
+
+R.end2 = () => `
+  <p class="eyebrow">Mission 2 complete</p>
+  <h2>Seal 2 is open</h2>
+  <p class="lead">${esc(S.team)} found out what changed: Jews had lived under foreign kings before, but when Antiochus IV forbade the Torah itself, they were ready to stand up.</p>
+  ${action(ICON_SCREEN,"Last walk: your runner checks in",`<p>Check in at Mission Control with the code word below.</p>`)}
+  <div class="codeword">${CHECK_CODES[4]}</div>
+  ${action(ICON_SPEAK,"Then: your own Investigator's Report",`<p>Your teacher will hand each of you a worksheet. Do it on your own, without your group, and give it to your teacher when you finish.</p>`)}
+  <div class="feedback info"><b>Next time:</b> Seal 3, Matisyahu and the Maccabees.</div>`;
+
 R.cliff = () => `
   <p class="eyebrow">The last line of Seal 1</p>
   <h2>A new king takes the throne</h2>
@@ -848,6 +1035,7 @@ R.end = () => `
   <p class="lead">${esc(S.team)} found the first part of the story. The Yidden came under Seleucid rule through a chain of kingdoms: Bavel, Persia, Alexander, the Ptolemies and the Seleucids.</p>
   ${action(ICON_SCREEN,"Last walk: all of you to Mission Control",`<ol><li>Check in with the code word below.</li><li>Tap <b>Write our Crown Card</b> and type it together: one kingdom, how it took control, one fact, and where the fact comes from (look in your Satchel).</li><li>Your teacher checks the card, and then it appears on the class wall.</li></ol>`)}
   <div class="codeword">${CHECK_CODES[5]}</div>
+  ${action(ICON_SPEAK,"Then: your own Investigator's Report",`<p>Your teacher will hand each of you a worksheet. Do it on your own, without your group, and give it to your teacher when you finish.</p>`)}
   <div class="feedback info"><b>Next time:</b> Seal 2, The Greeks and the Decrees.</div>`;
 
 /* ================= group engine ================= */
@@ -875,10 +1063,10 @@ function advance(){
 function next(){
   const st = step();
   if(st.satchel) st.satchel.forEach(x=>{ if(!S.satchel.includes(x)) S.satchel.push(x); });
-  if(st.id==="c5-hunt") S.done.seal1 = true;
+  if(st.id===MIS.sealStep) S.done.seal = true;
   const nx = STEPS[S.step+1];
   const sc = st.out || (nx && nx.enter);
-  if(sc) playScene(sc[0], sc[1], advance); else advance();
+  if(sc) playScene(sc[0], sc[1], advance, sc[2]); else advance();
 }
 function check(){
   const st = step(); S.seals = {};
@@ -899,23 +1087,23 @@ function check(){
   if(st.kind==="sort"){
     const right = st.items.filter(it=>S.p.place[it[0]]===it[2]).length;
     if(right===st.items.length){ S.p.solved=true; S.p.fb=null; }
-    else S.p.fb = `${right} of ${st.items.length} details are in the right book. Read the archive note again and fix the others.`;
+    else S.p.fb = st.books ? `${right} of ${st.items.length} details are in the right book. Read the archive note again and fix the others.` : `${right} of ${st.items.length} are in the right place. Talk it over and fix the others.`;
   }
   if(st.kind==="map"){
     const right = st.labels.filter(l=>S.p.place[l[0]]===l[2]).length;
     if(right===st.labels.length){ S.p.solved=true; S.p.fb=null; }
     else S.p.fb = `${right} of ${st.labels.length} labels are in the right place. Check the notes about the two kingdoms.`;
   }
-  if(st.kind==="hunt") S.p.solved = true;
+  if(st.kind==="hunt" || st.kind==="sealq") S.p.solved = true;
   render();
 }
 function forceSolve(){
   const st = step();
-  if(["order","lock2","choice","sort","map","hunt"].includes(st.kind) && !S.p.solved){
+  if(["order","lock2","choice","sort","map","hunt","sealq"].includes(st.kind) && !S.p.solved){
     if(st.kind==="order") S.p.seq=st.answer.slice();
     if(st.kind==="lock2") S.p.part=st.parts.length-1;
     if(st.kind==="choice") S.p.pick=st.options.find(o=>o[2])[0];
-    if(st.kind==="sort"){ S.opened[st.id+"-note"]=true; S.p.place=Object.fromEntries(st.items.map(it=>[it[0],it[2]])); }
+    if(st.kind==="sort"){ if(st.note) S.opened[st.id+"-note"]=true; S.p.place=Object.fromEntries(st.items.map(it=>[it[0],it[2]])); }
     if(st.kind==="map") S.p.place=Object.fromEntries(st.labels.map(l=>[l[0],l[2]]));
     if(st.kind==="hunt") S.p.got=st.order.length;
     S.p.solved=true; S.p.fb=null; render();
@@ -925,12 +1113,15 @@ function forceSolve(){
 
 /* ================= Mission Control (big screen) ================= */
 function mcFresh(){ return {groups:[], oil:0, cards:[], bonusDone:0, log:[]}; }
-let M = (()=>{const m=load(MC_KEY); return m && Array.isArray(m.groups) ? m : mcFresh();})();
-const mcSave = () => store(MC_KEY, M);
+const MC_PICK = "sealed-scroll-control-mission";
+const mcKey = n => n===1 ? MC_KEY : MC_KEY + "-m" + n;
+let mcMission = MISSIONS[+(load(MC_PICK)||1)] ? +(load(MC_PICK)||1) : 1;
+function mcLoad(n){ const m=load(mcKey(n)); return m && Array.isArray(m.groups) ? m : mcFresh(); }
+let M = mcLoad(mcMission);
+const mcSave = () => { store(mcKey(mcMission), M); store(MC_PICK, mcMission); };
 let teacherUntil = 0, mcSel = null, mcView = "board";
 const isTeacher = () => Date.now() < teacherUntil;
-const CODE_TO_CH = {KORESH:1, SHIVIM:2, SHIVEEM:2, SEVENTY:2, SHIMON:3, ANTIOCH:4, CHANUKAH:5, HANUKKAH:5, CHANUKA:5};
-const jarCap = () => Math.max(12, M.groups.length*5 + 6);
+const jarCap = () => Math.max(12, M.groups.length*MIS.lamps + 6);
 
 const BONUSES = [
  {t:"Lightning line-up", b:"Every group stands up in a line, in the order of the kingdoms you have found so far. Sit down when your line is right."},
@@ -943,7 +1134,21 @@ const BONUSES = [
  {t:"Thank-you round", b:"Alexander became a Jewish name as a way of saying thank you. Each group thanks someone in another group for something they did today."}
 ];
 
+const BONUSES_M2 = [
+ {t:"Echo the Decree Wall", b:"The whole class says together the mitzvos the decrees tried to stop: Shabbos, Rosh Chodesh, bris milah, learning Torah, kosher food."},
+ {t:"A silent walk", b:"Many Jews kept the mitzvos in secret. Each group walks one slow, silent lap of the room and sits back down."},
+ {t:"Two-second answer", b:"One person from each group says the name of the righteous Kohen Gadol who was pushed out."},
+ {t:"Stand tall", b:"Everyone stands up straight, like Elazar, who would not even pretend. Sit down when your group can say why he refused."},
+ {t:"The hidden flask", b:"A small paper oil flask is hidden somewhere in the room. Look without leaving your seat. When you spot it, put a finger on your nose. When the whole class has spotted it, the jar gets its oil."},
+ {t:"Thank-you round", b:"Each group thanks someone in another group for something they did today."}
+];
 const SHOWS = {
+  intro2:[
+    {art:"seals", glow:true, open:1, cap:"Previously: the first seal is open. The Seleucid kings of Syria ruled Eretz Yisrael, and a new king, Antiochus IV, took the throne."},
+    {art:"question", n:2, cap:"Seal 2 asks: What changed in Jewish life, and why did it lead to rebellion?"},
+    {art:"how", cap:"Today: meet the people of Yerushalayim, walk to the Decree Wall, and sort three kinds of pressure. Runners check in here after each chamber."},
+    {art:"seals", glow:true, open:1, cap:"Work together. Everyone seals every answer. Open Chamber 1."}
+  ],
   intro:[
     {art:"archive", cap:"Somewhere in an old archive, a scroll has waited a very long time."},
     {art:"scroll", cap:"It holds the whole story of Chanukah."},
@@ -968,22 +1173,22 @@ const SHOWS = {
 };
 
 function renderControl(){
-  $("#app").className = "wrap wide mc";
+  $("#app").className = "wrap wide mc"; $("#app").style.setProperty("--lamps", MIS.lamps);
   const g = M.groups, pct = Math.min(1, M.oil / jarCap());
   const lampSVG = lit => `<svg viewBox="0 0 44 34" aria-hidden="true"><path d="M4 24 C8 30 32 30 40 22 L30 20 C26 16 12 16 8 20 Z" fill="${lit?"var(--gold)":"var(--panel-2)"}" stroke="var(--gold)" stroke-width="2"/>${lit?`<path class="a-flicker" d="M38 18 C35 12 38 8 39 4 C42 9 43 13 40 18 Z" fill="var(--flame)"/>`:""}</svg>`;
   const pending = M.cards.filter(c=>c.status==="pending"), approved = M.cards.filter(c=>c.status==="approved");
   $("#app").innerHTML = `
-   <header class="mc-head"><h1>Mission Control</h1><p class="muted">The Sealed Scroll · Mission 1</p>
+   <header class="mc-head"><h1>Mission Control</h1><p class="muted">The Sealed Scroll · Mission ${mcMission}: ${esc(MIS.title)}</p>
      <div class="row">${isTeacher()?`<span class="feedback info" style="padding:6px 12px">Teacher mode on</span><button class="btn ghost" data-act="mc-lock">Lock</button>`:`<button class="btn ghost" data-act="mc-teacher">Teacher</button>`}</div></header>
    ${isTeacher()? `<div class="panel"><div class="bigbtns">
+      ${Object.keys(MISSIONS).map(k=>`<button class="btn ${+k===mcMission?"":"ghost"}" data-act="mc-mission" data-m="${k}" aria-pressed="${+k===mcMission}">Mission ${k}</button>`).join("")}
+    </div><div class="bigbtns">
       <button class="btn gold" data-act="mc-video">Play the intro video</button>
-      <button class="btn" data-act="mc-show" data-s="intro">Intro slides</button>
-      <button class="btn" data-act="mc-show" data-s="g1">Gathering 1</button>
-      <button class="btn" data-act="mc-show" data-s="g2">Gathering 2</button>
+      ${MIS.shows.map(sh=>`<button class="btn" data-act="mc-show" data-s="${sh}">${sh.startsWith("intro")?"Intro slides":sh==="g1"?"Gathering 1":"Gathering 2"}</button>`).join("")}
       <button class="btn" data-act="mc-bonus">Bonus flask</button>
-      <button class="btn ghost" data-act="mc-view" data-v="${mcView==="wall"?"board":"wall"}">${mcView==="wall"?"Back to the board":"Show the Crown Card wall"}</button>
+      ${MIS.cards?`<button class="btn ghost" data-act="mc-view" data-v="${mcView==="wall"?"board":"wall"}">${mcView==="wall"?"Back to the board":"Show the Crown Card wall"}</button>`:""}
       <button class="btn ghost" data-act="mc-reset-ask">Clear for a new class</button></div>
-      <p class="feedback no" id="mcResetConfirm" hidden>This clears every group, the oil jar and all Crown Cards on this computer. <button class="btn" data-act="mc-reset">Yes, clear it</button></p>
+      <p class="feedback no" id="mcResetConfirm" hidden>This clears this mission's groups, oil jar and cards on this computer. <button class="btn" data-act="mc-reset">Yes, clear it</button></p>
       ${pending.length? `<h3>Crown Cards to check (${pending.length})</h3>${pending.map(c=>{const i=M.cards.indexOf(c); return `<div class="pending"><b>${esc(c.group)}</b>
         <div class="field"><label for="ck${i}">Kingdom</label><input id="ck${i}" value="${esc(c.kingdom)}"></div>
         <div class="field"><label for="ch${i}">How it took control</label><input id="ch${i}" value="${esc(c.how)}"></div>
@@ -995,11 +1200,11 @@ function renderControl(){
    <div class="mc-grid">
      <div class="panel">
        <h2>Where each group is holding</h2>
-       ${g.length? g.map((gr,gi)=>`<div class="grp"><span class="gname">${esc(gr.name)}</span>${[1,2,3,4,5].map(ch=>`<span class="lamp ${gr.done.includes(ch)?"lit":""}">${lampSVG(gr.done.includes(ch))}${ch}</span>`).join("")}</div>`).join("") : `<p class="muted">No groups yet. Each group appears here the first time its runner checks in.</p>`}
+       ${g.length? g.map((gr,gi)=>`<div class="grp"><span class="gname">${esc(gr.name)}</span>${[...Array(MIS.lamps)].map((_,k)=>k+1).map(ch=>`<span class="lamp ${gr.done.includes(ch)?"lit":""}">${lampSVG(gr.done.includes(ch))}${ch}</span>`).join("")}</div>`).join("") : `<p class="muted">No groups yet. Each group appears here the first time its runner checks in.</p>`}
        <h3>Runners: check in here</h3>
        <div class="bigbtns">${g.map((gr,gi)=>`<button class="btn ${mcSel===gi?"":"ghost"}" data-act="mc-sel" data-i="${gi}">${esc(gr.name)}</button>`).join("")}<button class="btn ${mcSel==="new"?"":"ghost"}" data-act="mc-sel" data-i="new">New group</button></div>
        ${mcSel==="new"?`<div class="field"><label for="mcNew">Your group name</label><input id="mcNew" maxlength="24" autocomplete="off"></div>`:""}
-       ${mcSel!==null?`<div class="field"><label for="mcCode">Code word</label><input id="mcCode" autocomplete="off" autocapitalize="characters"></div><div class="row"><button class="btn gold" data-act="mc-checkin">Check in</button>${mcSel!=="new"?`<button class="btn ghost" data-act="mc-cardform">Write our Crown Card</button>`:""}</div>`:`<p class="muted">Tap your group's name first.</p>`}
+       ${mcSel!==null?`<div class="field"><label for="mcCode">Code word</label><input id="mcCode" autocomplete="off" autocapitalize="characters"></div><div class="row"><button class="btn gold" data-act="mc-checkin">Check in</button>${mcSel!=="new" && MIS.cards?`<button class="btn ghost" data-act="mc-cardform">Write our Crown Card</button>`:""}</div>`:`<p class="muted">Tap your group's name first.</p>`}
        <p id="mcErr" class="feedback no" hidden></p>
        <div id="mcForm"></div>
      </div>
@@ -1023,7 +1228,7 @@ function playShow(name){
   document.body.appendChild(el);
   const draw = () => {
     const s = slides[i];
-    el.innerHTML = `<div class="art">${bigArt(s.art, s.glow)}</div>
+    el.innerHTML = `<div class="art">${bigArt(s.art, s.art==="question" ? s.n : s.glow, s.open)}</div>
       <p class="cap">${esc(s.cap)}${s.code?`<br><span style="color:#E3B252;letter-spacing:.12em;font-size:1.3em">${GATHER_CODES[s.code]}</span>`:""}</p>
       <div class="ctl"><button class="btn ghost" data-sh="back" ${i===0?"disabled":""}>Back</button>
         <div class="dots">${slides.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>
@@ -1063,7 +1268,7 @@ function toast(t){ const d=document.createElement("div"); d.className="toast"; d
 function mcErr(t){ const e=$("#mcErr"); if(e){ e.textContent=t; e.hidden=!t; } }
 function mcCheckin(){
   const code = ($("#mcCode").value||"").trim().toUpperCase().replace(/[^A-Z]/g,"");
-  const ch = CODE_TO_CH[code];
+  const ch = MIS.checkin[code];
   if(!ch){ mcErr("That code word doesn't match any chamber. Check the spelling on your tablet."); return; }
   let gi = mcSel;
   if(mcSel==="new"){
@@ -1100,6 +1305,8 @@ document.addEventListener("click", e=>{
       if(names.length<2 || !team){ $("#setupErr").hidden=false; return; }
       S.names = names; S.team = team; next(); break; }
     case "next": next(); break;
+    case "switchm": { const m=+el.dataset.m; save(); S = loadGroup(m); store(PICK_KEY, MN); closeLayer(); groupShell(); render(); break; }
+    case "pickm": { const m=+el.dataset.m; if(m!==MN){ save(); S = loadGroup(m); store(PICK_KEY, MN); render(); } break; }
     case "open": S.opened[el.dataset.k]=true; render(); break;
     case "speak": speak(el.dataset.text); break;
     case "gloss": {
@@ -1149,7 +1356,7 @@ document.addEventListener("click", e=>{
     case "skip": closeLayer(); forceSolve(); break;
     case "goto": { const ch=+el.dataset.ch; const idx=STEPS.findIndex(s=>s.ch===ch && s.kind!=="setup"); if(idx>0){ S.step=idx; S.p={}; S.seals={}; } closeLayer(); render(); break; }
     case "reset-ask": $("#resetConfirm").hidden=false; break;
-    case "reset": try{localStorage.removeItem(KEY);}catch(err){} S=fresh(); closeLayer(); groupShell(); render(); break;
+    case "reset": try{localStorage.removeItem(missionKey(MN));}catch(err){} S=fresh(); closeLayer(); groupShell(); render(); break;
   }
 });
 function mcClick(a, el){
@@ -1174,11 +1381,13 @@ function mcClick(a, el){
       mcSave(); renderControl(); toast(`${c.group}'s Crown Card is on the wall.`); break; }
     case "mc-return": { const i=+el.dataset.i; M.cards.splice(i,1); mcSave(); renderControl(); break; }
     case "mc-reset-ask": $("#mcResetConfirm").hidden=false; break;
+    case "mc-mission": mcMission = +el.dataset.m; useMission(mcMission); M = mcLoad(mcMission); mcSel=null; mcView="board"; store(MC_PICK, mcMission); renderControl(); break;
     case "mc-reset": M = mcFresh(); mcSave(); mcSel=null; mcView="board"; renderControl(); break;
   }
 }
 function openBonus(){
-  const b = BONUSES[Math.floor(Math.random()*BONUSES.length)];
+  const list = MN===2 ? BONUSES_M2 : BONUSES;
+  const b = list[Math.floor(Math.random()*list.length)];
   $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Bonus flask" style="max-width:820px">
     <p class="eyebrow">Bonus flask</p><h2 style="font-size:clamp(2rem,4vw,3rem)">${esc(b.t)}</h2><p class="lead" style="font-size:1.5rem">${esc(b.b)}</p>
     <div class="row"><button class="btn gold" data-act="mc-bonusdone">The class did it: add oil</button><button class="btn ghost" data-act="mc-bonusother">Draw another</button><button class="btn ghost" data-act="close">Close</button></div></div></div>`;
@@ -1209,10 +1418,11 @@ function openPanel(){
   const st = step();
   $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Teacher panel">
     <h3>Teacher panel</h3>
-    <p class="muted">Group: ${esc(S.team||"(no name)")} · ${S.names.map(esc).join(", ")||"not started"} · Chamber ${st.ch}: ${esc(CHAMBERS[st.ch].n)} · Step ${S.step+1} of ${STEPS.length}</p>
+    <p class="muted">Mission ${MN} · Group: ${esc(S.team||"(no name)")} · ${S.names.map(esc).join(", ")||"not started"} · Chamber ${st.ch}: ${esc(CHAMBERS[st.ch].n)} · Step ${S.step+1} of ${STEPS.length}</p>
     <div class="tkey"><b>Answer.</b> ${esc(st.key||"No answer on this screen.")}<br><b>What it teaches.</b> ${esc(st.teaches||"")}</div>
     <div class="row"><button class="btn gold" data-act="freeze">Freeze this screen for discussion</button><button class="btn" data-act="skip">Solve or skip this step</button></div>
-    <div><p style="margin-bottom:6px"><b>Jump to a chamber</b></p><div class="row">${[1,2,3,4,5].map(c=>`<button class="btn ghost" data-act="goto" data-ch="${c}">${c}. ${CHAMBERS[c].n}</button>`).join("")}</div></div>
+    <div><p style="margin-bottom:6px"><b>Jump to a chamber</b></p><div class="row">${CHAMBERS.slice(1).map((c,i)=>`<button class="btn ghost" data-act="goto" data-ch="${i+1}">${i+1}. ${esc(c.n)}</button>`).join("")}</div></div>
+    <div><p style="margin-bottom:6px"><b>Switch this tablet to another mission</b></p><div class="row">${Object.keys(MISSIONS).map(k=>`<button class="btn ${+k===MN?"":"ghost"}" data-act="switchm" data-m="${k}">Mission ${k}: ${esc(MISSIONS[k].title)}</button>`).join("")}</div></div>
     <div class="row"><button class="btn ghost" data-act="reset-ask">Reset this device</button><button class="btn ghost" data-act="close">Close</button></div>
     <div id="resetConfirm" class="feedback no" hidden>This erases this group's progress on this device. <button class="btn" data-act="reset" style="margin-left:8px">Yes, reset</button></div>
   </div></div>`;
@@ -1231,7 +1441,7 @@ document.addEventListener("keydown", e=>{
 });
 window.addEventListener("hashchange", ()=>location.reload());
 
-if(IS_CONTROL){ document.documentElement.classList.add("big"); renderControl(); } else { groupShell(); render(); }
+if(IS_CONTROL){ document.documentElement.classList.add("big"); useMission(mcMission); renderControl(); } else { groupShell(); render(); }
 </script>
 
 </body></html>
