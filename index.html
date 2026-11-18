@@ -177,6 +177,11 @@ p{margin:0}
 .tkey{background:var(--panel-2);border-radius:10px;padding:12px;font-size:.98rem}
 .tkey b{color:var(--gold)}
 .foot{display:flex;justify-content:flex-end}
+.cb-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.cb-ch{font-family:var(--display);font-size:1.15rem;margin:10px 0 0;color:var(--gold)}
+.cb-card{border-left:4px solid var(--gold);background:var(--panel-2);border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;gap:4px}
+.cb-card h4{margin:0;font-family:var(--display);font-weight:400;font-size:1.1rem}
+.cb-card .src{font-size:.85rem;color:var(--muted)}
 .foot button{background:none;border:none;color:var(--muted);font-size:.85rem;cursor:pointer;padding:8px;min-height:44px}
 
 /* ===== scenes (transitions + big-screen animations) ===== */
@@ -498,6 +503,7 @@ const STEPS_M1 = [
   ],
   key:"No answer: both scenes opened.", teaches:"Persian rule ends with Alexander (3448)."},
  {id:"c3-act", ch:3, kind:"act", enter:["dawn","Dawn at Antipatris"], eyebrow:"Chamber 3 · The King Who Bowed",
+  clue:{t:"Dawn at Antipatris (the scene you acted)", src:"Gemara, Yoma 69a", b:"Shimon HaTzaddik, the Kohen Gadol, put on the bigdei kehunah and walked all night with torches to meet Alexander. At dawn, Alexander got down from his chariot and bowed. He said: before my battles, I see the face of this man leading me to victory. The Jews told him the truth about the Kutim, and he did not harm the Beis Hamikdash."},
   title:"Act it out: dawn at Antipatris",
   key:"Physical: short act-out. Needs the paper torch and the two role signs.", teaches:"Gemara Yoma 69a: the night walk, the bow, Alexander's vision."},
  {id:"c3-choice", ch:3, kind:"choice", eyebrow:"Chamber 3 · The King Who Bowed",
@@ -555,7 +561,7 @@ const STEPS_M1 = [
   options:[
    ["a","The Seleucids ruled first. Then the Ptolemies took over.", false, "Check the note called The Crown Changes Hands. Who ruled for 114 years?"],
    ["b","The Ptolemies of Egypt ruled first. Then Antiochus III of the Seleucids won it in 3562.", true, "Right. First Egypt, then Syria. By the time of the Chanukah story, the Seleucids of Syria were in charge."],
-   ["c","Persia kept ruling until the Chanukah story.", false, "Persian rule ended when Alexander conquered the Persian empire in 3448. Check your Satchel."]],
+   ["c","Persia kept ruling until the Chanukah story.", false, "Persian rule ended when Alexander conquered the Persian empire in 3448. Check your Clue Book."]],
   hints:["The answer is in the note called The Crown Changes Hands.","Look for the number 114 and the name Antiochus III."],
   satchel:["Crown: the Ptolemies of Egypt ruled for 114 years","Crown: the Seleucids of Syria took Eretz Yisrael in 3562 (Antiochus III)"],
   key:"B: Ptolemies first; Antiochus III (Seleucid) took it in 3562.", teaches:"How Eretz Yisrael came under Seleucid rule."},
@@ -571,7 +577,7 @@ const STEPS_M1 = [
   title:"The crown hunt",
   order:["BAV","PER","ALX","PTO","SEL"],
   crowns:{BAV:["Bavel","ח"],PER:["Persia","נ"],ALX:["Alexander","ו"],PTO:["The Ptolemies","כ"],SEL:["The Seleucids","ה"],ROM:["Rome","ש"]},
-  hints:["Open your Satchel. The crowns are listed there in the order you found them.","Bavel, then Persia, then a Greek king, then the two kingdoms: the one that ruled first, then the one that took over."],
+  hints:["Open your Clue Book and look at What we discovered: the crowns are listed there in the order you found them.","Bavel, then Persia, then a Greek king, then the two kingdoms: the one that ruled first, then the one that took over."],
   key:"Bavel ח → Persia נ → Alexander ו → Ptolemies כ → Seleucids ה = חנוכה. Rome (ש) is a decoy.", teaches:"The full sequence of rulers, the lesson's main goal."},
  {id:"c5-storm", ch:5, kind:"evidence", eyebrow:"Seal 1 is open",
   title:"Inside the first seal: before the storm",
@@ -669,7 +675,7 @@ const STEPS_M2 = [
   title:"What finally made them fight?",
   lead:"In Mission 1 you found a clue: Bavel, Persia, Alexander and the Ptolemies all ruled the Jews, and the Jews did not rebel. Which kind of pressure finally made them fight?",
   options:[
-   ["a","Political rule: foreign kings and their taxes.", false, "The Jews had lived under foreign kings for hundreds of years without rebelling. Look at your Satchel from Mission 1."],
+   ["a","Political rule: foreign kings and their taxes.", false, "The Jews had lived under foreign kings for hundreds of years without rebelling. Think back to the clue at the end of Mission 1."],
    ["b","Cultural influence: the gymnasium and Greek ways.", false, "Greek influence split the Jews and was dangerous, but anyone could still choose to keep the Torah. Something else changed."],
    ["c","Religious persecution: being forbidden to keep the Torah.", true, "Yes. When keeping the Torah itself was forbidden, the Jews were ready to stand up, even against a mighty king."]],
   hints:["Think about the clue from the end of Mission 1.","What was different about Antiochus IV compared to the kings before him?"],
@@ -758,7 +764,7 @@ function groupShell(){
   <header class="top">
     <h1 class="brand"><small>Chanukah: Unlock the Story</small>The Sealed Scroll</h1>
     <div class="seals" id="seals" aria-label="Six seals"></div>
-    <div class="tools"><button class="chip-btn" data-act="satchel" id="satchelBtn">Satchel</button></div>
+    <div class="tools"><button class="chip-btn" data-act="satchel" id="satchelBtn">Clue Book</button></div>
   </header>
   <nav class="track" id="track" aria-label="Chambers"></nav>
   <main class="stage" id="stage" aria-live="polite"></main>
@@ -771,8 +777,8 @@ function drawChrome(){
     return `<span class="wax ${open?"open":""} ${active?"active":""}" title="Seal ${i}">${i}</span>`;}).join("");
   $("#track").style.gridTemplateColumns = `repeat(${CHAMBERS.length-1},1fr)`;
   $("#track").innerHTML = CHAMBERS.slice(1).map((c,i)=>{const ch=i+1, cls = st.ch>ch?"done":st.ch===ch?"now":""; return `<div class="stone ${cls}"><b>${ch}</b><span>${c.n}</span></div>`;}).join("");
-  $("#satchelBtn").textContent = `Satchel (${S.satchel.length})`;
-  $("#satchelBtn").hidden = S.step===0;
+  $("#satchelBtn").textContent = `Clue Book (${clueEntries().length})`;
+  $("#satchelBtn").hidden = S.step===0 || st.kind==="exit";
 }
 
 /* ================= shared widgets ================= */
@@ -829,6 +835,7 @@ R.intro = () => `
     <li>Some missions send you around the room. Walk, don't run.</li>
     <li>Before any lock opens, every investigator taps their own seal to say "I agree."</li>
     <li>After each chamber, a runner checks in at Mission Control on the big screen.</li>
+    <li>Forgot something? Open the <b>Clue Book</b> at the top of the screen to reread every note you have opened.</li>
     <li>Hints are free. There is no clock and no score.</li>
   </ul>
   <div><button class="btn gold" data-act="next">Enter Chamber 1</button></div>`;
@@ -1033,7 +1040,7 @@ R.end = () => `
   <p class="eyebrow">Mission 1 complete</p>
   <h2>Seal 1 is open</h2>
   <p class="lead">${esc(S.team)} found the first part of the story. The Yidden came under Seleucid rule through a chain of kingdoms: Bavel, Persia, Alexander, the Ptolemies and the Seleucids.</p>
-  ${action(ICON_SCREEN,"Last walk: all of you to Mission Control",`<ol><li>Check in with the code word below.</li><li>Tap <b>Write our Crown Card</b> and type it together: one kingdom, how it took control, one fact, and where the fact comes from (look in your Satchel).</li><li>Your teacher checks the card, and then it appears on the class wall.</li></ol>`)}
+  ${action(ICON_SCREEN,"Last walk: all of you to Mission Control",`<ol><li>Check in with the code word below.</li><li>Tap <b>Write our Crown Card</b> and type it together: one kingdom, how it took control, one fact, and where the fact comes from (look in your Clue Book).</li><li>Your teacher checks the card, and then it appears on the class wall.</li></ol>`)}
   <div class="codeword">${CHECK_CODES[5]}</div>
   ${action(ICON_SPEAK,"Then: your own Investigator's Report",`<p>Your teacher will hand each of you a worksheet. Do it on your own, without your group, and give it to your teacher when you finish.</p>`)}
   <div class="feedback info"><b>Next time:</b> Seal 2, The Greeks and the Decrees.</div>`;
@@ -1288,7 +1295,7 @@ function mcCardForm(){
     <div class="field"><label for="fk">Kingdom (your teacher tells you which)</label><select id="fk">${KINGDOMS.map(k=>`<option>${esc(k)}</option>`).join("")}</select></div>
     <div class="field"><label for="fh">How it took control</label><input id="fh" maxlength="140"></div>
     <div class="field"><label for="ff">One fact you learned about it</label><input id="ff" maxlength="160"></div>
-    <div class="field"><label for="fs">Where the fact comes from (look in your Satchel)</label><input id="fs" maxlength="80"></div>
+    <div class="field"><label for="fs">Where the fact comes from (look in your Clue Book)</label><input id="fs" maxlength="80"></div>
     <div class="row"><button class="btn gold" data-act="mc-cardsend">Send to the teacher</button></div></div>`;
 }
 
@@ -1348,7 +1355,8 @@ document.addEventListener("click", e=>{
       if(v===GATHER_CODES[st.n]) next(); else { S.p.fb="That's not the code. Wait for your teacher to show it on the big screen."; render(); }
       break; }
     case "exitpick": { const i=S.p.qi||0; S.exitAns[i]=+el.dataset.j; S.p.qi=i+1; render(); break; }
-    case "satchel": openSatchel(); break;
+    case "satchel": cbTab="notes"; openSatchel(); break;
+    case "cbtab": cbTab = el.dataset.t; openSatchel(); break;
     case "teacher": openGate("panel"); break;
     case "close": closeLayer(); break;
     case "gate": tryGate(el.dataset.then); break;
@@ -1395,11 +1403,32 @@ function openBonus(){
 
 /* ================= overlays ================= */
 function closeLayer(){ $("#layer").innerHTML=""; frozen=false; }
+/* Clue Book: every note the group has opened, by chamber, plus what they discovered. */
+function clueEntries(){
+  const out = [];
+  STEPS.forEach((st, idx) => {
+    if(st.cards) st.cards.forEach((c,i)=>{ if(S.opened[st.id+"-"+i]) out.push({ch:st.ch, c}); });
+    if(st.note && S.opened[st.id+"-note"]) out.push({ch:st.ch, c:st.note});
+    if((st.clue) && S.step > idx) out.push({ch:st.ch, c:st.clue});
+    if(st.kind==="script" && S.step > idx) out.push({ch:st.ch, c:{t:st.title.replace(/^Read /,"").replace(/ aloud$/,""), src:st.src, b:st.lines.map(l=>st.roles[l[0]][0]+": "+l[1]).join(" ")}});
+  });
+  return out;
+}
+let cbTab = "notes";
 function openSatchel(){
-  $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Satchel">
-    <h3>Evidence Satchel</h3>
-    ${S.satchel.length? `<ul style="margin:0;padding-left:1.2em">${S.satchel.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul>` : `<p class="muted">Nothing collected yet. Evidence goes here as you solve each chamber.</p>`}
-    <div><button class="btn" data-act="close">Close</button></div></div></div>`;
+  const entries = clueEntries();
+  let notes = "", lastCh = -1;
+  entries.forEach(e => {
+    if(e.ch!==lastCh){ notes += `<p class="cb-ch">Chamber ${e.ch}: ${esc(CHAMBERS[e.ch].n)}</p>`; lastCh = e.ch; }
+    const c = e.c, he = c.he ? `<div class="he" lang="he" style="font-size:1.3rem">${c.he.map(w=>w[0]).join(" ")}</div>` : "";
+    notes += `<div class="cb-card"><h4>${esc(c.t)}${c.y?` <span class="yr" style="color:var(--gold)">${esc(c.y)}</span>`:""}</h4>${he}<p>${esc(c.b)}</p>${c.src?`<span class="src">Source: ${esc(c.src)}</span>`:""}</div>`;
+  });
+  const disc = S.satchel.length ? `<ul style="margin:0;padding-left:1.2em">${S.satchel.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul>` : `<p class="muted">Nothing yet. Each solved puzzle adds what you discovered.</p>`;
+  $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Clue Book">
+    <h3>Clue Book</h3>
+    <div class="cb-tabs"><button class="btn ${cbTab==="notes"?"":"ghost"}" data-act="cbtab" data-t="notes">Our notes (${entries.length})</button><button class="btn ${cbTab==="disc"?"":"ghost"}" data-act="cbtab" data-t="disc">What we discovered (${S.satchel.length})</button></div>
+    ${cbTab==="notes" ? (notes || `<p class="muted">No notes opened yet.</p>`) : disc}
+    <div><button class="btn" data-act="close">Close the Clue Book</button></div></div></div>`;
 }
 function openGate(then){
   $("#layer").innerHTML = `<div class="overlay"><div class="sheet" role="dialog" aria-label="Teacher code">
