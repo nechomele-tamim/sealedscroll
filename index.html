@@ -263,7 +263,7 @@ p{margin:0}
 .pending{border:1px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
 
 /* ---- new activity types ---- */
-.clip{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px;align-items:stretch}
+.clip{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px;align-items:start}
 @media (max-width:760px){.clip{grid-template-columns:1fr}}
 .clipart,.picbox,.zoombox,.flashbox,.spotbox,.pourbox{border-radius:12px;overflow:hidden;background:#0A0E16;line-height:0}
 .clipart svg,.picbox svg,.zoombox svg,.flashbox svg,.spotbox svg,.pourbox svg{width:100%;height:auto;display:block}
@@ -329,6 +329,54 @@ p{margin:0}
 .letter .sig{font-family:var(--display);font-size:1.3rem;text-align:right;color:#5C4A2E}
 .fogdrift{animation:fogdrift 7s ease-in-out infinite alternate}
 @keyframes fogdrift{from{transform:translateX(-18px)}to{transform:translateX(18px)}}
+.cryptex{display:flex;gap:10px;flex-wrap:wrap;background:linear-gradient(#5C4A2E,#3E3220);padding:14px 18px;border-radius:14px;width:max-content;max-width:100%}
+.wheel{display:flex;flex-direction:column;align-items:center;gap:6px}
+.wbtn{width:64px;height:42px;border-radius:8px;border:none;background:#E3B252;color:#3E3220;font-size:1.1rem;cursor:pointer}
+.wwin{width:64px;height:124px;border-radius:10px;background:linear-gradient(#8A5E10,#E9C477 28%,#FFF3D1 50%,#E9C477 72%,#8A5E10);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6px 0;overflow:hidden;box-shadow:inset 0 0 0 2px #3E3220;touch-action:none;cursor:ns-resize;user-select:none}
+.wn{font-size:1.15rem;color:rgba(42,36,24,.4);font-family:var(--display);line-height:1}
+.wc{font-size:2.6rem;color:#1C1810;font-family:var(--display);line-height:1;font-weight:700}
+.wup{animation:wup .25s ease-out}.wdown{animation:wdown .25s ease-out}
+@keyframes wup{from{transform:translateY(34px);opacity:.15}to{transform:none;opacity:1}}
+@keyframes wdown{from{transform:translateY(-34px);opacity:.15}to{transform:none;opacity:1}}
+.rubgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+.rubgrid.one{grid-template-columns:minmax(0,640px)}
+.rubpanel{display:flex;flex-direction:column;gap:8px;min-width:0}
+.rubbox{position:relative;border-radius:10px;overflow:hidden;line-height:0;background:#151B2A}
+.rubbox svg{width:100%;height:auto;display:block}
+.rubcv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+.rubcap{margin:0;background:var(--gold-soft);border-radius:10px;padding:10px 12px;font-size:1.05rem;line-height:1.5}
+.moonrow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.moontile{border:1px solid var(--line);border-radius:10px;background:#151B2A;padding:4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;color:#F2E5C6;font-size:.85rem;line-height:1.2}
+.moontile svg{width:100%;height:auto}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;max-width:520px}
+.calday{aspect-ratio:1.1;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1rem;color:var(--ink)}
+.calday small{font-size:.55rem;font-weight:400;line-height:1.1}
+.calday.rc{background:var(--gold-soft);border-color:var(--gold)}
+.calday.blank{color:var(--muted);cursor:default}
+.decree{background:#3A2F28;color:#F2E5C6;border-left:6px solid #E0414F;border-radius:8px;padding:12px 14px;font-size:1.1rem}
+.cmsg{display:flex;flex-direction:column;gap:4px;background:#151B2A;color:#F2E5C6;border-radius:10px;padding:12px 16px}
+.cmsg b{font-size:1.5rem;letter-spacing:.12em;font-family:ui-monospace,Menlo,monospace;word-break:break-word}
+.cipherwrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.cwheel{width:min(340px,100%);touch-action:none;cursor:grab}
+.cwheel svg{width:100%;height:auto}
+.cside{flex:1 1 240px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.creading{display:flex;flex-direction:column;gap:4px;border:2px dashed var(--line);border-radius:10px;padding:10px 14px}
+.creading b{font-size:1.3rem;letter-spacing:.1em;font-family:ui-monospace,Menlo,monospace;word-break:break-word}
+.creading.ok{border:2px solid var(--gold);background:var(--gold-soft)}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+.person{border:2px dashed var(--line);border-radius:14px;background:var(--panel);padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;gap:6px;color:var(--ink);min-width:0;text-align:center}
+.person.armed{border-color:var(--lapis);background:var(--lapis-soft)}
+.person svg{width:100%;height:auto;border-radius:10px}
+.person b{font-size:1.05rem}.person small{color:var(--muted);margin-top:-4px}
+.said{display:flex;flex-direction:column;gap:6px;min-height:0}
+.saidb{background:#fff;color:#1C2333;border:2px solid #1C2333;border-radius:14px;padding:6px 10px;font-size:.88rem;text-align:left;position:relative}
+.saidb::after{content:"";position:absolute;left:24px;bottom:-9px;border:8px solid transparent;border-top-color:#1C2333;border-bottom:0}
+.tile.bubbleq{border-radius:18px;background:#fff;color:#1C2333;border:2px solid #1C2333}
+.tile.bubbleq.sel{border-color:var(--lapis);background:var(--lapis-soft)}
+.tile.pic{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;width:132px;text-align:center;font-size:.9rem;line-height:1.2}
+.tile.pic svg{width:100%;height:auto;border-radius:6px}
+.tile.pic.mini{width:104px;font-size:.78rem}
+.binart{display:block;line-height:0}.binart svg{width:100%;max-width:200px;height:auto;border-radius:8px}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -494,11 +542,11 @@ const STEPS_M1 = [
   lead:"Before the Greeks ever came, something happened to the Beis Hamikdash. Each note is addressed to one of you. Open your own note, read it to yourself, and then tell the group what it says in your own words.",
   cards:[
    {t:"A House for Hashem", b:"Shlomo HaMelech built the first Beis Hamikdash in Yerushalayim. It stood for 410 years."},
-   {t:"The Fire", y:"3338", tts:true, b:"In the year 3338, Nevuchadnetzar, king of Bavel (Babylonia), destroyed the first Beis Hamikdash. Most of the Jews were taken away to Bavel. This is called Galus Bavel, the Babylonian exile."},
+   {t:"The Destruction", y:"3338", tts:true, b:"In the year 3338, Nevuchadnetzar, king of Bavel (Babylonia), destroyed the first Beis Hamikdash. Most of the Jews were taken away to Bavel. This is called Galus Bavel, the Babylonian exile."},
    {t:"A New Empire", b:"The kingdom of Persia conquered Bavel. Koresh (Cyrus), king of Persia, let the Jews go home and rebuild. 42,360 Jews went up to Yerushalayim with Zerubavel. They started by rebuilding the Mizbeach."},
    {t:"Work Stops", b:"Enemies of the Jews in Eretz Yisrael, the Kutim, complained to the next Persian king: Achashverosh, the king of the Purim story. He stopped the building."},
    {t:"Building Again", y:"3412", b:"After the Purim story, Achashverosh died. His son Daryavesh (Darius), the son of Esther HaMalkah, let the Jews build again. The Second Beis Hamikdash was finished in 3412."},
-   {t:"Something Is Missing", aloud:true, b:"The Second Beis Hamikdash was holy, but some things were missing, like the Aron. Over its eastern gate was a picture of Shushan, the Persian capital, to remind the Jews that Persia ruled them."}
+   {t:"Something Is Missing", aloud:true, src:"Gemara, Yoma 21b", b:"The Second Beis Hamikdash was holy, but five things from the first one were missing: (1) the Aron, with its cover and the Keruvim; (2) the fire that came down from Heaven onto the Mizbeach; (3) the Shechinah, as it had rested in the first; (4) Ruach HaKodesh, prophecy; (5) the Urim V'Tumim. Also, over its eastern gate was a picture of Shushan, the Persian capital, to remind the Jews that Persia ruled them."}
   ],
   key:"No answer. Every card opened; listen for each child explaining their own card.",
   teaches:"First Beis Hamikdash, Galus Bavel, Persian return, the Purim pause, the Second Beis Hamikdash."},
@@ -538,7 +586,7 @@ const STEPS_M1 = [
    {t:"Yirmiyahu's promise", src:"Yirmiyahu 29:10",
     he:[["כִּי","because"],["לְפִי","when"],["מְלֹאת","are completed"],["לְבָבֶל","for Bavel"],["שִׁבְעִים","seventy"],["שָׁנָה","years"],["אֶפְקֹד","I will remember"],["אֶתְכֶם","you"],["...","(words left out)"],["לְהָשִׁיב","to bring back"],["אֶתְכֶם","you"],["אֶל","to"],["הַמָּקוֹם","the place"],["הַזֶּה","this"]],
     tts:true, b:"In English: When seventy years are completed for Bavel, I will remember you … and bring you back to this place."},
-   {t:"The year of the fire", y:"3338", b:"The first Beis Hamikdash was destroyed in the year 3338. That is when Galus Bavel began."}
+   {t:"The year of the destruction", y:"3338", b:"The first Beis Hamikdash was destroyed in the year 3338. That is when Galus Bavel began."}
   ],
   key:"No answer: both cards opened; the group visited the poster.", teaches:"Reading the pasuk of the 70-year promise in the original."},
  {id:"c2-lock", ch:2, kind:"lock2", out:["lock","The Lock of Seventy opens"], eyebrow:"Chamber 2 · The Lock of Seventy",
@@ -548,7 +596,7 @@ const STEPS_M1 = [
     hints:["Look at the Wall of Yirmiyahu for the number word.","שִׁבְעִים means seventy."],
     wrong:"That is not the number in the pasuk. Find the word that means a number."},
    {q:"Dial 2. Galus Bavel began in 3338. If the promise came true exactly, in what year could the Jews start building the Beis Hamikdash again?", a:"3408", len:4,
-    hints:["Start at the year of the fire and add the number of years in the promise.","3338 + 70 = ?"],
+    hints:["Start at the year of the destruction and add the number of years in the promise.","3338 + 70 = ?"],
     wrong:"Not that year. Add the years of the promise to 3338.", special:{"3412":"3412 is the year the building was finished. The question asks when building could start again."}}
   ],
   win:"3338 + 70 = 3408. And that is exactly what happened: in 3408, King Daryavesh let the Jews start building again. Hashem's promise through Yirmiyahu came true to the year.",
@@ -1201,7 +1249,7 @@ function hintBlock(hs){
 function ritual(label){
   const all = S.names.every((_,i)=>S.seals[i]);
   return `<div class="ritual">
-    <p><b>Seal your answer.</b> Each investigator taps their own seal only if they agree. If someone disagrees, talk it out first.</p>
+    <p><b>Everyone agree?</b> Tap your own seal.</p>
     <div class="sealrow">${S.names.map((n,i)=>`<button class="seal ${S.seals[i]?"on":""}" style="color:${col(i)}" data-act="seal" data-i="${i}" aria-pressed="${!!S.seals[i]}"><i><span>${esc(n.charAt(0).toUpperCase())}</span></i><small>${esc(n)}</small></button>`).join("")}</div>
     <div><button class="btn" data-act="check" ${all?"":"disabled"}>${label||"Check"}</button></div></div>`;
 }
@@ -1230,19 +1278,8 @@ R.setup = () => `
 R.intro = () => `
   <p class="eyebrow">The Archive</p>
   <h2>${esc(S.team)}, look at the big screen</h2>
-  <p class="lead">Your teacher will play the opening of the mission on the big screen. Then come back here and meet your roles.</p>
+  <p class="lead">Your teacher is starting the mission on the big screen. Watch together, then begin.</p>
   <div class="feedback info"><b>Seal ${MN} asks:</b> ${esc(MIS.question)}</div>
-  <h3>Your roles</h3>
-  <div class="roles">${S.names.map((n,i)=>`<div class="role"><b>${tag(i)}</b>${rolesFor(i).map(r=>`<span><b>${r[0]}.</b> <span class="muted">${r[1]}</span></span>`).join("")}</div>`).join("")}</div>
-  <h3>How this works</h3>
-  <ul style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px">
-    <li>Every clue is addressed to one of you. Open your own clue, read it, then tell the group what it says.</li>
-    <li>Some missions send you around the room. Walk, don't run.</li>
-    <li>Before any lock opens, every investigator taps their own seal to say "I agree."</li>
-    <li>After each chamber, a runner checks in at Mission Control on the big screen.</li>
-    <li>Forgot something? Open the <b>Clue Book</b> at the top of the screen to reread every note you have opened.</li>
-    <li>Hints are free. There is no clock and no score.</li>
-  </ul>
   <div><button class="btn gold" data-act="next">Enter Chamber 1</button></div>`;
 
 R.evidence = st => {
@@ -1733,6 +1770,25 @@ R.dreidel = st => {
    ${table()}<p class="muted">Each letter has a number value (gematria). Find all four.</p>`;
 };
 
+/* ---- combination lock with wheels you turn ---- */
+R.lock2 = st => {
+  const pi = S.p.part||0, part = st.parts[pi];
+  if(S.p.wpart!==pi || !Array.isArray(S.p.wh) || S.p.wh.length!==part.len){ S.p.wh = Array(part.len).fill(0); S.p.wpart = pi; }
+  S.p.val = S.p.wh.join("");
+  let h = `${head(st)}${st.pre?st.pre():""}`;
+  if(pi>0) h += `<div class="feedback ok">Dial 1 clicks into place: ${esc(st.parts[0].a)}${st.id==="c2-lock"?" years":""}.</div>`;
+  if(S.p.solved) return h + winBlock(st.win);
+  const lw = S.p.lw; S.p.lw = null;
+  h += `${st.parts.length>1?`<p class="part">Dial ${pi+1} of ${st.parts.length}</p>`:""}<p class="lead">${esc(part.q.replace(/^Dial \d\. /,""))}</p>
+   <div class="cryptex" role="group" aria-label="Combination lock">${S.p.wh.map((d,i)=>`<div class="wheel" data-wheel="${i}">
+     <button class="wbtn" data-act="wh" data-i="${i}" data-d="1" aria-label="Turn wheel ${i+1} up">&#9650;</button>
+     <div class="wwin"><span class="wn">${(d+9)%10}</span><span class="wc ${lw&&lw.i===i?(lw.d>0?"wup":"wdown"):""}" aria-live="polite">${d}</span><span class="wn">${(d+1)%10}</span></div>
+     <button class="wbtn" data-act="wh" data-i="${i}" data-d="-1" aria-label="Turn wheel ${i+1} down">&#9660;</button></div>`).join("")}</div>
+   <p class="muted">Turn each wheel to the right number: tap the arrows, or swipe a wheel up or down.</p>
+   ${S.p.fb?`<div class="feedback no">${esc(S.p.fb)}</div>`:""}${hintBlock(part.hints)}${ritual("Try the lock")}`;
+  return h;
+};
+
 /* ================= new activity types: events ================= */
 const XSOLVE = {
   clip: st => { if((S.p.f||0) < st.cards.length-1){ S.p.f = st.cards.length-1; return "stay"; } return false; },
@@ -1825,6 +1881,11 @@ document.addEventListener("click", e=>{
   const r = b.getBoundingClientRect(); FLP.x = Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100)); FLP.y = Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100));
   b.style.setProperty("--mx", FLP.x+"%"); b.style.setProperty("--my", FLP.y+"%");
 }, {passive:true}));
+function turnWheel(i, d){ const p = S.p; if(!Array.isArray(p.wh)) return; p.wh = p.wh.slice(); p.wh[i] = (p.wh[i] + d + 10) % 10; p.lw = {i, d}; p.fb = null; S.seals = {}; render(); }
+document.addEventListener("click", e=>{ const el = e.target.closest('[data-act="wh"]'); if(!el || frozen || IS_CONTROL) return; turnWheel(+el.dataset.i, +el.dataset.d); });
+let WSW = null;
+document.addEventListener("pointerdown", e=>{ const w = e.target.closest && e.target.closest(".wwin"); if(!w) return; WSW = {i:+w.parentElement.dataset.wheel, y:e.clientY}; }, {passive:true});
+document.addEventListener("pointerup", e=>{ if(!WSW) return; const dy = e.clientY - WSW.y, i = WSW.i; WSW = null; if(Math.abs(dy) < 18) return; turnWheel(i, dy < 0 ? 1 : -1); }, {passive:true});
 
 /* ================= missions rebuilt with the new activities ================= */
 function stepIdx(arr, id){ const i = arr.findIndex(s=>s.id===id); if(i<0) throw new Error("missing step "+id); return i; }
@@ -1845,7 +1906,7 @@ const YEAR = (y) => `<g class="a-fade" style="animation-delay:1s"><rect x="620" 
     () => SKY(K.sky)+HILLS()+GROUND(380)+`<g opacity=".35">${TOWER(110,380,.6)}</g>`+LB(110,404,"Bavel",18,K.s3)+MAN(270,380,{c:K.lapis,crown:true,arm:true,hold:(x,y)=>SCROLLR(x-6,y-30,46,.6)})+LB(270,404,"Koresh",18)+WALKERS(330,382,6)+FD(1.4,ALTAR(700,380,1.1))+FD(1.4,LB(700,404,"Mizbeach",18)),
     () => SKY(K.sky)+HILLS()+TEMPLE(240,380,.8,{half:true})+GROUND(380)+MAN(560,380,{c:K.lapis,crown:true,arm:true,hold:(x,y)=>`<rect x="${x-4}" y="${y-36}" width="40" height="30" rx="3" fill="${K.parch}"/><circle cx="${x+16}" cy="${y-21}" r="8" fill="${K.red}"/>`})+LB(560,404,"Achashverosh",18)+MAN(680,380,{c:K.s1})+MAN(730,380,{c:K.s1})+LB(705,404,"the Kutim",18),
     () => SKY(K.sky)+`<circle cx="660" cy="90" r="40" fill="${K.flame}" class="a-sun"/>`+HILLS()+TEMPLE(330,380,1,{build:true})+GROUND(380)+MAN(620,380,{c:K.lapis,crown:true})+LB(620,404,"Daryavesh",18)+YEAR("3412"),
-    () => SKY(K.sky)+HILLS()+TEMPLE(300,380,1,{shushan:true})+GROUND(380)+FD(.8,`<line x1="300" y1="200" x2="300" y2="236" stroke="${K.gold}" stroke-width="3"/>${LB(300,196,"Shushan",16,K.gold)}`)+FD(1.4,`<rect x="560" y="150" width="170" height="110" rx="10" fill="none" stroke="${K.parch}" stroke-width="4" stroke-dasharray="12 10"/>${LB(645,222,"?",60,K.parch)}${LB(645,290,"the Aron",20)}`)
+    () => SKY(K.sky)+HILLS()+TEMPLE(300,380,1,{shushan:true})+GROUND(380)+FD(.8,`<line x1="300" y1="200" x2="300" y2="236" stroke="${K.gold}" stroke-width="3"/>${LB(300,196,"Shushan",16,K.gold)}`)+["the Aron","the fire from Heaven","the Shechinah","Ruach HaKodesh","the Urim V'Tumim"].map((t,i)=>FD(1+i*.5,`<rect x="540" y="${62+i*62}" width="230" height="48" rx="8" fill="none" stroke="${K.parch}" stroke-width="3" stroke-dasharray="10 8"/>${LB(655,93+i*62,t,19,K.parch)}}`)).join("")
   ];
   swapStep(STEPS_M1, "c1-ev", Object.assign({}, c1, {id:"c1-clip", kind:"clip", title:"From the first Beis Hamikdash to the second",
     lead:"Watch the story in six short scenes. The person named reads each caption aloud to the group.", cta:"We watched all six scenes",
@@ -1853,10 +1914,10 @@ const YEAR = (y) => `<g class="a-fade" style="animation-delay:1s"><rect x="620" 
 
   addAfter(STEPS_M1, "c3-act", TX({id:"c3-text", ch:3, eyebrow:"Chamber 3 · The King Who Bowed", title:"Read it in the Gemara", src:"Gemara, Yoma 69a", lang:"Aramaic and Hebrew",
     lead:"You just acted it out. Here is how the Gemara itself tells the moment at dawn.",
-    phr:[["זרחה חמה","the sun rose"],["ופגעו זה בזה","and they met each other"],["כיון שראה לשמעון הצדיק","as soon as he saw Shimon HaTzaddik"],["ירד ממרכבתו","he got down from his chariot"],["והשתחוה לפניו","and bowed down before him"],["אמרו לו:","They said to him:"],["מלך גדול כמותך","a great king like you"],["ישתחוה ליהודי זה?","should bow to this Jew?"],["אמר להם:","He said to them:"],["דמות דיוקנו של זה","the image of this man's face"],["מנצחת לפני בבית מלחמתי","wins before me in my battles"]],
-    finds:[{q:"What did Alexander do when he saw Shimon HaTzaddik?", a:[3,4], ok:"ירד ממרכבתו והשתחוה לפניו: he got down from his chariot and bowed before him."},
-           {q:"Find the words where Alexander's men complain.", a:[6,7], ok:"מלך גדול כמותך ישתחוה ליהודי זה? A great king like you should bow to this Jew?"},
-           {q:"Find the words that tell why Alexander bowed.", a:[9,10], ok:"דמות דיוקנו של זה מנצחת לפני: he had seen this face leading him to victory in his battles."}],
+    phr:[["זָרְחָה חַמָּה","the sun rose"],["וּפָגְעוּ זֶה בָּזֶה","and they met each other"],["כֵּיוָן שֶׁרָאָה לְשִׁמְעוֹן הַצַּדִּיק","as soon as he saw Shimon HaTzaddik"],["יָרַד מִמֶּרְכַּבְתּוֹ","he got down from his chariot"],["וְהִשְׁתַּחֲוָה לְפָנָיו","and bowed down before him"],["אָמְרוּ לוֹ:","They said to him:"],["מֶלֶךְ גָּדוֹל כְּמוֹתְךָ","a great king like you"],["יִשְׁתַּחֲוֶה לִיהוּדִי זֶה?","should bow to this Jew?"],["אָמַר לָהֶם:","He said to them:"],["דְּמוּת דְּיוֹקְנוֹ שֶׁל זֶה","the image of this man's face"],["מְנַצַּחַת לְפָנַי בְּבֵית מִלְחַמְתִּי","wins before me in my battles"]],
+    finds:[{q:"What did Alexander do when he saw Shimon HaTzaddik?", a:[3,4], ok:"יָרַד מִמֶּרְכַּבְתּוֹ וְהִשְׁתַּחֲוָה לְפָנָיו: he got down from his chariot and bowed before him."},
+           {q:"Find the words where Alexander's men complain.", a:[6,7], ok:"A great king like you should bow to this Jew?"},
+           {q:"Find the words that tell why Alexander bowed.", a:[9,10], ok:"He had seen this face leading him to victory in his battles."}],
     win:"You read the Gemara, Yoma 69a, in the original.", key:"Find: 3–4, 6–7, 9–10.", teaches:"Reading Yoma 69a in the original."}));
 
   const ev2 = getStep(STEPS_M1, "c4-ev2"), ch4 = getStep(STEPS_M1, "c4-choice");
@@ -1866,8 +1927,8 @@ const YEAR = (y) => `<g class="a-fade" style="animation-delay:1s"><rect x="620" 
   dropStep(STEPS_M1, "c4-choice");
 
   const storm = getStep(STEPS_M1, "c5-storm"), pos = [[16,30],[83,24],[27,78],[78,74]];
-  swapStep(STEPS_M1, "c5-storm", Object.assign({}, storm, {kind:"flash", title:"Inside the first seal: a dark archive",
-    lead:"The first part of the scroll is open, but its last room is dark. Move the light to find four hidden notes about life under the early Seleucid kings. Look for one thing that is about to change.",
+  swapStep(STEPS_M1, "c5-storm", Object.assign({}, storm, {kind:"flash", title:"The lantern in the fog",
+    lead:"The first seal is open! But the Fog of Forgetting still fills the last room of the archive, and four notes are hidden in it. They tell what happened next, under the Seleucid kings. Move the Shamash's lantern to find all four, and look for one thing that is about to change.",
     cta:"Read the last line of the seal", cards: storm.cards.map((c,i)=>Object.assign({}, c, {x:pos[i][0], y:pos[i][1]})),
     scene: () => SKY("#0A0E16")+[0,1,2].map(r=>`<rect x="30" y="${120+r*110}" width="740" height="12" fill="#7E7462"/>`+[...Array(15)].map((_,k)=>`<rect x="${40+k*48}" y="${62+r*110}" width="${20+(k*7)%16}" height="58" fill="${["#5A6E9A","#8A6A50","#5E8A68"][(k+r)%3]}"/>`).join("")).join("")+`<rect x="0" y="400" width="800" height="50" fill="#4A5268"/>`}));
 }
@@ -2154,9 +2215,262 @@ Object.assign(ART, ART_STORY);
     clue:{t:`${sd.ch}: the Shamash's second letter`, b:sd.close.join(" ")}, key:"Read aloud.", teaches:"The storyline."};
   addAfter(arr, after, closeStep);
 });
+
+/* ================= Mission 2, rebuilt as hands-on puzzles ================= */
+/* ---- rub: clean a dirty picture with your finger ---- */
+R.rub = st => {
+  const rv = S.p.rv||{}, all = st.cards.every((_,i)=>rv[i]);
+  setTimeout(initRub, 30);
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="rubgrid ${st.cards.length===1?"one":""}">${st.cards.map((c,i)=>`<div class="rubpanel">
+     <div class="rubbox">${SV(c.art())}${rv[i]?"":`<canvas class="rubcv" data-i="${i}" aria-label="Dirty panel: rub it clean"></canvas>`}</div>
+     ${rv[i]?`<p class="rubcap"><b>${esc(c.t)}.</b> ${esc(c.b)}</p>`:`<p class="muted">${tag(owner(st,i))} rubs this one clean</p>`}</div>`).join("")}</div>
+   ${all?`<div><button class="btn gold" data-act="next">${esc(st.cta||"Continue")}</button></div>`:`<p class="muted">Rub with your finger to clean off the dirt.</p>`}`;
+};
+function initRub(){
+  document.querySelectorAll("canvas.rubcv").forEach(cv=>{
+    if(cv.dataset.ready) return; cv.dataset.ready = 1;
+    const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1);
+    cv.width = Math.max(1, Math.round(r.width*dpr)); cv.height = Math.max(1, Math.round(r.height*dpr));
+    const g = cv.getContext("2d");
+    g.fillStyle = "#6B5F4D"; g.fillRect(0,0,cv.width,cv.height);
+    let seed = 7; const rnd = () => (seed = (seed*9301+49297)%233280)/233280;
+    for(let k=0;k<520;k++){ g.fillStyle = `rgba(${50+rnd()*70|0},${42+rnd()*55|0},${30+rnd()*40|0},.55)`; g.beginPath(); g.arc(rnd()*cv.width, rnd()*cv.height, (3+rnd()*14)*dpr, 0, 7); g.fill(); }
+    g.fillStyle = "rgba(242,229,198,.9)"; g.font = `700 ${18*dpr}px sans-serif`; g.textAlign = "center"; g.fillText("Rub here", cv.width/2, cv.height/2);
+    let down = false, moves = 0, last = null;
+    const pt = e => { const b = cv.getBoundingClientRect(); return [(e.clientX-b.left)*dpr, (e.clientY-b.top)*dpr]; };
+    const scrub = e => { const p = pt(e); g.globalCompositeOperation = "destination-out"; g.lineCap = "round"; g.lineWidth = 46*dpr;
+      g.beginPath(); g.moveTo(...(last||p)); g.lineTo(...p); g.stroke(); g.globalCompositeOperation = "source-over"; last = p; if(++moves%15===0) checkRub(cv, g); };
+    cv.addEventListener("pointerdown", e=>{ down = true; last = null; try{ cv.setPointerCapture(e.pointerId); }catch(err){} scrub(e); });
+    cv.addEventListener("pointermove", e=>{ if(down) scrub(e); });
+    ["pointerup","pointercancel"].forEach(ev=>cv.addEventListener(ev, ()=>{ if(down){ down = false; last = null; checkRub(cv, g); } }));
+  });
+}
+function checkRub(cv, g){
+  if(cv.dataset.done) return;
+  const d = g.getImageData(0,0,cv.width,cv.height).data; let clear = 0, tot = 0;
+  for(let i=3;i<d.length;i+=4*61){ tot++; if(d[i]<60) clear++; }
+  if(clear/tot > 0.55){ cv.dataset.done = 1; const st = step(); S.p.rv = Object.assign({}, S.p.rv, {[cv.dataset.i]:true}); S.opened[st.id+"-"+cv.dataset.i] = true; render(); }
+}
+
+/* ---- moon: Rosh Chodesh and the calendar ---- */
+function moonTile(ph, stamp){
+  const crescent = ph===0 ? "" : `<circle cx="50" cy="44" r="22" fill="#F2E5C6"/><circle cx="${50-ph*7-4}" cy="44" r="22" fill="#151B2A"/>`;
+  return `<rect width="100" height="90" fill="#151B2A"/>${[[14,14],[80,20],[24,70],[86,72],[60,12]].map(s=>`<circle cx="${s[0]}" cy="${s[1]}" r="1.6" fill="#F2E5C6"/>`).join("")}${ph===0?"":crescent}${stamp?`<g transform="rotate(-14 50 45)"><rect x="6" y="32" width="88" height="26" rx="4" fill="none" stroke="#E0414F" stroke-width="4"/><text x="50" y="51" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="14" fill="#E0414F">FORBIDDEN</text></g>`:""}`;
+}
+R.moon = st => {
+  const stg = S.p.stg||0, phases = [0,0,1,2,3,4];
+  let h = `${head(st)}`;
+  const tiles = (act, stamp) => `<div class="moonrow">${phases.map((ph,i)=>`<button class="moontile" ${act?`data-act="mtile" data-i="${i}"`:"disabled"}>${SV(moonTile(ph, stamp), "0 0 100 90")}<span>Night ${i+1}</span></button>`).join("")}</div>`;
+  if(stg===0){
+    h += `<p class="lead">Every month, witnesses watched the sky. When they first saw the new moon, they ran to the Sanhedrin, and the Sanhedrin declared: today is Rosh Chodesh! Tap the first night the new moon could be seen.</p>${tiles(true)}`;
+  } else if(stg===1){
+    h += `<div class="feedback ok">Night 3: a thin new moon! The Sanhedrin declares: Rosh Chodesh Nissan.</div><p class="lead">Pesach is on the 15th of Nissan. Count the days and tap Pesach.</p>
+      <div class="cal">${[...Array(30)].map((_,d)=>`<button class="calday ${d===0?"rc":""}" data-act="mday" data-d="${d}">${d===0?"1<small>Rosh Chodesh</small>":""}</button>`).join("")}</div>`;
+  } else {
+    h += `<div class="feedback ok">The 15th of Nissan: Pesach.</div><div class="decree">The king's soldiers nail up a new decree: <b>No more Rosh Chodesh.</b> No witnesses, no announcement.</div>${tiles(false, true)}
+      <div class="cal">${[...Array(30)].map(()=>`<span class="calday blank">?</span>`).join("")}</div>
+      <p class="lead">Now, when is Pesach this year?</p>
+      <div class="choices">${st.options.map((o,j)=>`<button class="choice" data-act="mopt" data-j="${j}" ${S.p.solved?"disabled":""}>${esc(o[0])}</button>`).join("")}</div>`;
+  }
+  if(S.p.fb) h += `<div class="feedback no">${esc(S.p.fb)}</div>`;
+  if(S.p.solved) h += winBlock(st.win);
+  return h;
+};
+
+/* ---- cipher wheel ---- */
+const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const enc = (t, k) => t.replace(/[A-Z]/g, c=>ABC[(ABC.indexOf(c)+k)%26]);
+R.cipher = st => {
+  const r = S.p.r ?? st.start, coded = enc(st.msg, st.shift), reading = enc(coded, (26 - r)%26), right = r===st.shift;
+  const ring = (rad, rot, letters, fill, size) => `<g transform="rotate(${rot} 200 200)">${letters.split("").map((L,i)=>{ const a=(i*360/26-90)*Math.PI/180; return `<text x="${200+rad*Math.cos(a)}" y="${200+rad*Math.sin(a)+size/3}" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="${size}" fill="${fill}" transform="rotate(${i*360/26} ${200+rad*Math.cos(a)} ${200+rad*Math.sin(a)})">${L}</text>`; }).join("")}</g>`;
+  const wheel = `<circle cx="200" cy="200" r="196" fill="#5C4A2E"/><circle cx="200" cy="200" r="190" fill="#E9C477"/>${ring(170, 0, ABC, "#2A2418", 22)}
+    <g class="cinner"><circle cx="200" cy="200" r="140" fill="#3A3F63"/>${ring(118, -r*360/26, ABC, "#F2E5C6", 20)}<circle cx="200" cy="200" r="70" fill="#151B2A"/>${FLM(200, 212, 1.4)}</g>
+    <path d="M200 20 L190 2 H210Z" fill="#9B2D3A"/>`;
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="cmsg"><span class="muted">The coded message:</span><b>${esc(coded)}</b></div>
+   <div class="cipherwrap"><div class="cwheel" id="cwheel">${SV(wheel, "0 0 400 400")}</div>
+     <div class="cside"><div class="row"><button class="btn" data-act="crot" data-d="-1" aria-label="Turn the inner ring left">&#10226; Turn</button><button class="btn" data-act="crot" data-d="1" aria-label="Turn the inner ring right">Turn &#10227;</button></div>
+     <p class="muted">Turn the blue ring (with the buttons, or by dragging it around). Each coded letter on the blue ring sits under its real letter on the gold ring.</p>
+     <div class="creading ${right?"ok":""}"><span class="muted">Reading with the wheel like this:</span><b>${esc(reading)}</b></div></div></div>
+   ${right? (S.p.solved? winBlock(st.win) : `<div class="feedback ok">It makes sense! Now write the answer.</div><div class="field"><label for="cans">${esc(st.ask)}</label><input id="cans" autocomplete="off" autocapitalize="characters"></div><div><button class="btn" data-act="cans">Check</button></div>${S.p.fb?`<div class="feedback no">${esc(S.p.fb)}</div>`:""}`) : ""}`;
+};
+
+/* ---- events for the new puzzles ---- */
+document.addEventListener("click", e=>{
+  const el = e.target.closest("[data-act]"); if(!el || frozen || IS_CONTROL) return;
+  const a = el.dataset.act, st = step(), p = S.p;
+  if(a==="mtile"){ const i = +el.dataset.i; if(i===2){ p.stg = 1; p.fb = null; } else p.fb = i<2 ? "No moon yet that night. Look again." : "The moon is already bigger here. Which night did it FIRST appear?"; render(); }
+  if(a==="mday"){ const d = +el.dataset.d; if(d===14){ p.stg = 2; p.fb = null; } else p.fb = `That's the ${d+1}${[,"st","nd","rd"][((d+1)%100>10&&(d+1)%100<14)?0:(d+1)%10]||"th"} of Nissan. Count again from Rosh Chodesh.`; render(); }
+  if(a==="mopt"){ const o = st.options[+el.dataset.j]; if(o[1]){ p.solved = true; p.fb = null; } else p.fb = o[2]; render(); }
+  if(a==="crot"){ p.r = ((p.r ?? st.start) + +el.dataset.d + 26)%26; p.fb = null; render(); }
+  if(a==="cans"){ const v = ($("#cans").value||"").toUpperCase().replace(/[^A-Z]/g,""); if(st.answers.includes(v)){ p.solved = true; p.fb = null; } else p.fb = "Not quite. Read the message again: what does it say?"; render(); }
+});
+let CWD = null;
+document.addEventListener("pointerdown", e=>{ const w = e.target.closest && e.target.closest("#cwheel"); if(!w) return; const b = w.getBoundingClientRect(); CWD = {cx:b.left+b.width/2, cy:b.top+b.height/2, a:Math.atan2(e.clientY-(b.top+b.height/2), e.clientX-(b.left+b.width/2))}; }, {passive:true});
+document.addEventListener("pointerup", e=>{ if(!CWD) return; const a2 = Math.atan2(e.clientY-CWD.cy, e.clientX-CWD.cx); let d = (a2-CWD.a)*180/Math.PI; if(d>180) d-=360; if(d<-180) d+=360; CWD = null; const steps = Math.round(d/(360/26)); if(!steps) return; const st = step(); if(st.kind!=="cipher") return; S.p.r = ((S.p.r ?? st.start) - steps + 52)%26; render(); }, {passive:true});
+Object.assign(XSOLVE, {
+  rub: st => { S.p.rv = Object.fromEntries(st.cards.map((_,i)=>[i,true])); st.cards.forEach((_,i)=>S.opened[st.id+"-"+i]=true); return "stay"; },
+  moon: st => { S.p.stg = 2; },
+  cipher: st => { S.p.r = st.shift; }
+});
+{ const _rubF = XSOLVE.rub; XSOLVE.rub = st => (st.cards.every((_,i)=>(S.p.rv||{})[i]) ? false : _rubF(st)); }
+
+/* ---- search wording for the spot kind ---- */
+{ const _spot = R.spot; R.spot = st => st.noun ? _spot(st).replace(/Found (\d+) of (\d+) mistakes\. Tap the picture where something is wrong\./, `Found $1 of $2 ${st.noun}. Tap ${st.where}.`) : _spot(st); }
+
+/* ---- the new Mission 2 ---- */
 {
-  const _intro = R.intro;
-  R.intro = () => _intro().replace(`<div class="feedback info"><b>Seal ${MN} asks:</b>`, `<div class="feedback ok"><b>${esc(STORY[MN].ch)}.</b> ${esc(GOAL)}</div><div class="feedback info"><b>Seal ${MN} asks:</b>`).replace("<h3>How this works</h3>","<h3>How this works</h3>").replace("Every clue is addressed to one of you.","You are Keepers of the Light. Every clue is addressed to one of you.");
+  const A2 = STEPS_M2, ch1 = getStep(A2,"m2-c1-clip").eyebrow;
+  const wall = (inner) => `<rect width="800" height="450" fill="#C9B88F"/><rect x="14" y="14" width="772" height="422" fill="none" stroke="#8A6A40" stroke-width="10"/>${inner}`;
+  swapStep(A2, "m2-c1-clip", {id:"m2-c1-rub", ch:1, kind:"rub", eyebrow:ch1, title:"The gymnasium wall",
+    lead:"An old painting on the gymnasium wall is covered in dirt. Each of you rubs one panel clean. Then show your group what you found.",
+    cards:[
+      {t:"The games", b:"King Antiochus wanted everyone to live the Greek way. Young Jews, and even Kohanim, went to the Greek games.",
+       art:()=>wall(COLS(250,380,.9)+MAN(470,380,{c:K.white,arm:true})+MAN(560,380,{c:K.white})+[620,660,700,740].map((x,i)=>MAN(x,380,{s:.55,c:i%2?K.s1:K.lapis,kohen:i===1})).join("")+`<rect x="20" y="380" width="760" height="50" fill="#8A7A5A"/>`)},
+      {t:"A new name", b:"Yehoshua called himself Jason. He bribed the king to make him Kohen Gadol instead of his brother Chonyo, the righteous Kohen Gadol, and built a gymnasium near Har HaBayis.",
+       art:()=>wall(`<rect x="250" y="70" width="300" height="80" rx="8" fill="#F2E5C6"/><text x="400" y="128" text-anchor="middle" font-family="Frank Ruhl Libre, serif" font-size="46" fill="#2A2418">יְהוֹשֻׁעַ</text><path d="M258 110 H542" stroke="#9B2D3A" stroke-width="8"/>`+LB(400,195,"JASON",46,"#9B2D3A")+MAN(260,410,{c:K.white,arm:true,hold:(x,y)=>BAG(x,y+6)})+`<rect x="480" y="300" width="110" height="110" fill="${K.wood}"/>`+MAN(535,380,{c:K.lapis,crown:true})+FD(.2,MAN(690,410,{c:K.s3,kohen:true,kg:true,beard:K.white,s:.8})))},
+      {t:"Outbid", b:"Menelaus, who may not even have been a Kohen, paid the king even more and took the job from Jason.",
+       art:()=>wall(`<rect x="345" y="280" width="110" height="130" fill="${K.wood}"/>`+MAN(400,380,{c:K.lapis,crown:true})+MAN(200,410,{c:K.white,arm:true,hold:(x,y)=>BAG(x,y+6,.7)})+LB(200,440,"Jason",22,"#2A2418")+MAN(610,410,{c:K.s2,arm:true,hold:(x,y)=>BAG(x,y+6,1.6)})+LB(610,440,"Menelaus",22,"#2A2418"))}
+    ],
+    cta:"We cleaned the whole wall", key:"Rub all three panels.", teaches:"Hellenism; Jason; Chonyo; Menelaus (Chabad.org, The Events Before and After the Chanukah Miracle)."});
+
+  const walk = getStep(A2,"m2-c2-walk"), sortD = getStep(A2,"m2-c2-sort");
+  const home = () => { let g = `<rect width="800" height="450" fill="#6B5A44"/><rect y="370" width="800" height="80" fill="#4A3E2E"/>`;
+    g += `<rect x="40" y="60" width="150" height="120" fill="#151B2A" stroke="#7A6040" stroke-width="10"/><circle cx="130" cy="110" r="22" fill="#F2E5C6"/><circle cx="121" cy="110" r="22" fill="#151B2A"/><circle cx="70" cy="85" r="2" fill="#F2E5C6"/><circle cx="160" cy="150" r="2" fill="#F2E5C6"/>`;
+    g += `<rect x="250" y="70" width="160" height="12" fill="#5C4A2E"/><rect x="262" y="20" width="20" height="50" rx="8" fill="#5C4A2E"/><rect x="282" y="26" width="70" height="40" fill="#F2E5C6"/><rect x="352" y="20" width="20" height="50" rx="8" fill="#5C4A2E"/>`;
+    g += `<rect x="380" y="120" width="20" height="70" fill="#8A6A40"/><circle cx="390" cy="112" r="10" fill="#C0392B"/>`;
+    g += `<rect x="230" y="280" width="320" height="16" fill="#8A6A40"/><rect x="246" y="296" width="12" height="74" fill="#8A6A40"/><rect x="522" y="296" width="12" height="74" fill="#8A6A40"/><rect x="240" y="270" width="300" height="10" fill="#F2E5C6"/>`;
+    g += `<rect x="262" y="226" width="10" height="44" fill="#ECE8DF"/>${FLM(267,226,1.1)}<rect x="292" y="226" width="10" height="44" fill="#ECE8DF"/>${FLM(297,226,1.1)}`;
+    g += `<path d="M380 270 Q410 236 440 270Z" fill="#C98A4A"/>`;
+    g += `<ellipse cx="500" cy="262" rx="34" ry="10" fill="#ECE8DF"/><path d="M478 258 Q500 236 522 258Z" fill="#A0522D"/>${LB(500,250,"kosher",11,"#F2E5C6")}`;
+    g += `<path d="M600 300 Q660 360 720 300" fill="#8A6A40"/><rect x="606" y="282" width="108" height="22" rx="10" fill="#B9AF9A"/><circle cx="640" cy="286" r="14" fill="${K.skin}"/><rect x="652" y="280" width="50" height="16" rx="8" fill="#9DB4C8"/>`;
+    g += `<circle cx="120" cy="345" r="22" fill="#2B4C8C"/><path d="M104 335 Q120 350 136 335" stroke="#F2E5C6" stroke-width="3" fill="none"/>`;
+    g += `<rect x="640" y="90" width="80" height="12" fill="#5C4A2E"/><rect x="650" y="60" width="16" height="30" fill="#7E7462"/><rect x="672" y="66" width="14" height="24" fill="#9C927C"/><rect x="692" y="54" width="18" height="36" fill="#5A6E9A"/>`;
+    return g; };
+  swapStep(A2, "m2-c2-walk", {id:"m2-c2-search", ch:2, kind:"spot", noun:"forbidden things", where:"on anything the king's soldiers would take away or forbid",
+    eyebrow:walk.eyebrow, title:"Search the house",
+    lead:"The king's soldiers are coming to search this Jewish home. Five things here were forbidden by the king's decrees. Find all five.",
+    alt:"A Jewish home with a table, candles, a Torah scroll, a window with the moon and a baby's cradle", scene:home,
+    marks:[
+      {x:282, y:236, r:36, t:"Shabbos candles: keeping Shabbos was forbidden. Some families hid in caves to keep it in secret."},
+      {x:317, y:44, r:56, t:"The Sefer Torah: owning or learning the Torah was forbidden, and Sifrei Torah were burned."},
+      {x:115, y:110, r:58, t:"The new moon: declaring Rosh Chodesh was forbidden."},
+      {x:660, y:292, r:52, t:"The baby: giving a baby a bris milah was forbidden."},
+      {x:500, y:256, r:34, t:"The kosher food: Jews were forced to eat non-kosher food, and idols were put in the Beis Hamikdash."}],
+    oks:[{x:120, y:345, r:28, t:"A ball: games weren't forbidden."},{x:410, y:258, r:28, t:"Bread: that wasn't on the king's list."},{x:680, y:72, r:34, t:"Ordinary books: not on the king's list."},{x:390, y:150, r:26, t:"A candle for light: not on the list. Look for Shabbos candles."}],
+    hints:["Look at the table, the shelf, the window and the cradle.","Think: Shabbos, Torah, Rosh Chodesh, bris milah, kashrus."],
+    win:"All five found: Shabbos, the Torah, Rosh Chodesh, bris milah and kosher food. The decrees were aimed at the mitzvos themselves.",
+    satchel:sortD.satchel, key:"Candles, Sefer Torah, moon, baby, kosher food.", teaches:"The decrees (Megillas Antiochus; Chabad.org)."});
+  dropStep(A2, "m2-c2-sort");
+
+  const ch = getStep(A2,"m2-c2-choice");
+  swapStep(A2, "m2-c2-choice", {id:"m2-c2-moon", ch:2, kind:"moon", eyebrow:ch.eyebrow, title:"The puzzle of Rosh Chodesh",
+    options:[["Still on the same day as always.",false,"Which day is the 15th? Without Rosh Chodesh, nobody can count."],["Nobody can know which day is the 15th, so nobody knows when Pesach, or any Yom Tov, falls.",true],["Pesach moves to the winter.",false,"Pesach doesn't move. The problem is knowing which day it is."]],
+    win:"Exactly. Without Rosh Chodesh, there is no Jewish calendar and no Yomim Tovim. That's why the Greeks forbade it.",
+    after:[{t:"The puzzle of Rosh Chodesh", b:"Witnesses who saw the new moon told the Sanhedrin, which declared Rosh Chodesh. Every Yom Tov is counted from it, like Pesach on the 15th of Nissan. Forbidding Rosh Chodesh meant no one would know when any Yom Tov falls."}],
+    key:"Night 3; day 15; B.", teaches:"Why Rosh Chodesh mattered."});
+
+  const ev4 = getStep(A2,"m2-c4-ev");
+  swapStep(A2, "m2-c4-ev",
+    {id:"m2-c4-cipher", ch:4, kind:"cipher", eyebrow:ev4.eyebrow, title:"A secret message",
+     lead:"Loyal Jews passed secret messages to each other in code. Turn the wheel until this one makes sense.",
+     msg:"WE KEEP SHABBOS IN THE CAVES", shift:5, start:0, ask:"Where did they keep Shabbos in secret?", answers:["CAVES","THECAVES","INTHECAVES","CAVE","ACAVE"],
+     win:"In caves. Many Jews kept the mitzvos in secret, even when it put their lives in danger (Sefer Chashmonaim I, chapter 2; Megillas Antiochus).",
+     after:[{t:"A secret message", src:"Sefer Chashmonaim I, chapter 2; Megillas Antiochus", b:"\"We keep Shabbos in the caves.\" Many Jews kept the mitzvos in secret, even at great risk."}],
+     key:"Turn 5 steps; CAVES.", teaches:"Many stayed loyal."},
+    {id:"m2-c4-stone", ch:4, kind:"rub", eyebrow:ev4.eyebrow, title:"A stone from the Mizbeach",
+     lead:"This stone is black with soot. Take turns rubbing it clean to find what is carved on it.",
+     cards:[{t:"Remember this date", b:"On the 25th of Kislev, the Greeks offered sacrifices to their idols on the Mizbeach of the Beis Hamikdash.",
+       art:()=>`<rect width="800" height="450" fill="#151B2A"/><rect x="120" y="70" width="560" height="310" rx="14" fill="#9C927C"/><rect x="140" y="90" width="520" height="270" rx="10" fill="#B9AF9A"/><text x="400" y="230" text-anchor="middle" font-family="Frank Ruhl Libre, serif" font-size="96" fill="#3E3220">כ״ה בְּכִסְלֵו</text>${LB(400,312,"25 Kislev",34,"#3E3220")}`}],
+     cta:"We found the date", key:"Rub the stone.", teaches:"The Beis Hamikdash defiled on 25 Kislev."},
+    {id:"m2-c4-date", ch:4, kind:"lock2", eyebrow:ev4.eyebrow, title:"Lock in the date",
+     parts:[{q:"Set the lock to the day of Kislev you found on the stone.", a:"25", len:2, hints:["Look at the stone: כ״ה.","25."], wrong:"That's not the date on the stone."}],
+     win:"25. Remember this date: it will come back in a very different way.", satchel:["The Beis Hamikdash was defiled on 25 Kislev"], key:"25.", teaches:"25 Kislev."});
+}
+
+/* ================= Mission 2: people instead of boxes, picture sorts, clearer house ================= */
+const TAGL = (x, y, t) => { const w = t.length*8.2 + 22; return `<g><rect x="${x-w/2}" y="${y-15}" width="${w}" height="25" rx="12" fill="rgba(10,14,22,.82)"/><text x="${x}" y="${y+3}" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="15" font-weight="700" fill="#F2E5C6">${t}</text></g>`; };
+const LAUREL = (x, y, s) => `<path d="M${x-15*s} ${y-103*s} Q${x} ${y-118*s} ${x+15*s} ${y-103*s}" stroke="#4E7A3A" stroke-width="${6*s}" fill="none" stroke-dasharray="${5*s} ${3*s}"/>`;
+const PEOPLE = {
+  CH: () => `<rect width="200" height="250" fill="#2A3150"/>` + MAN(100,240,{s:1.45,c:"#3A5A9C",kohen:true,kg:true,beard:"#ECE8DF"}) + `<rect x="78" y="160" width="44" height="8" fill="${K.gold}"/>`,
+  JA: () => `<rect width="200" height="250" fill="#3A3428"/>` + MAN(100,240,{s:1.45,c:"#ECE8DF",arm:true,hold:(x,y)=>BAG(x,y+8,1)}) + LAUREL(100,240,1.45),
+  ME: () => `<rect width="200" height="250" fill="#33302A"/>` + MAN(100,240,{s:1.45,c:"#8A7A5A",arm:true,hold:(x,y)=>BAG(x,y+8,1.7)}) + LAUREL(100,240,1.45),
+  AN: () => `<rect width="200" height="250" fill="#2E1F33"/><rect x="40" y="130" width="120" height="120" fill="${K.wood}"/>` + MAN(100,236,{s:1.45,c:"#6B3A7E",crown:true})
+};
+function peopleSort(st){
+  const pl = S.p.place||{}, sel = S.p.sel, unplaced = st.items.filter(it=>!pl[it[0]]);
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   ${unplaced.length? `<div class="pool">${unplaced.map(it=>`<button class="tile bubbleq ${sel===it[0]?"sel":""}" data-act="sel" data-id="${it[0]}">“${esc(it[1])}”</button>`).join("")}</div>`:""}
+   ${sel?`<p class="muted">Now tap the person who said it.</p>`:""}
+   <div class="people">${st.bins.map(b=>`<button class="person ${sel?"armed":""}" data-act="bin" data-b="${b[0]}" aria-label="${esc(b[1])}">
+      <div class="said">${st.items.filter(it=>pl[it[0]]===b[0]).map(it=>`<span class="saidb">“${esc(it[1])}”</span>`).join("")}</div>
+      ${SV(PEOPLE[b[0]](), "0 0 200 250")}<b>${esc(b[1])}</b>${b[2]?`<small>${esc(b[2])}</small>`:""}</button>`).join("")}</div>
+   ${Object.keys(pl).length && !S.p.solved? `<div><button class="btn ghost" data-act="resetsort">Start again</button></div>`:""}
+   ${S.p.fb? `<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   ${S.p.solved? winBlock(st.win) : hintBlock(st.hints||[]) + (!unplaced.length? ritual("Check"):"")}`;
+}
+{
+  const _sort = R.sort;
+  R.sort = st => {
+    if(st.people) return peopleSort(st);
+    let h = _sort(st);
+    if(st.itemArt){
+      h = h.replace(/<button class="tile ([^"]*)" data-act="sel" data-id="([^"]+)">([^<]*)<\/button>/g, (m, cls, id, txt) => st.itemArt[id] ? `<button class="tile pic ${cls}" data-act="sel" data-id="${id}">${SV(st.itemArt[id], "0 0 100 70")}<span>${txt}</span></button>` : m);
+      st.items.forEach(it=>{ h = h.split(`<span class="tile" style="cursor:default">${esc(it[1])}</span>`).join(`<span class="tile pic mini" style="cursor:default">${SV(st.itemArt[it[0]], "0 0 100 70")}<span>${esc(it[1])}</span></span>`); });
+    }
+    if(st.binArt) Object.keys(st.binArt).forEach(id=>{ h = h.replace(new RegExp(`(<button class="pbin[^"]*" data-act="bin" data-b="${id}"[^>]*>)`), `$1<span class="binart">${SV(st.binArt[id], "0 0 120 70")}</span>`); });
+    return h;
+  };
+}
+{
+  const who = getStep(STEPS_M2, "m2-c1-who");
+  Object.assign(who, {people:true, title:"Who said it?", lead:"Tap a speech bubble, then tap the person who said it. Some people said more than one.",
+    items:[["a","I was the Kohen Gadol, until my own brother pushed me out!","CH"],["b","Don't call me Yehoshua. Call me Jason!","JA"],["c","Let's build a gymnasium right next to Har HaBayis!","JA"],["d","I'll pay the king even more than Jason did!","ME"],["e","The job of Kohen Gadol goes to whoever pays me the most!","AN"],["f","Everyone in my empire will live the Greek way!","AN"]],
+    hints:["Look back at the wall painting: who paid, who was pushed out, who sold the job?","Jason said two of them, and so did the king."]});
+
+  const pr = getStep(STEPS_M2, "m2-c3-sort");
+  const coin = (x,y) => `<circle cx="${x}" cy="${y}" r="9" fill="#E3B252" stroke="#9C6B10" stroke-width="2"/>`;
+  Object.assign(pr, {note:null, lead:"Tap a picture, then tap the kind of pressure it shows.", bins:[["P","Political rule","a foreign king is in charge"],["C","Cultural influence","new ways that pull people away"],["R","Religious persecution","forced to stop keeping mitzvos"]],
+    items:[["p1","Heavy taxes","P"],["p2","The king's officials","P"],["c1","A gymnasium","C"],["c2","Greek names","C"],["c3","Greek games and fashions","C"],["r1","Shabbos forbidden","R"],["r2","Sifrei Torah burned","R"],["r3","Idols in the Beis Hamikdash","R"]],
+    itemArt:{
+      p1:`<rect width="100" height="70" fill="#2A3150"/>`+coin(30,48)+coin(48,50)+coin(39,36)+coin(66,48)+coin(57,36)+`<path d="M70 14 h20 v22 h-20z" fill="#F2E5C6"/><path d="M73 20 h14 M73 26 h14 M73 32 h10" stroke="#7E7462" stroke-width="2"/>`,
+      p2:`<rect width="100" height="70" fill="#2A3150"/>`+MAN(36,68,{s:.42,c:K.red,helmet:true})+MAN(64,68,{s:.42,c:"#6B3A7E",arm:true,hold:(x,y)=>`<rect x="${x-4}" y="${y-6}" width="12" height="16" fill="#F2E5C6"/>`}),
+      c1:`<rect width="100" height="70" fill="#3A3428"/>`+COLS(50,66,.32),
+      c2:`<rect width="100" height="70" fill="#3A3428"/><rect x="14" y="20" width="72" height="30" rx="6" fill="#F2E5C6"/>`+LB(50,42,"JASON",17,"#9B2D3A"),
+      c3:`<rect width="100" height="70" fill="#3A3428"/><circle cx="34" cy="38" r="16" fill="#B9AF9A" stroke="#7E7462" stroke-width="3"/>`+MAN(70,68,{s:.42,c:"#ECE8DF"})+LAUREL(70,68,.42),
+      r1:`<rect width="100" height="70" fill="#151B2A"/><rect x="32" y="26" width="8" height="30" fill="#ECE8DF"/><rect x="60" y="26" width="8" height="30" fill="#ECE8DF"/>`+FLM(36,26,.7)+FLM(64,26,.7)+`<circle cx="50" cy="40" r="30" fill="none" stroke="#E0414F" stroke-width="5"/><path d="M29 61 L71 19" stroke="#E0414F" stroke-width="5"/>`,
+      r2:`<rect width="100" height="70" fill="#151B2A"/><rect x="26" y="20" width="8" height="40" rx="3" fill="#7E7462"/><rect x="34" y="24" width="32" height="32" fill="#F2E5C6"/><rect x="66" y="20" width="8" height="40" rx="3" fill="#7E7462"/>`+FLM(42,60,1)+FLM(56,60,1.2),
+      r3:`<rect width="100" height="70" fill="#151B2A"/>`+TEMPLE(50,68,.28)+`<rect x="70" y="40" width="14" height="6" fill="#7E7462"/>`+MAN(77,40,{s:.2,c:"#9C927C"})
+    },
+    binArt:{
+      P:`<rect width="120" height="70" rx="8" fill="#2A3150"/><path d="M42 44 V22 L52 32 L60 16 L68 32 L78 22 V44Z" fill="#E3B252"/>`+coin(40,56)+coin(60,56)+coin(80,56),
+      C:`<rect width="120" height="70" rx="8" fill="#3A3428"/>`+COLS(60,66,.4),
+      R:`<rect width="120" height="70" rx="8" fill="#151B2A"/><rect x="40" y="14" width="8" height="44" rx="3" fill="#7E7462"/><rect x="48" y="18" width="24" height="36" fill="#F2E5C6"/><rect x="72" y="14" width="8" height="44" rx="3" fill="#7E7462"/><circle cx="60" cy="36" r="30" fill="none" stroke="#E0414F" stroke-width="5"/><path d="M39 57 L81 15" stroke="#E0414F" stroke-width="5"/>`
+    }});
+
+  const sr = getStep(STEPS_M2, "m2-c2-search");
+  sr.scene = () => {
+    let g = `<rect width="800" height="450" fill="#7A6650"/><rect y="380" width="800" height="70" fill="#4A3E2E"/>`;
+    g += `<rect x="30" y="34" width="190" height="150" fill="#0E1424" stroke="#5C4A2E" stroke-width="12"/>${[[60,60],[190,70],[80,150],[170,160],[110,50],[200,120]].map(s=>`<circle cx="${s[0]}" cy="${s[1]}" r="2.4" fill="#F2E5C6"/>`).join("")}<circle cx="140" cy="102" r="36" fill="#F2E5C6"/><circle cx="128" cy="102" r="34" fill="#0E1424"/>` + TAGL(125, 208, "the new moon");
+    g += `<rect x="250" y="168" width="250" height="12" fill="#5C4A2E"/><rect x="276" y="34" width="20" height="134" rx="8" fill="#6E4A26"/><rect x="270" y="26" width="32" height="12" rx="6" fill="#E3B252"/><rect x="270" y="164" width="32" height="10" rx="5" fill="#E3B252"/><rect x="454" y="34" width="20" height="134" rx="8" fill="#6E4A26"/><rect x="448" y="26" width="32" height="12" rx="6" fill="#E3B252"/><rect x="448" y="164" width="32" height="10" rx="5" fill="#E3B252"/><rect x="296" y="44" width="158" height="112" fill="#F2E5C6"/>`;
+    g += [0,1,2].map(c=>[...Array(8)].map((_,r)=>`<line x1="${306+c*50}" x2="${340+c*50}" y1="${56+r*12}" y2="${56+r*12}" stroke="#7E7462" stroke-width="2.5"/>`).join("")).join("") + TAGL(375, 200, "Sefer Torah");
+    g += `<rect x="590" y="168" width="180" height="12" fill="#5C4A2E"/>${[["#5A6E9A",600,40],["#9B2D3A",624,52],["#5E8A68",646,44],["#8A6A50",668,56],["#5A6E9A",692,38]].map(b=>`<rect x="${b[1]}" y="${168-b[2]-50}" width="20" height="${b[2]+50}" fill="${b[0]}"/>`).join("")}<path d="M728 168 q-14 -40 8 -60 q22 20 8 60z" fill="#B98E5A"/>` + TAGL(680, 200, "books");
+    g += `<rect x="200" y="296" width="380" height="14" fill="#8A6A40"/><rect x="200" y="300" width="380" height="34" fill="#ECE8DF"/><rect x="216" y="334" width="12" height="46" fill="#8A6A40"/><rect x="552" y="334" width="12" height="46" fill="#8A6A40"/>`;
+    g += [250,300].map(x=>`<path d="M${x-14} 298 h28 l-6 -8 h-16z" fill="#B9AF9A"/><rect x="${x-4}" y="250" width="8" height="40" fill="#B9AF9A"/><rect x="${x-9}" y="244" width="18" height="8" fill="#B9AF9A"/><rect x="${x-5}" y="208" width="10" height="36" fill="#FFFFFF"/>${FLM(x,208,1.2)}`).join("") + TAGL(275, 324, "Shabbos candles");
+    g += `<path d="M352 296 Q360 268 392 266 Q424 268 430 296Z" fill="#C98A4A"/><path d="M360 286 q10 -8 20 0 q10 -8 20 0 q10 -8 20 0" stroke="#A86A30" stroke-width="3" fill="none"/>` + TAGL(392, 324, "bread");
+    g += `<ellipse cx="500" cy="292" rx="44" ry="10" fill="#FFFFFF" stroke="#B9AF9A" stroke-width="2"/><path d="M474 288 q8 -22 34 -18 q20 4 14 18z" fill="#A0522D"/><line x1="526" y1="290" x2="526" y2="252" stroke="#7E7462" stroke-width="2"/><rect x="526" y="252" width="34" height="20" fill="#F2E5C6" stroke="#7E7462"/><text x="543" y="267" text-anchor="middle" font-family="Frank Ruhl Libre, serif" font-size="15" font-weight="700" fill="#2A2418">כשר</text>` + TAGL(500, 324, "kosher meat");
+    g += `<path d="M600 316 Q680 400 760 316Z" fill="#8A6A40"/><path d="M590 316 h180" stroke="#6E4A26" stroke-width="8" stroke-linecap="round"/><circle cx="636" cy="312" r="18" fill="${K.skin}"/><circle cx="630" cy="309" r="2" fill="#2A2418"/><circle cx="642" cy="309" r="2" fill="#2A2418"/><path d="M652 298 q40 -12 90 8 v14 h-90z" fill="#9DB4C8"/><path d="M582 400 l18 -84 M778 400 l-18 -84" stroke="#6E4A26" stroke-width="6"/>` + TAGL(680, 414, "a baby boy, 8 days old");
+    g += `<circle cx="90" cy="356" r="26" fill="#2B4C8C"/><path d="M70 344 Q90 362 110 344" stroke="#F2E5C6" stroke-width="4" fill="none"/>` + TAGL(90, 404, "a ball");
+    return g; };
+  sr.marks = [
+    {x:275, y:250, r:50, t:"Shabbos candles: keeping Shabbos was forbidden. Some families hid in caves to keep it in secret."},
+    {x:375, y:100, r:85, t:"The Sefer Torah: owning or learning the Torah was forbidden, and Sifrei Torah were burned."},
+    {x:125, y:110, r:75, t:"The new moon: declaring Rosh Chodesh was forbidden."},
+    {x:680, y:340, r:70, t:"The baby: giving a baby a bris milah was forbidden."},
+    {x:510, y:285, r:45, t:"Kosher meat: Jews were forced to eat non-kosher food."}];
+  sr.oks = [{x:90, y:356, r:35, t:"A ball: games weren't forbidden."},{x:392, y:285, r:35, t:"Bread: that wasn't on the king's list."},{x:680, y:120, r:60, t:"Ordinary books: not on the king's list."}];
+  sr.hints = ["Each forbidden thing is a mitzvah.","Shabbos, Torah, Rosh Chodesh, bris milah, kashrus."];
 }
 
 let revealTarget = null;
@@ -2447,13 +2761,21 @@ function mcCardForm(){
     <div class="row"><button class="btn gold" data-act="mc-cardsend">Send to the teacher</button></div></div>`;
     return;
   }
+  const opts = (key, label) => `<div class="field"><label for="${key}">${label}</label><select id="${key}"><option value="">Choose one...</option>${CROWN_OPTS(key).map(o=>`<option>${esc(o)}</option>`).join("")}</select></div>`;
   $("#mcForm").innerHTML = `<div class="pending"><h3>Crown Card for ${esc(gr.name)}</h3>
-    <div class="field"><label for="fk">Kingdom (your teacher tells you which)</label><select id="fk">${KINGDOMS.map(k=>`<option>${esc(k)}</option>`).join("")}</select></div>
-    <div class="field"><label for="fh">How it took control</label><input id="fh" maxlength="140"></div>
-    <div class="field"><label for="ff">One fact you learned about it</label><input id="ff" maxlength="160"></div>
-    <div class="field"><label for="fs">Where the fact comes from (look in your Clue Book)</label><input id="fs" maxlength="80"></div>
+    <div class="field"><label for="fk">Kingdom (your teacher tells you which)</label><select id="fk"><option value="">Choose one...</option>${KINGDOMS.map(k=>`<option>${esc(k)}</option>`).join("")}</select></div>
+    ${opts("fh","How it took control")}${opts("ff","One fact about it")}${opts("fs","Where the fact comes from")}
+    <p class="muted">All four choices have to belong to the same kingdom.</p>
     <div class="row"><button class="btn gold" data-act="mc-cardsend">Send to the teacher</button></div></div>`;
 }
+const CROWN = {
+  "Bavel":{fh:"Nevuchadnetzar conquered Yerushalayim and destroyed the first Beis Hamikdash", ff:"Yirmiyahu promised that the exile would last seventy years", fs:"Yirmiyahu 29:10"},
+  "Persia":{fh:"Persia conquered Bavel", ff:"Koresh let the Jews go home and rebuild the Beis Hamikdash", fs:"Sefer Ezra, chapter 1"},
+  "Alexander of Greece":{fh:"Alexander of Macedonia conquered the whole Persian empire", ff:"Alexander bowed to Shimon HaTzaddik, whose face he saw in his battles", fs:"Gemara, Yoma 69a"},
+  "The Ptolemies of Egypt":{fh:"After Alexander died, his general Talmai took Egypt and ruled Eretz Yisrael", ff:"Talmai II had 72 sages translate the Torah into Greek", fs:"Gemara, Megillah 9a"},
+  "The Seleucids of Syria":{fh:"Antiochus III went to war against the Ptolemies and won Eretz Yisrael", ff:"King Seleucus IV sent Heliodorus to take the Beis Hamikdash treasury", fs:"Sefer Chashmonaim II, chapter 3"}
+};
+const CROWN_OPTS = key => { const o = KINGDOMS.map(k=>CROWN[k][key]); return o.map((x,i)=>[x,(i*7+key.length*3)%5]).sort((p,q)=>p[1]-q[1]).map(p=>p[0]); };
 
 /* ================= events ================= */
 document.addEventListener("click", e=>{
@@ -2540,7 +2862,9 @@ function mcClick(a, el){
     case "mc-cardform": mcCardForm(); break;
     case "mc-cardsend": {
       const c = {group:M.groups[mcSel].name, kingdom:$("#fk") ? $("#fk").value : "Our light", how:$("#fh").value.trim(), fact:$("#ff").value.trim(), src:$("#fs").value.trim(), status:"pending"};
-      if(!c.how || !c.fact || !c.src){ mcErr("Fill in all three lines before sending."); return; }
+      if(!c.how || !c.fact || !c.src || (MIS.cards!=="light" && !c.kingdom)){ mcErr(MIS.cards==="light" ? "Fill in all three lines before sending." : "Choose an answer in all four boxes before sending."); return; }
+      if(MIS.cards!=="light"){ const w = CROWN[c.kingdom]; const bad = ["how","fact","src"].filter((k,j)=>c[k]!==w[["fh","ff","fs"][j]]).length;
+        if(bad){ mcErr(`${bad} of your choices ${bad>1?"don't":"doesn't"} belong to ${c.kingdom}. Check your Clue Book and try again.`); return; } }
       M.cards.push(c); mcSel=null; mcSave(); renderControl(); toast(`${c.group}'s ${CL().name} went to the teacher to check.`); break; }
     case "mc-teacher": openGate("mc"); break;
     case "mc-lock": teacherUntil = 0; renderControl(); break;
