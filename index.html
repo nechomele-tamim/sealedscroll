@@ -377,6 +377,8 @@ p{margin:0}
 .tile.pic svg{width:100%;height:auto;border-radius:6px}
 .tile.pic.mini{width:104px;font-size:.78rem}
 .binart{display:block;line-height:0}.binart svg{width:100%;max-width:200px;height:auto;border-radius:8px}
+.envart{max-width:340px;line-height:0;border-radius:10px;overflow:hidden}.envart svg{width:100%;height:auto}
+.codein{font-size:1.6rem;letter-spacing:.2em;text-transform:uppercase;max-width:340px;font-family:ui-monospace,Menlo,monospace}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -1005,8 +1007,8 @@ const STEPS_M4 = [
  {id:"m4-c4-ev", ch:4, kind:"evidence", enter:["door","Chamber 4: Why Eight?"], eyebrow:"Chamber 4 · Why Eight?", title:"A famous question",
   lead:"If there was enough oil for one day, the miracle was only seven extra days. So why is Chanukah eight days? Our commentators gave many answers. Here are two.",
   cards:[
-   {t:"Answer 1: The Victory", src:"Chabad.org, Who Was Antiochus? (Pri Chadash, Orach Chaim 670)", b:"The first day celebrates the victory over the Greeks, and the next seven days celebrate the miracle of the oil."},
-   {t:"Answer 2: A Little Each Night", src:"Beis Yosef, Orach Chaim 670", b:"They knew new oil would take eight days, so they divided the oil into eight parts. Even on the first night, the small part burned all night: so all eight nights were a miracle."},
+   {t:"Answer 1: The Victory", src:"Chabad.org, Why Is Chanukah 8 (Not 7) Days Long? (Pri Chadash, Orach Chaim 670:1)", b:"The first day celebrates the victory over the Greeks, and the next seven days celebrate the miracle of the oil."},
+   {t:"Answer 2: A Little Each Night", src:"Chabad.org, Why Is Chanukah 8 (Not 7) Days Long? (Beis Yosef, Orach Chaim 670)", b:"They knew new oil would take eight days, so they divided the oil into eight parts. Even on the first night, the small part burned all night: so all eight nights were a miracle."},
    {t:"Think About It", aloud:true, b:"Both answers are told by our commentators. Which one do you like better, and why?"}
   ], key:"No answer; discussion.", teaches:"Why eight days."},
  {id:"m4-c4-say", ch:4, kind:"say", prompt:"Explain to your group one answer to the question: why is Chanukah eight days and not seven?", key:"Either answer.", teaches:"Oral check."},
@@ -2477,6 +2479,90 @@ function peopleSort(st){
     {x:510, y:285, r:45, t:"Kosher meat: Jews were forced to eat non-kosher food."}];
   sr.oks = [{x:90, y:356, r:35, t:"A ball: games weren't forbidden."},{x:392, y:285, r:35, t:"Bread: that wasn't on the king's list."},{x:680, y:120, r:60, t:"Ordinary books: not on the king's list."}];
   sr.hints = ["Each forbidden thing is a mitzvah.","Shabbos, Torah, Rosh Chodesh, bris milah, kashrus."];
+}
+
+/* ================= Mission 2: hidden envelopes ================= */
+R.code = st => `${head(st)}${st.pre?st.pre():""}<p class="lead">${esc(st.lead)}</p>
+  ${S.p.solved ? winBlock(st.win) : `<div class="field"><label for="codein">${esc(st.label||"Code word")}</label><input id="codein" autocomplete="off" autocapitalize="characters" class="codein"></div>
+  <div><button class="btn" data-act="codecheck">Try the code</button></div>${S.p.fb?`<div class="feedback no">${esc(S.p.fb)}</div>`:""}${hintBlock(st.hints||[])}`}`;
+document.addEventListener("click", e=>{
+  const el = e.target.closest('[data-act="codecheck"]'); if(!el || frozen || IS_CONTROL) return;
+  const st = step(), v = ($("#codein").value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(st.answers.includes(v)){ S.p.solved = true; S.p.fb = null; } else S.p.fb = (st.near && st.near[v]) || st.wrong || "That's not it. Look at the page again.";
+  render();
+});
+XSOLVE.code = st => {};
+const ENV = n => `<div class="envart">${SV(`<rect width="400" height="220" rx="10" fill="#151B2A"/><rect x="60" y="40" width="280" height="150" rx="6" fill="#E9DDBF"/><path d="M60 46 L200 130 L340 46" fill="none" stroke="#B9AF9A" stroke-width="4"/><circle cx="200" cy="128" r="26" fill="#9B2D3A"/>${LB(200,140,n,30,"#F2E5C6")}`,"0 0 400 220")}</div>`;
+function envStep(id, ch, eyebrow, n, extra){ return {id, ch, kind:"room", eyebrow, title:`Envelope ${n}`,
+  body:()=>ENV(n)+action(ICON_WALK,`Find envelope ${n}`,`<p>It's hidden somewhere in the room. One of you finds it and brings it back. Open it at your table, and ${tag(n%N())} reads it aloud while everyone follows along on the page.${extra?" "+extra:""}</p><p style="margin-top:6px">Keep it until you finish this envelope's puzzle. Then put everything back inside and return it to its hiding place for the next group.</p>`),
+  cta:"We have it open", key:`Physical: envelope ${n}.`, teaches:"Primary-source document."}; }
+{
+  const A2 = STEPS_M2;
+  const E1 = "Chamber 1 · The Gymnasium", E2 = "Chamber 2 · The Decree Wall", E3 = "Chamber 3 · What the Greeks Wanted", E4 = "Chamber 4 · Those Who Would Not Bow";
+  ["m2-c1-say","m2-c2-say","m2-c3-say","m2-c4-say","m2-c3-freeze","m2-c4-date"].forEach(id=>dropStep(A2,id));
+
+  /* Chamber 1: Jason's receipt */
+  addAfter(A2, "m2-c1-rub",
+    envStep("m2-c1-env", 1, E1, 1),
+    {id:"m2-c1-receipt", ch:1, kind:"lock2", eyebrow:E1, title:"Jason's promise",
+     parts:[{q:"How many talents of silver did Jason himself promise the king, if the king let him build the gymnasium?", a:"590", len:3,
+       hints:["Some amounts on the page are written out in words. Find every one.","Not every number on the page is Jason's, and not every amount is in talents."],
+       wrong:"The lock won't budge. Read the letter and the clerk's notes again: which amounts did Jason promise?",
+       special:{"440":"Close, but no. One of Jason's promises depended on something. Read the end of his letter again.","890":"Is that 300 really Jason's? Read the clerk's notes again.","740":"Is every amount you added Jason's? Read the clerk's notes again.","960":"Is every amount you added in talents? Check what kind of coin each one is."}}],
+     win:"590 talents of silver: 360, plus 80, plus 150 for the gymnasium. The holiest job in the Beis Hamikdash was sold like a market stall.",
+     after:[{t:"Envelope 1: Jason's letter", src:"Sefer Chashmonaim II, chapter 4", b:"Jason promised the king 360 talents of silver, 80 more, and 150 more if he could build a gymnasium: 590 in all. Young Kohanim left the avodah to run to the games. Even Jason's messengers refused to spend his money on an offering to an idol. Later, Menelaus outbid Jason by 300 talents."}],
+     key:"590.", teaches:"Jason bought the office (2 Maccabees 4:8-9)."},
+    {id:"m2-c1-games", ch:1, kind:"choice", eyebrow:E1, title:"What shocked the clerk?",
+     lead:"The king's clerk wrote down something he saw in Yerushalayim that shocked even him. What was it?",
+     options:[["a","Greek soldiers broke into the Beis Hamikdash.",false,"That's not in the clerk's notes. Read them again."],["b","When the signal sounded for the games, young Kohanim left the avodah and ran to the stadium.",true,"Yes. The gymnasium was pulling even Kohanim away from serving Hashem."],["c","Jason gave all his money to the poor.",false,"Jason? Read the notes again."]],
+     hints:["Look for the clerk's second note."], key:"B.", teaches:"The pull of Hellenism (2 Maccabees 4:14)."});
+
+  /* Chamber 2: the line in the sand */
+  addBefore(A2, "m2-c2-search",
+    envStep("m2-c2-env", 2, E2, 2),
+    {id:"m2-c2-kittim", ch:2, kind:"code", eyebrow:E2, title:"The report from Egypt",
+     lead:"Someone has hidden a code word in this report. Find it.", label:"The hidden code word",
+     answers:["RUMOR","RUMOUR"], wrong:"That's not the code. Look very closely at the page itself, not just at what it says.",
+     hints:["Some letters on the page look different from all the others.","Read only those letters, in order, from the top of the page to the bottom."],
+     win:"RUMOR. A false rumor that the king had died started it all.",
+     key:"RUMOR (circled letters).", teaches:"How the persecution began."},
+    {id:"m2-c2-why", ch:2, kind:"choice", eyebrow:E2, title:"Why Yerushalayim?",
+     lead:"Use the report: why did King Antiochus turn his anger on Yerushalayim?",
+     options:[["a","The Jews had attacked his army in Egypt.",false,"Read the report again: who attacked Yerushalayim, and why?"],["b","After a rumor that the king was dead, Jason attacked Yerushalayim, and Antiochus was sure the Jews had rebelled against him.",true,"Yes. The king came back in a rage. Soon after came the decrees."],["c","He wanted to visit the Beis Hamikdash.",false,"Read the last part of the report again."]],
+     after:[{t:"Envelope 2: the report from Egypt", src:"Chabad.org, The Events Before and After the Chanukah Miracle; Sefer Chashmonaim II, chapter 5", b:"While Antiochus was fighting in Egypt, a rumor spread that he had died. Jason attacked Yerushalayim to take back the job of Kohen Gadol. Antiochus, sure the Jews had rebelled, came back in a rage, killed many thousands of Jews and took the holy vessels of the Beis Hamikdash."}],
+     key:"B.", teaches:"Why Antiochus turned on Yerushalayim."});
+
+  /* Chamber 3: the cipher moves here */
+  const ci = A2.splice(stepIdx(A2,"m2-c4-cipher"),1)[0]; ci.ch = 3; ci.eyebrow = E3;
+  A2.splice(stepIdx(A2,"m2-c3-sort")+1, 0, ci);
+
+  /* Chamber 4: the king's list, then the stone, then the hidden message */
+  const outline = `stroke="#F2E5C6" stroke-width="5" stroke-dasharray="12 9" fill="none"`;
+  const heichal = () => `<rect width="800" height="450" fill="#2A2418"/><rect y="390" width="800" height="60" fill="#3E3220"/>`+
+    `<g ${outline}><line x1="140" y1="380" x2="140" y2="170"/>${[30,60,90].map((d,i)=>`<path d="M140 ${330-i*40} L${140-d} 170 M140 ${330-i*40} L${140+d} 170"/>`).join("")}<line x1="110" y1="380" x2="170" y2="380"/></g>`+
+    `<g ${outline}><rect x="300" y="290" width="90" height="90"/><path d="M300 290 l10 -16 l10 16 M370 290 l10 -16 l10 16"/></g>`+
+    `<g ${outline}><rect x="470" y="300" width="150" height="16"/><path d="M482 316 V380 M608 316 V380"/><rect x="490" y="240" width="40" height="58"/><rect x="560" y="240" width="40" height="58"/></g>`+
+    `<g ${outline}><path d="M660 60 H780 V380 H660 Z M690 60 V380 M720 60 V380 M750 60 V380"/></g>`+
+    [["A",140],["B",345],["C",545],["D",720]].map(l=>`<circle cx="${l[1]}" cy="425" r="18" fill="#E3B252"/>${LB(l[1],432,l[0],20,"#2A2418")}`).join("");
+  addAfter(A2, "m2-c4-text",
+    envStep("m2-c4-env3", 4, E4, 3),
+    {id:"m2-c4-crates", ch:4, kind:"lock2", eyebrow:E4, title:"The empty Heichal",
+     pre:()=>`<div class="clipart">${SV(heichal())}</div><p class="lead">These dashed outlines show where four holy things used to stand in the Heichal. The king's list tells you which crate each one was packed in.</p>`,
+     parts:[{q:"Set the lock to the crate numbers of A, B, C and D, in that order.", a:"7294", len:4,
+       hints:["Look at each outline's shape. What could stand in a place shaped like that?","Find each one in the king's list, in the list's own words. Then use its crate number. Go from A to D."],
+       wrong:"The lock won't open. Check each outline against the list again."}],
+     win:"7294. The Menorah, the golden Mizbeach, the Shulchan and the Paroches were all carried away (Sefer Chashmonaim I, chapter 1). Remember the empty place where the Menorah stood.",
+     after:[{t:"Envelope 3: the king's list", src:"Sefer Chashmonaim I, chapter 1", b:"Antiochus took the golden Mizbeach, the Menorah and all its tools, the Shulchan, the Paroches, the cups, bowls and golden fire-pans, the crowns and the gold decorations, and the hidden treasures."}],
+     satchel:["Antiochus stripped the Beis Hamikdash: the Menorah, the golden Mizbeach, the Shulchan and the Paroches"], key:"7294.", teaches:"What Antiochus took from the Beis Hamikdash."});
+  addAfter(A2, "m2-c4-stone",
+    envStep("m2-c4-env4", 4, E4, 4, "This one is a little different."),
+    {id:"m2-c4-age", ch:4, kind:"lock2", eyebrow:E4, title:"The hidden message",
+     parts:[{q:"How old was Elazar?", a:"90", len:2,
+       hints:["Something about the writing is strange. What would make it read the right way?","Paper lets light through. Try the other side of the page, held up to a window or a lamp. Or find a mirror."],
+       wrong:"That's not his age. Read the hidden message again."}],
+     win:"Ninety. An old man, and the officers offered him a way out. Now: what did he answer?",
+     after:[{t:"Envelope 4: Elazar", src:"Sefer Chashmonaim II, chapter 6", b:"Elazar, one of the leading Sofrim, was ninety years old. The officers told him to bring his own kosher meat and only pretend to eat the pork. He refused: young people would think Elazar had gone over to the Greeks."}],
+     key:"90.", teaches:"Elazar (2 Maccabees 6:18-31)."});
 }
 
 let revealTarget = null;
