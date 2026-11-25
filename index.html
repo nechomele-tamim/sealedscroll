@@ -379,6 +379,13 @@ p{margin:0}
 .binart{display:block;line-height:0}.binart svg{width:100%;max-width:200px;height:auto;border-radius:8px}
 .envart{max-width:340px;line-height:0;border-radius:10px;overflow:hidden}.envart svg{width:100%;height:auto}
 .codein{font-size:1.6rem;letter-spacing:.2em;text-transform:uppercase;max-width:340px;font-family:ui-monospace,Menlo,monospace}
+.bags{display:flex;flex-wrap:wrap;gap:10px}
+.bagb{width:108px;border:2px dashed var(--line);border-radius:12px;background:var(--panel);padding:6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink);font-size:.9rem}
+.bagb svg{width:76px;height:76px}.bagb.on{border-style:solid;border-color:var(--gold);background:var(--gold-soft);opacity:.55}
+.quote{font-family:var(--display);font-size:1.4rem;line-height:1.5;background:var(--gold-soft);border-left:6px solid var(--gold);border-radius:8px;padding:14px 18px}
+.blankw{letter-spacing:.05em;color:var(--muted)}
+.tile.code{font-family:ui-monospace,Menlo,monospace;font-size:1rem;letter-spacing:0;white-space:nowrap}
+.placeletter{font-size:1.4rem!important;text-align:center}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -2563,6 +2570,87 @@ function envStep(id, ch, eyebrow, n, extra){ return {id, ch, kind:"room", eyebro
      win:"Ninety. An old man, and the officers offered him a way out. Now: what did he answer?",
      after:[{t:"Envelope 4: Elazar", src:"Sefer Chashmonaim II, chapter 6", b:"Elazar, one of the leading Sofrim, was ninety years old. The officers told him to bring his own kosher meat and only pretend to eat the pork. He refused: young people would think Elazar had gone over to the Greeks."}],
      key:"90.", teaches:"Elazar (2 Maccabees 6:18-31)."});
+}
+
+/* ================= Mission 2: the king's scale, gematria names, Elazar from the envelope ================= */
+R.scale = st => {
+  const on = S.p.on||{}, inPan = st.bags.filter(b=>on[b[0]]), pool = st.bags.filter(b=>!on[b[0]]);
+  const bagSvg = (b, s) => `<svg viewBox="0 0 90 90" aria-hidden="true"><path d="M27 26 Q14 78 45 82 Q76 78 63 26Z" fill="${b[3]==="drachmas"?"#B9AF9A":"#E3B252"}" stroke="#7A5A20" stroke-width="3"/><rect x="33" y="16" width="24" height="12" rx="3" fill="#5C4A2E"/>${LB(45,60,b[1],b[1].length>3?18:20,"#2A2418")}</svg>`;
+  const tilt = Math.min(14, inPan.length*4);
+  const scaleArt = `<rect width="800" height="300" fill="#151B2A"/><rect x="392" y="80" width="16" height="190" fill="#9C6B10"/><rect x="330" y="266" width="140" height="18" rx="6" fill="#9C6B10"/>
+    <g transform="rotate(${tilt} 400 84)"><rect x="150" y="78" width="500" height="12" rx="6" fill="#E3B252"/>
+      <line x1="200" y1="90" x2="160" y2="200" stroke="#E3B252" stroke-width="3"/><line x1="200" y1="90" x2="240" y2="200" stroke="#E3B252" stroke-width="3"/><path d="M140 200 H260 Q250 236 200 236 Q150 236 140 200Z" fill="#9C6B10"/>
+      <line x1="600" y1="90" x2="560" y2="200" stroke="#E3B252" stroke-width="3"/><line x1="600" y1="90" x2="640" y2="200" stroke="#E3B252" stroke-width="3"/><path d="M540 200 H660 Q650 236 600 236 Q550 236 540 200Z" fill="#9C6B10"/>
+      ${inPan.map((b,i)=>`<g transform="translate(${505+((i%3)*42)} ${118+Math.floor(i/3)*-40}) scale(.9)">${bagSvg(b).replace('<svg viewBox="0 0 90 90" aria-hidden="true">','').replace('</svg>','')}</g>`).join("")}
+      ${LB(200,190,"the office of",15,"#F2E5C6")}${LB(200,210,"Kohen Gadol",15,"#F2E5C6")}</g>`;
+  return `${head(st)}<p class="lead">${esc(st.lead)}</p>
+   <div class="clipart">${SV(scaleArt,"0 0 800 300")}</div>
+   <p class="muted">${inPan.length?`On the scale: ${inPan.map(b=>esc(b[1]+" "+b[3])).join(" + ")}. Tap a bag on the list again to take it off.`:"Tap a bag to put it on the scale."}</p>
+   <div class="bags">${st.bags.map(b=>`<button class="bagb ${on[b[0]]?"on":""}" data-act="bag" data-id="${b[0]}" ${S.p.solved?"disabled":""}>${bagSvg(b)}<span>${esc(b[1])} ${esc(b[3])}</span></button>`).join("")}</div>
+   ${S.p.fb?`<div class="feedback no">${esc(S.p.fb)}</div>`:""}
+   ${S.p.solved ? winBlock(st.win) : hintBlock(st.hints||[]) + (inPan.length ? ritual("Weigh it") : "")}`;
+};
+document.addEventListener("click", e=>{
+  const el = e.target.closest('[data-act="bag"]'); if(!el || frozen || IS_CONTROL) return;
+  const id = el.dataset.id; S.p.on = Object.assign({}, S.p.on); if(S.p.on[id]) delete S.p.on[id]; else S.p.on[id] = true; S.p.fb = null; S.seals = {}; render();
+});
+{
+  const _xc = xCheck;
+  xCheck = st => {
+    if(st.kind!=="scale") return _xc(st);
+    const on = S.p.on||{}, want = st.bags.filter(b=>b[4]).map(b=>b[0]);
+    const extra = st.bags.filter(b=>on[b[0]] && !b[4]), missing = want.filter(id=>!on[id]);
+    if(!extra.length && !missing.length){ S.p.solved = true; S.p.fb = null; }
+    else if(extra.length) S.p.fb = extra[0][5];
+    else S.p.fb = missing.includes(st.condBag) ? "The scale isn't balanced yet. Jason promised one more amount, but only on one condition. Read the end of his letter again." : "Something Jason promised is still missing. Read his letter again.";
+    return true;
+  };
+}
+XSOLVE.scale = st => { S.p.on = Object.fromEntries(st.bags.filter(b=>b[4]).map(b=>[b[0],true])); };
+
+{
+  const A2 = STEPS_M2, E1 = "Chamber 1 · The Gymnasium", E4 = "Chamber 4 · Those Who Would Not Bow";
+  /* Envelope 1: weigh Jason's promise instead of a dial */
+  swapStep(A2, "m2-c1-receipt", {id:"m2-c1-scale", ch:1, kind:"scale", eyebrow:E1, title:"The king's scale",
+    lead:"The king weighs the silver against the job of Kohen Gadol. Put on the scale exactly what Jason promised, if the king let him build the gymnasium.",
+    bags:[["a","360",360,"talents",true],["d","300",300,"drachmas",false,"That bag is drachmas, not talents. Whose money was it, and where did it go? Read the clerk's notes again."],["b","80",80,"talents",true],["e","300",300,"talents",false,"Whose 300 talents are those? Read the clerk's last note again."],["c","150",150,"talents",true]],
+    condBag:"c",
+    hints:["Every amount in Jason's letter is written out in words. Find each one.","Not every bag on the table belongs to Jason."],
+    win:"Balanced: 360 + 80 + 150 = 590 talents of silver. The holiest job in the Beis Hamikdash was sold like a market stall.",
+    after:[{t:"Envelope 1: Jason's letter", src:"Sefer Chashmonaim II, chapter 4", b:"Jason promised the king 360 talents of silver, 80 more, and 150 more if he could build a gymnasium: 590 in all. Young Kohanim left the avodah to run to the games. Even Jason's messengers refused to spend his money on an offering to an idol. Later, Menelaus outbid Jason by 300 talents."}],
+    key:"360 + 80 + 150 talents (not the 300 drachmas, not Menelaus's 300).", teaches:"Jason bought the office."});
+
+  /* Envelope 3: gematria names matched to the empty places */
+  const ol = `stroke="#F2E5C6" stroke-width="3" stroke-dasharray="7 5" fill="none"`;
+  const OUT = {
+    A:`<rect width="120" height="90" rx="8" fill="#2A2418"/><g ${ol}><line x1="60" y1="82" x2="60" y2="22"/><path d="M60 66 L42 22 M60 66 L78 22 M60 58 L30 22 M60 58 L90 22 M60 50 L18 22 M60 50 L102 22"/></g>`,
+    B:`<rect width="120" height="90" rx="8" fill="#2A2418"/><g ${ol}><rect x="38" y="34" width="44" height="46"/><path d="M38 34 l6 -9 l6 9 M70 34 l6 -9 l6 9"/></g>`,
+    C:`<rect width="120" height="90" rx="8" fill="#2A2418"/><g ${ol}><rect x="18" y="50" width="84" height="8"/><path d="M24 58 V82 M96 58 V82"/><rect x="28" y="20" width="22" height="30"/><rect x="70" y="20" width="22" height="30"/></g>`,
+    D:`<rect width="120" height="90" rx="8" fill="#2A2418"/><g ${ol}><path d="M30 10 H90 V84 H30 Z M45 10 V84 M60 10 V84 M75 10 V84"/></g>`
+  };
+  const old = getStep(A2, "m2-c4-crates");
+  swapStep(A2, "m2-c4-crates", {id:"m2-c4-names", ch:4, kind:"sort", eyebrow:E4, title:"The empty Heichal",
+    pre:()=>"",
+    lead:"Four holy things were taken from these empty places. The king's clerk wrote their names in numbers. Use the key in envelope 3 to read each name, then put it where that thing stood.",
+    bins:[["A","",""],["B","",""],["C","",""],["D","",""]],
+    binArt:{A:OUT.A,B:OUT.B,C:OUT.C,D:OUT.D},
+    items:[["s","300 · 30 · 8 · 50","C"],["m","40 · 50 · 6 · 200 · 5","A"],["p","80 · 200 · 20 · 400","D"],["z","40 · 7 · 2 · 8","B"]],
+    hints:["Each number is one Hebrew letter. Find it in the key, and write the letters down in order.","When you have four Hebrew words, look at the shape of each empty place: what could stand there?"],
+    win:"מנורה, מזבח, שלחן, פרכת: the Menorah, the golden Mizbeach, the Shulchan and the Paroches were all carried away. Remember the empty place where the Menorah stood.",
+    after:old.after, satchel:old.satchel, key:"A מנורה 40·50·6·200·5 · B מזבח 40·7·2·8 · C שלחן 300·30·8·50 · D פרכת 80·200·20·400.", teaches:"What Antiochus took from the Beis Hamikdash; gematria."});
+  { const _sort2 = R.sort; R.sort = st => { if(st.id!=="m2-c4-names") return _sort2(st); return _sort2(st).replace(/<h4 class="[^"]*"[^>]*>([A-D])<\/h4>/g,'<h4 class="placeletter">$1</h4>').replace(/class="tile ?(sel)?" data-act="sel"/g,'class="tile code $1" data-act="sel"').split('<span class="tile" style="cursor:default">').join('<span class="tile code" style="cursor:default">'); }; }
+
+  /* Envelope 4: Elazar only from the envelope */
+  swapStep(A2, "m2-c4-age", {id:"m2-c4-elazar", ch:4, kind:"code", eyebrow:E4, title:"Elazar's last words",
+    lead:"Elazar's answer ends with the words he wanted every young Jew to remember. Write the missing word.",
+    pre:()=>`<div class="quote">“I will leave the young a good <span class="blankw">________</span>: to stand firm for our holy Torah.”</div>`,
+    label:"The missing word", answers:["EXAMPLE","AGOODEXAMPLE"], wrong:"That's not the word. Read the end of the message again.",
+    hints:["The message is written backwards. A mirror will help.","It's in the last sentence."],
+    win:"Example. Elazar would not even pretend, because young people would learn from him. He chose to be an example of standing firm for the Torah.",
+    after:[{t:"Envelope 4: Elazar", src:"Sefer Chashmonaim II, chapter 6; Chabad.org, The Events Before and After the Chanukah Miracle", b:"Elazar, an old and leading Sofer, was offered a way out: bring kosher meat and only pretend it was pork. He refused, so that young people would not learn from him to leave the Torah, and to leave them a good example."}],
+    key:"EXAMPLE.", teaches:"Elazar (2 Maccabees 6)."});
+  dropStep(A2, "m2-c4-choice"); dropStep(A2, "m2-c4-read");
+  const env4 = getStep(A2, "m2-c4-env4"); env4.body = () => ENV(4)+action(ICON_WALK,"Find envelope 4",`<p>It's hidden somewhere in the room. Bring it back and open it. Something about this message is strange. You'll need a mirror from the teacher's table.</p><p style="margin-top:6px">${tag(4%N())} reads it aloud while everyone follows along. Keep it until you finish, then put it back for the next group.</p>`);
 }
 
 let revealTarget = null;
