@@ -717,7 +717,7 @@ const STEPS_M1 = [
 
 
 /* ================= Mission 2: The Greeks and the Decrees ================= */
-const CHAMBERS_M2 = [{n:"The Archive"},{n:"The Gymnasium"},{n:"The Decree Wall"},{n:"Three Kinds of Pressure"},{n:"Those Who Would Not Bow"}];
+const CHAMBERS_M2 = [{n:"The Archive"},{n:"The Gymnasium"},{n:"The Decree Wall"},{n:"What the Greeks Wanted"},{n:"Those Who Would Not Bow"}];
 const POSTERS_M2 = ["Shabbos","Bris Milah","Rosh Chodesh","The Torah","The Beis Hamikdash and Kashrus"];
 const STEPS_M2 = [
  {id:"setup", ch:0, kind:"setup"},
@@ -777,8 +777,8 @@ const STEPS_M2 = [
   key:"No Shabbos, no Torah learning, no bris, no calendar, forced to eat non-kosher.", teaches:"Oral check."},
  {id:"m2-c2-check", ch:2, kind:"checkin", key:"Runner checks in with SHABBOS.", teaches:"Movement + class tracking."},
 
- /* ---------- Chamber 3: Three Kinds of Pressure ---------- */
- {id:"m2-c3-sort", ch:3, kind:"sort", enter:["door","Chamber 3: Three Kinds of Pressure"], eyebrow:"Chamber 3 · Three Kinds of Pressure",
+ /* ---------- Chamber 3: What the Greeks Wanted ---------- */
+ {id:"m2-c3-sort", ch:3, kind:"sort", enter:["door","Chamber 3: What the Greeks Wanted"], eyebrow:"Chamber 3 · What the Greeks Wanted",
   title:"Which kind of pressure is it?",
   lead:"Historians sort what happened into three kinds of pressure. Read the archive note, then sort each event. Tap an event, then tap its kind.",
   note:{to:2, t:"Archive note: three kinds of pressure", b:"Political rule: a foreign king is in charge, collects taxes and appoints officials. Cultural influence: new ideas, names, fashions and games that pull people toward a different way of life. Religious persecution: people are forced to stop keeping mitzvos, or to serve idols."},
@@ -787,18 +787,18 @@ const STEPS_M2 = [
   hints:["Ask: is this about who is in charge, about what people like, or about forcing people to stop serving Hashem?","The gymnasium tempted people, but nobody was forced to go. That makes it influence, not persecution."],
   win:"Sorted. The Jews had lived under foreign kings for hundreds of years. Greek influence pulled some Jews away. But persecution was something new.",
   key:"Political: taxes, officials. Cultural: gymnasium, Greek names, games and fashions. Religious persecution: Shabbos forbidden, Sifrei Torah burned, idols in the Beis Hamikdash.", teaches:"The difference between rule, influence and persecution."},
- {id:"m2-c3-choice", ch:3, kind:"choice", eyebrow:"Chamber 3 · Three Kinds of Pressure",
+ {id:"m2-c3-choice", ch:3, kind:"choice", eyebrow:"Chamber 3 · What the Greeks Wanted",
   title:"What finally made them fight?",
-  lead:"In Mission 1 you found a clue: Bavel, Persia, Alexander and the Ptolemies all ruled the Jews, and the Jews did not rebel. Which kind of pressure finally made them fight?",
+  lead:"In Mission 1 you found a clue: Bavel, Persia, Alexander and the Ptolemies all ruled the Jews, and the Jews did not rebel. Why did they fight the Greeks?",
   options:[
-   ["a","Political rule: foreign kings and their taxes.", false, "The Jews had lived under foreign kings for hundreds of years without rebelling. Think back to the clue at the end of Mission 1."],
-   ["b","Cultural influence: the gymnasium and Greek ways.", false, "Greek influence split the Jews and was dangerous, but anyone could still choose to keep the Torah. Something else changed."],
-   ["c","Religious persecution: being forbidden to keep the Torah.", true, "Yes. When keeping the Torah itself was forbidden, the Jews were ready to stand up, even against a mighty king."]],
+   ["a","Because the Greek taxes were higher.", false, "Taxes are just ruling. Kings had collected taxes from the Jews for hundreds of years."],
+   ["b","Because the Greeks went after the Torah itself: first pulling Jews away from it, then forcing them away from it.", true, "Yes. The Jews could live under a foreign king, but not without the Torah. When the Greeks tried to take the Torah away, the Jews stood up, even against a mighty king."],
+   ["c","Because they didn't like Greek sports.", false, "It wasn't about sports. What were the games pulling Jews away from?"]],
   hints:["Think about the clue from the end of Mission 1.","What was different about Antiochus IV compared to the kings before him?"],
   satchel:["The Jews fought when keeping the Torah itself was forbidden, not because of foreign rule"],
-  key:"C: religious persecution.", teaches:"Answers Seal 2: why the situation led to rebellion."},
- {id:"m2-c3-say", ch:3, kind:"say", prompt:"Explain to your group: what is the difference between a king who rules you and a king who forbids the Torah?",
-  key:"Foreign rule they accepted; being forced to abandon the Torah they would not accept.", teaches:"Oral check."},
+  key:"B: the Greeks went after the Torah itself.", teaches:"Answers Seal 2: why the situation led to rebellion."},
+ {id:"m2-c3-say", ch:3, kind:"say", prompt:"Explain to your group: what is the difference between a king who rules over you and a king who goes after your Torah?",
+  key:"Foreign rule they accepted; losing the Torah, by pulling or by force, they would not accept.", teaches:"Oral check."},
  {id:"m2-c3-check", ch:3, kind:"checkin", key:"Runner checks in with MIKDASH.", teaches:"Movement + class tracking."},
 
  /* ---------- Chamber 4: Those Who Would Not Bow ---------- */
@@ -837,8 +837,8 @@ const STEPS_M2 = [
   qs:[
    {q:"Which of these did the decrees forbid?", o:["Lighting Chanukah candles","Keeping Shabbos","Going to the market"], a:1},
    {q:"What did Jason do?", o:["He led the Maccabees into battle","He bought the office of Kohen Gadol and built a gymnasium","He translated the Torah into Greek"], a:1},
-   {q:"What finally made the Jews ready to fight?", o:["Foreign kings collecting taxes","Being forbidden to keep the Torah","Greek sports and fashions"], a:1}],
-  key:"Keeping Shabbos; bought the office and built a gymnasium; being forbidden to keep the Torah.", teaches:"Quick individual check."},
+   {q:"What finally made the Jews ready to fight?", o:["Foreign kings collecting taxes","The Greeks tried to take the Torah away from them","The Greeks won a war against Egypt"], a:1}],
+  key:"Keeping Shabbos; bought the office and built a gymnasium; the Greeks tried to take the Torah away.", teaches:"Quick individual check."},
  {id:"m2-end", ch:4, kind:"end2", key:"Runner checks in with MODIIN; then the worksheet.", teaches:"Close of Mission 2."}
 ];
 
@@ -1946,9 +1946,9 @@ const YEAR = (y) => `<g class="a-fade" style="animation-delay:1s"><rect x="620" 
     lead:"Watch what happened in five short scenes. The person named reads each caption aloud.", cta:"We watched all five scenes",
     cards: c1.cards.map((c,i)=>Object.assign({}, c, {art:arts[i]}))}));
 
-  addAfter(STEPS_M2, "m2-c3-sort", {id:"m2-c3-freeze", ch:3, kind:"room", eyebrow:"Chamber 3 · Three Kinds of Pressure", title:"Freeze-frame",
-    body:()=>action(ICON_WALK,"Make a frozen picture",`<p>Choose one event from your sort. Stand up and make a statue scene that shows it, with every one of you in it: a king, a soldier, a Hellenist, a Jew holding on to the Torah. Freeze for five seconds.</p><p style="margin-top:6px">Your teacher, or the group next to you, guesses: is it <b>political rule</b>, <b>cultural influence</b> or <b>religious persecution</b>?</p>`),
-    cta:"Someone guessed our freeze-frame", key:"Physical: statue scene; another group guesses the kind of pressure.", teaches:"The three kinds of pressure, acted."});
+  addAfter(STEPS_M2, "m2-c3-sort", {id:"m2-c3-freeze", ch:3, kind:"room", eyebrow:"Chamber 3 · What the Greeks Wanted", title:"Freeze-frame",
+    body:()=>action(ICON_WALK,"Make a frozen picture",`<p>Choose one event from your sort. Stand up and make a statue scene that shows it, with every one of you in it: a king, a soldier, a Hellenist, a Jew holding on to the Torah. Freeze for five seconds.</p><p style="margin-top:6px">Your teacher, or the group next to you, guesses: is it <b>a king ruling over us</b>, <b>pulling us away from the Torah</b>, or <b>forcing us away from the Torah</b>?</p>`),
+    cta:"Someone guessed our freeze-frame", key:"Physical: statue scene; another group guesses which it shows.", teaches:"Ruling, pulling and forcing, acted."});
 
   const c4 = getStep(STEPS_M2, "m2-c4-ev"); c4.cards = c4.cards.filter(c=>c.t!=="Written on a Horn");
   addBefore(STEPS_M2, "m2-c4-ev", TX({id:"m2-c4-text", ch:4, eyebrow:"Chamber 4 · Those Who Would Not Bow", title:"A Midrash about darkness", src:"Midrash, Bereishis Rabbah 2:4", lang:"Hebrew",
@@ -2431,7 +2431,13 @@ function peopleSort(st){
 
   const pr = getStep(STEPS_M2, "m2-c3-sort");
   const coin = (x,y) => `<circle cx="${x}" cy="${y}" r="9" fill="#E3B252" stroke="#9C6B10" stroke-width="2"/>`;
-  Object.assign(pr, {note:null, lead:"Tap a picture, then tap the kind of pressure it shows.", bins:[["P","Political rule","a foreign king is in charge"],["C","Cultural influence","new ways that pull people away"],["R","Religious persecution","forced to stop keeping mitzvos"]],
+  Object.assign(pr, {note:null, title:"What did the Greeks want?", lead:"The Greeks weren't just another king. Tap a picture, then tap where it belongs.",
+    bins:[["P","Ruling over us","like every king before them"],["C","Pulling us away from the Torah","making Greek ways tempting"],["R","Forcing us away from the Torah","forbidding the mitzvos"]],
+    hints:["Pulling means making something tempting. Forcing means a decree with a punishment.","Only the taxes and the officials are just ruling. Every other picture was aimed at the Torah."],
+    win:"Sorted. Bavel, Persia and Alexander had ruled over the Jews too. The Greeks wanted more: to make the Jews forget the Torah. The gymnasium, the names and the games pulled Jews away from it; the decrees forced them away. V'Al Hanissim says it: לְהַשְׁכִּיחָם תּוֹרָתֶךָ, to make them forget Your Torah.",
+    satchel:["The Greeks wanted the Jews to forget the Torah: they pulled (the gymnasium, Greek names, games) and then forced (the decrees)"],
+    key:"Ruling: taxes, officials. Pulling: gymnasium, Greek names, games and fashions. Forcing: Shabbos forbidden, Sifrei Torah burned, idols in the Beis Hamikdash.", teaches:"The Greeks' real goal: to uproot the Torah, by pulling and by forcing."
+    ,
     items:[["p1","Heavy taxes","P"],["p2","The king's officials","P"],["c1","A gymnasium","C"],["c2","Greek names","C"],["c3","Greek games and fashions","C"],["r1","Shabbos forbidden","R"],["r2","Sifrei Torah burned","R"],["r3","Idols in the Beis Hamikdash","R"]],
     itemArt:{
       p1:`<rect width="100" height="70" fill="#2A3150"/>`+coin(30,48)+coin(48,50)+coin(39,36)+coin(66,48)+coin(57,36)+`<path d="M70 14 h20 v22 h-20z" fill="#F2E5C6"/><path d="M73 20 h14 M73 26 h14 M73 32 h10" stroke="#7E7462" stroke-width="2"/>`,
@@ -2445,7 +2451,7 @@ function peopleSort(st){
     },
     binArt:{
       P:`<rect width="120" height="70" rx="8" fill="#2A3150"/><path d="M42 44 V22 L52 32 L60 16 L68 32 L78 22 V44Z" fill="#E3B252"/>`+coin(40,56)+coin(60,56)+coin(80,56),
-      C:`<rect width="120" height="70" rx="8" fill="#3A3428"/>`+COLS(60,66,.4),
+      C:`<rect width="120" height="70" rx="8" fill="#3A3428"/>`+COLS(40,66,.3)+`<rect x="76" y="18" width="6" height="36" rx="2" fill="#7E7462"/><rect x="82" y="22" width="18" height="28" fill="#F2E5C6"/><rect x="100" y="18" width="6" height="36" rx="2" fill="#7E7462"/><path d="M70 36 H52 M58 30 L52 36 L58 42" stroke="#E3B252" stroke-width="4" fill="none"/>`,
       R:`<rect width="120" height="70" rx="8" fill="#151B2A"/><rect x="40" y="14" width="8" height="44" rx="3" fill="#7E7462"/><rect x="48" y="18" width="24" height="36" fill="#F2E5C6"/><rect x="72" y="14" width="8" height="44" rx="3" fill="#7E7462"/><circle cx="60" cy="36" r="30" fill="none" stroke="#E0414F" stroke-width="5"/><path d="M39 57 L81 15" stroke="#E0414F" stroke-width="5"/>`
     }});
 
@@ -2588,7 +2594,7 @@ const SHOWS = {
   intro2:[
     {art:"seals", glow:true, open:1, cap:"Previously: the first seal is open. The Seleucid kings of Syria ruled Eretz Yisrael, and a new king, Antiochus IV, took the throne."},
     {art:"question", n:2, cap:"Seal 2 asks: What changed in Jewish life, and why did it lead to rebellion?"},
-    {art:"how", cap:"Today: meet the people of Yerushalayim, walk to the Decree Wall, and sort three kinds of pressure. Runners check in here after each chamber."},
+    {art:"how", cap:"Today: meet the people of Yerushalayim, walk to the Decree Wall, and find out what the Greeks really wanted. Runners check in here after each chamber."},
     {art:"seals", glow:true, open:1, cap:"Work together. Everyone seals every answer. Open Chamber 1."}
   ],
   intro:[
